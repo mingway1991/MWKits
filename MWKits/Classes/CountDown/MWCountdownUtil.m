@@ -7,19 +7,19 @@
 
 #import "MWCountdownUtil.h"
 
-@interface MWCountdownUtil ()
-
-@end
-
 @implementation MWCountdownUtil
 
 + (dispatch_source_t)countDownOneSecondForSeconds:(NSTimeInterval)seconds
                          updateBlock:(MWCountDownUpdateBlock)updateBlock
                             endBlock:(MWCountDownEndBlock)endBlock {
     return [self countDownSeconds:seconds timeInterval:1.f updateBlock:^(NSTimeInterval timeInterval) {
-        updateBlock(timeInterval);
+        if (updateBlock) {
+            updateBlock(timeInterval);
+        }
     } endBlock:^{
-        endBlock();
+        if (endBlock) {
+            endBlock();
+        }
     }];
 }
 
@@ -38,14 +38,18 @@
         if (timeOutCount <= 0) {
             //倒计时结束，结束timer，调用结束block
             [self cancalTimer:timer];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                endBlock();
-            });
+            if (endBlock) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    endBlock();
+                });
+            }
         } else {
             //倒计时中，调用更新block
-            dispatch_async(dispatch_get_main_queue(), ^{
-                updateBlock(timeOutCount);
-            });
+            if (updateBlock) {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    updateBlock(timeOutCount);
+                });
+            }
         }
     });
     dispatch_resume(timer);

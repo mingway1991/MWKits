@@ -13,6 +13,7 @@ static NSString *presentAnimationKey = @"presentAnimation";
 static NSString *dismissAnimationKey = @"dismissAnimation";
 static NSString *pushAnimationKey = @"pushAnimation";
 static NSString *popAnimationKey = @"popAnimation";
+static NSString *canDragBackKey = @"canDragBack";
 
 @implementation UIViewController (MWTransition)
 
@@ -82,6 +83,19 @@ static NSString *popAnimationKey = @"popAnimation";
 
 - (MWPopAnimation *)popAnimation {
     return objc_getAssociatedObject(self, &popAnimationKey);
+}
+
+- (void)setCanDragBack:(BOOL)canDragBack {
+    objc_setAssociatedObject(self, &canDragBackKey, @(canDragBack), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (BOOL)canDragBack {
+    id object = objc_getAssociatedObject(self, &canDragBackKey);
+    if (!object) {
+        //默认值为YES
+        return YES;
+    }
+    return [object boolValue];
 }
 
 @end

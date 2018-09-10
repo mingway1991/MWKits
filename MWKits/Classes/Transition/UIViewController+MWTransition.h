@@ -14,10 +14,12 @@
 @interface UIViewController (MWTransition) <UIViewControllerTransitioningDelegate,
                                             UINavigationControllerDelegate>
 
-@property(nonatomic, strong) MWPresentAnimation *presentAnimation;
-@property(nonatomic, strong) MWDismissAnimation *dismissAnimation;
-@property(nonatomic, strong) MWPushAnimation *pushAnimation;
-@property(nonatomic, strong) MWPopAnimation *popAnimation;
+@property (nonatomic, strong) MWPresentAnimation *presentAnimation;
+@property (nonatomic, strong) MWDismissAnimation *dismissAnimation;
+@property (nonatomic, strong) MWPushAnimation *pushAnimation;
+@property (nonatomic, strong) MWPopAnimation *popAnimation;
+/** 设置是否开启拖动返回，默认为YES **/
+@property (nonatomic, assign) BOOL canDragBack;
 
 /* 初始化模态动画相关，放在viewDidLoad调用 */
 - (void)setupPresentAndDismiss;

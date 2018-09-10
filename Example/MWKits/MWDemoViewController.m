@@ -18,9 +18,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self setupPresentAndDismiss];
-
-//      设置页面不可以滑动返回
-//    [(MWBaseNavigationController *)self.navigationController setCanDragBack:NO];
     
     self.view.backgroundColor = [UIColor yellowColor];
     

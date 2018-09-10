@@ -6,6 +6,7 @@
 //
 
 #import "MWBaseNavigationController.h"
+#import "UIViewController+MWTransition.h"
 #import "MWDefines.h"
 
 @interface MWBaseNavigationController () <UIGestureRecognizerDelegate>
@@ -34,7 +35,7 @@
 - (void)panGestureRecognizer:(UIPanGestureRecognizer *)panGestureRecognizer {
     if (self.viewControllers.count <= 1 ||
         self.visibleViewController == self.viewControllers.firstObject ||
-        !self.canDragBack) return;
+        !self.topViewController.canDragBack) return;
     switch (panGestureRecognizer.state) {
         case UIGestureRecognizerStateBegan:{
             [self dragBegin];
