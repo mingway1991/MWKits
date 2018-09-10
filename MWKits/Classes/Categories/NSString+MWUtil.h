@@ -9,6 +9,7 @@
 
 @interface NSString (MWUtil)
 
+#pragma mark - 校验
 /**
  判断字符串是否为空
  
@@ -32,6 +33,7 @@
  */
 - (BOOL)mwIsVaildIDCardNo;
 
+#pragma mark - 加密
 /**
  md5加密
  
@@ -45,5 +47,16 @@
  @return 加密字串
  */
 - (NSString *)mwSHA1;
+
+#pragma mark - 格式化
+/**
+ 金额类的字符串格式化,例
+ 0 --> 0.00
+ 123 --> 123.00
+ 123.456 --> 123.46
+ 102000 --> 102,000.00
+ 10204500 --> 10,204,500.00
+ */
+- (NSString *)mwMoneyFormat;
 
 @end

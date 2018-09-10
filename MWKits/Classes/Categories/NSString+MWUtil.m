@@ -10,6 +10,7 @@
 
 @implementation NSString (MWUtil)
 
+#pragma mark - 校验
 - (BOOL)mwCheckEmpty {
     if (self == nil) return self == nil;
     NSString *newStr = [self stringByReplacingOccurrencesOfString:@" " withString:@""];
@@ -33,6 +34,7 @@
     return [idcardTest evaluateWithObject:self];
 }
 
+#pragma mark - 加密
 - (NSString *)mwMD5 {
     const char *orgin_cstr = [self UTF8String];
     unsigned char result_cstr[CC_MD5_DIGEST_LENGTH];
@@ -58,6 +60,57 @@
         [output appendFormat:@"%02x", digest[i]];
     
     return output;
+}
+
+#pragma mark - 格式化
+- (NSString *)mwMoneyFormat {
+    if ([self mwCheckEmpty]) return self;
+    
+    BOOL hasPoint = NO;
+    if ([self rangeOfString:@"."].length > 0) {
+        hasPoint = YES;
+    }
+    
+    NSMutableString *pointMoney = [NSMutableString stringWithString:self];
+    if (hasPoint == NO) {
+        [pointMoney appendString:@".00"];
+    }
+    
+    NSArray *moneys = [pointMoney componentsSeparatedByString:@"."];
+    if (moneys.count > 2) {
+        return pointMoney;
+    } else if (moneys.count == 1) {
+        return [NSString stringWithFormat:@"%@.00", moneys[0]];
+    } else {
+        // 整数部分每隔 3 位插入一个逗号
+        NSString *frontMoney = [self mwStringFormatToThreeBit:moneys[0]];
+        if ([frontMoney isEqualToString:@""]) {
+            frontMoney = @"0";
+        }
+        // 拼接整数和小数两部分
+        NSString *backMoney = moneys[1];
+        if ([backMoney length] == 1) {
+            return [NSString stringWithFormat:@"%@.%@0", frontMoney, backMoney];
+        } else if ([backMoney length] > 2) {
+            return [NSString stringWithFormat:@"%@.%@", frontMoney, [backMoney substringToIndex:2]];
+        } else {
+            return [NSString stringWithFormat:@"%@.%@", frontMoney, backMoney];
+        }
+    }
+}
+
+- (NSString *)mwStringFormatToThreeBit:(NSString *)string {
+    NSString *tempString = [string stringByReplacingOccurrencesOfString:@"," withString:@""];
+    NSMutableString *mutableString = [NSMutableString stringWithString:tempString];
+    NSInteger n = 2;
+    for (NSInteger i = tempString.length - 3; i > 0; i--) {
+        n++;
+        if (n == 3) {
+            [mutableString insertString:@"," atIndex:i];
+            n = 0;
+        }
+    }
+    return mutableString;
 }
 
 @end

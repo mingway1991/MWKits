@@ -27,25 +27,27 @@
     time1Label.textColor = [UIColor redColor];
     [self.view addSubview:time1Label];
     
+//    time1Label.text = [@"111111111" mwMoneyFormat];
+    
     NSTimeInterval count1 = 10;
     time1Label.text = [NSString stringWithFormat:@"%@",@(count1)];
-    
+
     self.time1 = [MWCountdownUtil countDownSeconds:count1 timeInterval:0.5f updateBlock:^(NSTimeInterval timeInterval) {
         NSLog(@"%@",@(timeInterval));
         time1Label.text = [NSString stringWithFormat:@"%@",@(timeInterval)];
     } endBlock:^() {
         time1Label.text = @"结束了";
     }];
-    
+
     //Demo2
     UILabel *time2Label = [[UILabel alloc] initWithFrame:CGRectMake(10, 240, 100, 60)];
     time2Label.font = [UIFont systemFontOfSize:16.f];
     time2Label.textColor = [UIColor redColor];
     [self.view addSubview:time2Label];
-    
+
     NSTimeInterval count2 = 10;
     time2Label.text = [NSString stringWithFormat:@"%@",@(count2)];
-    
+
     self.time2 = [MWCountdownUtil countDownOneSecondForSeconds:count2 updateBlock:^(NSTimeInterval timeInterval) {
         NSLog(@"%@",@(timeInterval));
         time2Label.text = [NSString stringWithFormat:@"%@",@(timeInterval)];

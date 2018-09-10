@@ -1,8 +1,8 @@
 {
   "name": "MWKits",
   "version": "0.1.0",
-  "summary": "A short description of MWKits.",
-  "description": "TODO: Add long description of the pod here.",
+  "summary": "iOS 常用工具库",
+  "description": "MWKits",
   "homepage": "https://github.com/mingway1991/MWKits",
   "license": {
     "type": "MIT",

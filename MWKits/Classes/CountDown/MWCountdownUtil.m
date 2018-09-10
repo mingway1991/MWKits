@@ -53,8 +53,10 @@
 }
 
 + (void)cancalTimer:(dispatch_source_t)timer {
-    dispatch_cancel(timer);
-    timer = nil;
+    if (timer) {
+        dispatch_cancel(timer);
+        timer = nil;
+    }
 }
 
 @end
