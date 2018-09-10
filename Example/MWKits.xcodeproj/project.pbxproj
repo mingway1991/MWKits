@@ -21,6 +21,8 @@
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
 		71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */; };
+		7AD2643421461A55000A132E /* MWDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AD2643321461A55000A132E /* MWDemoViewController.m */; };
+		7AD2643721461B4D000A132E /* MWCountDownDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AD2643621461B4D000A132E /* MWCountDownDemoViewController.m */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
 		C122D9E48FB5456AA692EEE6 /* Pods_MWKits_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 766E5425B9121A21BC10868A /* Pods_MWKits_Tests.framework */; };
 		D2F1BB30FFDB163115B9C86C /* Pods_MWKits_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37894A7EED2F08810BA76333 /* Pods_MWKits_Example.framework */; };
@@ -61,11 +63,15 @@
 		67928A0822040C4A9C05865A /* Pods-MWKits_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MWKits_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MWKits_Example/Pods-MWKits_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		71719F9E1E33DC2100824A3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		766E5425B9121A21BC10868A /* Pods_MWKits_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MWKits_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		8449E9D3B06565DCB2E9A460 /* MWKits.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = MWKits.podspec; path = ../MWKits.podspec; sourceTree = "<group>"; };
+		7AD2643221461A55000A132E /* MWDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWDemoViewController.h; sourceTree = "<group>"; };
+		7AD2643321461A55000A132E /* MWDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MWDemoViewController.m; sourceTree = "<group>"; };
+		7AD2643521461B4D000A132E /* MWCountDownDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWCountDownDemoViewController.h; sourceTree = "<group>"; };
+		7AD2643621461B4D000A132E /* MWCountDownDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MWCountDownDemoViewController.m; sourceTree = "<group>"; };
+		8449E9D3B06565DCB2E9A460 /* MWKits.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = MWKits.podspec; path = ../MWKits.podspec; sourceTree = "<group>"; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8D2F3895308002E59DF3C0A5 /* Pods-MWKits_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MWKits_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MWKits_Tests/Pods-MWKits_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		B5FB88A7BF43BC7BC82D7921 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		DFA7C8B6631AFA24515867EB /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		B5FB88A7BF43BC7BC82D7921 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		DFA7C8B6631AFA24515867EB /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		EF4E2FDD893FEB90C5C8BDCD /* Pods-MWKits_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MWKits_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-MWKits_Tests/Pods-MWKits_Tests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -148,6 +154,10 @@
 				873B8AEA1B1F5CCA007FD442 /* Main.storyboard */,
 				6003F5A5195388D20070C39A /* MWViewController.h */,
 				6003F5A6195388D20070C39A /* MWViewController.m */,
+				7AD2643221461A55000A132E /* MWDemoViewController.h */,
+				7AD2643321461A55000A132E /* MWDemoViewController.m */,
+				7AD2643521461B4D000A132E /* MWCountDownDemoViewController.h */,
+				7AD2643621461B4D000A132E /* MWCountDownDemoViewController.m */,
 				71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */,
 				6003F5A8195388D20070C39A /* Images.xcassets */,
 				6003F594195388D20070C39A /* Supporting Files */,
@@ -250,6 +260,13 @@
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = mingway1991;
 				TargetAttributes = {
+					6003F589195388D20070C39A = {
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
+					};
 					6003F5AD195388D20070C39A = {
 						TestTargetID = 6003F589195388D20070C39A;
 					};
@@ -404,6 +421,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				6003F59E195388D20070C39A /* MWAppDelegate.m in Sources */,
+				7AD2643421461A55000A132E /* MWDemoViewController.m in Sources */,
+				7AD2643721461B4D000A132E /* MWCountDownDemoViewController.m in Sources */,
 				6003F5A7195388D20070C39A /* MWViewController.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,
 			);

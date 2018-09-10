@@ -1,0 +1,6 @@
+framework module MWKits {
+  umbrella header "MWKits-umbrella.h"
+
+  export *
+  module * { export * }
+}
