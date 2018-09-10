@@ -24,9 +24,9 @@
     [[transitionContext containerView] addSubview:toVC.view];
     [[transitionContext containerView] addSubview:fromVC.view];
     CGRect toFinalRect = [transitionContext finalFrameForViewController:toVC];
-    toVC.view.frame = CGRectMake(-ScreenWidth*(1-kMWNaviTargetTranslateScale), 0, ScreenWidth, ScreenHeight);
+    toVC.view.frame = CGRectMake(-MWScreenWidth*(1-kMWNaviTargetTranslateScale), 0, MWScreenWidth, MWScreenHeight);
     [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
-        fromVC.view.frame = CGRectMake(ScreenWidth, 0, ScreenWidth, ScreenHeight);
+        fromVC.view.frame = CGRectMake(MWScreenWidth, 0, MWScreenWidth, MWScreenHeight);
         toVC.view.frame = toFinalRect;
     } completion:^(BOOL finished) {
         [transitionContext completeTransition:YES];

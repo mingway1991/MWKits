@@ -6,7 +6,6 @@
 //
 
 /*
- 
  GCD实现倒计时
  
  注 如果想要进入后台继续执行倒计时，需要执行以下操作：
@@ -41,28 +40,32 @@ typedef void(^MWCountDownEndBlock)(void);
 
 @interface MWCountdownUtil : NSObject
 
-/* 间隔一秒倒计时
- seconds:总共需要倒计时的时间
- updateBlock:更次间隔更新调用
- endBlock:计时完成调用
+/**
+ 间隔一秒倒计时
+ 
+ @param seconds 总共需要倒计时的时间
+ @param updateBlock 更次间隔更新调用
+ @param endBlock 计时完成调用
+ @return dispatch_source_t
  */
 
 + (dispatch_source_t)countDownOneSecondForSeconds:(NSTimeInterval)seconds
                          updateBlock:(MWCountDownUpdateBlock)updateBlock
                             endBlock:(MWCountDownEndBlock)endBlock;
 
-/* 倒计时
- seconds:总共需要倒计时的时间
- timeInterval:倒计时的间隔
- updateBlock:更次间隔更新调用
- endBlock:计时完成调用
+/** 倒计时
+ @param seconds 总共需要倒计时的时间
+ @param timeInterval 倒计时的间隔
+ @param updateBlock 更次间隔更新调用
+ @param endBlock 计时完成调用
+ @return dispatch_source_t
  */
 + (dispatch_source_t)countDownSeconds:(NSTimeInterval)seconds
             timeInterval:(NSTimeInterval)timeInterval
              updateBlock:(MWCountDownUpdateBlock)updateBlock
                 endBlock:(MWCountDownEndBlock)endBlock;
 
-/*
+/**
  结束timer
  */
 + (void)cancalTimer:(dispatch_source_t)timer;

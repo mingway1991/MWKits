@@ -16,6 +16,12 @@
 		38102E30CD4327EDD08E6FB4D55C1BDD /* MWPushAnimation.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B7537A856DCF9BA286C23CF09C42D2E /* MWPushAnimation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4D58C749F2DBA4209BA646EBC7806E07 /* MWPresentAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 44B3381EA686D4549C0DE2B97860649A /* MWPresentAnimation.m */; };
 		7A4F986B0DFC6A9E7615FC5872768C8C /* MWDismissAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C4E89DBBC13032CE26EA8EA96EE568 /* MWDismissAnimation.m */; };
+		7AD2643B21464B7A000A132E /* UIImage+MWUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 7AD2643921464B7A000A132E /* UIImage+MWUtil.h */; };
+		7AD2643C21464B7A000A132E /* UIImage+MWUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AD2643A21464B7A000A132E /* UIImage+MWUtil.m */; };
+		7AD2643F21465046000A132E /* UIColor+MWUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 7AD2643D21465046000A132E /* UIColor+MWUtil.h */; };
+		7AD2644021465046000A132E /* UIColor+MWUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AD2643E21465046000A132E /* UIColor+MWUtil.m */; };
+		7AD26443214651A1000A132E /* NSString+MWUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 7AD26441214651A1000A132E /* NSString+MWUtil.h */; };
+		7AD26444214651A1000A132E /* NSString+MWUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AD26442214651A1000A132E /* NSString+MWUtil.m */; };
 		89C9777315EB5E3389AF77B14D6444C0 /* MWPresentAnimation.h in Headers */ = {isa = PBXBuildFile; fileRef = 2EE019A298DAB14EFA2CCD217621782F /* MWPresentAnimation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		911CD57D0ECD67A25E24E50AC464BE4B /* MWCountdownUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = F8B0482BE7FA859B69E96096BD57D78D /* MWCountdownUtil.m */; };
 		C0F86CD899B4992CDD67BD27FF8C1DB8 /* UIViewController+MWTransition.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B820A3532EA20B324A030C020BDC950 /* UIViewController+MWTransition.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -44,10 +50,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0770E933AD84F86049D8285776CD096B /* MWKits.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = MWKits.modulemap; sourceTree = "<group>"; };
+		0770E933AD84F86049D8285776CD096B /* MWKits.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = MWKits.modulemap; sourceTree = "<group>"; };
 		145BD67C73C60D990C63CADD303C1458 /* Pods-MWKits_Example-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-MWKits_Example-dummy.m"; sourceTree = "<group>"; };
 		201EB06151C468F314B99F41EB4DDD9F /* Pods-MWKits_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-MWKits_Example-frameworks.sh"; sourceTree = "<group>"; };
-		203FC3EEA875783827E444497D0C77BF /* Pods-MWKits_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = "Pods-MWKits_Example.modulemap"; sourceTree = "<group>"; };
+		203FC3EEA875783827E444497D0C77BF /* Pods-MWKits_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-MWKits_Example.modulemap"; sourceTree = "<group>"; };
 		22E4D74BDF83B6D60783A024C0925947 /* MWPushAnimation.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = MWPushAnimation.m; sourceTree = "<group>"; };
 		2B7537A856DCF9BA286C23CF09C42D2E /* MWPushAnimation.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = MWPushAnimation.h; sourceTree = "<group>"; };
 		2B820A3532EA20B324A030C020BDC950 /* UIViewController+MWTransition.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UIViewController+MWTransition.h"; sourceTree = "<group>"; };
@@ -68,11 +74,17 @@
 		63C4E89DBBC13032CE26EA8EA96EE568 /* MWDismissAnimation.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = MWDismissAnimation.m; sourceTree = "<group>"; };
 		64BD5BA0A53D17848AFEFB71FC6AB9AE /* Pods-MWKits_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MWKits_Example.release.xcconfig"; sourceTree = "<group>"; };
 		6604A7D69453B4569E4E4827FB9155A9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.3.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		7AD2643921464B7A000A132E /* UIImage+MWUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIImage+MWUtil.h"; sourceTree = "<group>"; };
+		7AD2643A21464B7A000A132E /* UIImage+MWUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIImage+MWUtil.m"; sourceTree = "<group>"; };
+		7AD2643D21465046000A132E /* UIColor+MWUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIColor+MWUtil.h"; sourceTree = "<group>"; };
+		7AD2643E21465046000A132E /* UIColor+MWUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIColor+MWUtil.m"; sourceTree = "<group>"; };
+		7AD26441214651A1000A132E /* NSString+MWUtil.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+MWUtil.h"; sourceTree = "<group>"; };
+		7AD26442214651A1000A132E /* NSString+MWUtil.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+MWUtil.m"; sourceTree = "<group>"; };
 		7AECE0101D417620FB39443BE1A751DE /* MWKits-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MWKits-prefix.pch"; sourceTree = "<group>"; };
-		7FCD35FDA241CA1D64F7C9199D664672 /* MWKits.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = MWKits.framework; path = MWKits.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7FCD35FDA241CA1D64F7C9199D664672 /* MWKits.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MWKits.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8785069B37CE3900D5F4033F28A4AA51 /* MWPopAnimation.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = MWPopAnimation.m; sourceTree = "<group>"; };
 		87CC6F00A396995A0A3D19ED1C7F4C1B /* MWKits-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "MWKits-dummy.m"; sourceTree = "<group>"; };
-		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		949B64872C04173735AB07DBC73F5A09 /* Pods-MWKits_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MWKits_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
 		99556CDAC71DBB0B96EC0A8F5AC5A5D1 /* MWBaseNavigationController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = MWBaseNavigationController.h; sourceTree = "<group>"; };
 		A63B0BBDC8DE2CD8435F2075A3693EB6 /* MWDefines.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MWDefines.h; path = MWKits/Classes/MWDefines.h; sourceTree = "<group>"; };
@@ -80,13 +92,13 @@
 		B0D68897CD5CBC09823A7B0007C1AC5E /* Pods-MWKits_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MWKits_Example-acknowledgements.plist"; sourceTree = "<group>"; };
 		B3C9E4BD7AE3896926CC918DA2472D4B /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B4263A2D7FABA399D0678103C5AC6225 /* MWCountdownUtil.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = MWCountdownUtil.h; sourceTree = "<group>"; };
-		B485213637F69C15AA933F48BF770B29 /* Pods_MWKits_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_MWKits_Tests.framework; path = "Pods-MWKits_Tests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B485213637F69C15AA933F48BF770B29 /* Pods_MWKits_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MWKits_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B83BAD5E24CFD086DBEBD7787CA8B235 /* Pods-MWKits_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MWKits_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		C824A4488A7759893BA095FFF5E5E670 /* Pods-MWKits_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-MWKits_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
-		CD3E87C5C586EE54E58D7A1C04E6279D /* Pods-MWKits_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = "Pods-MWKits_Tests.modulemap"; sourceTree = "<group>"; };
+		CD3E87C5C586EE54E58D7A1C04E6279D /* Pods-MWKits_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-MWKits_Tests.modulemap"; sourceTree = "<group>"; };
 		D01FC79643BE4B7DD1B0DC5AA1C724EF /* Pods-MWKits_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MWKits_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		D1028D0609DC07BE1F52A81BC07FF1DD /* MWPopAnimation.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = MWPopAnimation.h; sourceTree = "<group>"; };
-		D5655A63A458E29755C635A16E3CA7B1 /* Pods_MWKits_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_MWKits_Example.framework; path = "Pods-MWKits_Example.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D5655A63A458E29755C635A16E3CA7B1 /* Pods_MWKits_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MWKits_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCEE56FE9815ED227B81DE9503B29D41 /* Pods-MWKits_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-MWKits_Example-umbrella.h"; sourceTree = "<group>"; };
 		F8B0482BE7FA859B69E96096BD57D78D /* MWCountdownUtil.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = MWCountdownUtil.m; sourceTree = "<group>"; };
 		FEB2531F0F4A1B72D4414AF0EABE91F8 /* Pods-MWKits_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-MWKits_Tests-umbrella.h"; sourceTree = "<group>"; };
@@ -123,6 +135,7 @@
 		20ECE65B2686A8C8BF1102E68CED362A /* MWKits */ = {
 			isa = PBXGroup;
 			children = (
+				7AD2643821464B51000A132E /* Categories */,
 				A63B0BBDC8DE2CD8435F2075A3693EB6 /* MWDefines.h */,
 				B431CD904FDBE653C483C7152ADBAD73 /* CountDown */,
 				9848B1A0AE9FB18FC79E2D19160339FD /* Support Files */,
@@ -130,6 +143,20 @@
 			);
 			name = MWKits;
 			path = ../..;
+			sourceTree = "<group>";
+		};
+		7AD2643821464B51000A132E /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				7AD2643921464B7A000A132E /* UIImage+MWUtil.h */,
+				7AD2643A21464B7A000A132E /* UIImage+MWUtil.m */,
+				7AD2643D21465046000A132E /* UIColor+MWUtil.h */,
+				7AD2643E21465046000A132E /* UIColor+MWUtil.m */,
+				7AD26441214651A1000A132E /* NSString+MWUtil.h */,
+				7AD26442214651A1000A132E /* NSString+MWUtil.m */,
+			);
+			name = Categories;
+			path = MWKits/Classes/Categories;
 			sourceTree = "<group>";
 		};
 		7DB346D0F39D3F0E887471402A8071AB = {
@@ -277,11 +304,14 @@
 				E8E180E72D67DC946CFEC11EA136B621 /* MWCountdownUtil.h in Headers */,
 				E9702F0F3F1028E0CEA5D4A0D445C363 /* MWDefines.h in Headers */,
 				C10BF17BD0D6E9D6E7CC3657822AE5FE /* MWDismissAnimation.h in Headers */,
+				7AD26443214651A1000A132E /* NSString+MWUtil.h in Headers */,
+				7AD2643B21464B7A000A132E /* UIImage+MWUtil.h in Headers */,
 				145A76AEB0EB8F9E5CFAA868DF39A61B /* MWKits-umbrella.h in Headers */,
 				F0E799E91169170B00568CE800813361 /* MWPopAnimation.h in Headers */,
 				89C9777315EB5E3389AF77B14D6444C0 /* MWPresentAnimation.h in Headers */,
 				38102E30CD4327EDD08E6FB4D55C1BDD /* MWPushAnimation.h in Headers */,
 				C0F86CD899B4992CDD67BD27FF8C1DB8 /* UIViewController+MWTransition.h in Headers */,
+				7AD2643F21465046000A132E /* UIColor+MWUtil.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -410,9 +440,12 @@
 				7A4F986B0DFC6A9E7615FC5872768C8C /* MWDismissAnimation.m in Sources */,
 				FD447F78184D73ECAACC6B6000F674BC /* MWKits-dummy.m in Sources */,
 				DCD97A974EE37CF7CD1A30474F4A581A /* MWPopAnimation.m in Sources */,
+				7AD2643C21464B7A000A132E /* UIImage+MWUtil.m in Sources */,
 				4D58C749F2DBA4209BA646EBC7806E07 /* MWPresentAnimation.m in Sources */,
+				7AD2644021465046000A132E /* UIColor+MWUtil.m in Sources */,
 				E5B2530D3CB9CAAF2225879BE9139D21 /* MWPushAnimation.m in Sources */,
 				2E496769D887F6F69F9C2C7ED6A0B4D8 /* UIViewController+MWTransition.m in Sources */,
+				7AD26444214651A1000A132E /* NSString+MWUtil.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

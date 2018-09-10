@@ -7,12 +7,13 @@
 //
 
 #import "MWAppDelegate.h"
+@import MWKits;
 
 @implementation MWAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    NSLog(@"%@ %@",@(MWStatusBarHeight),@(MWTopBarHeight));
     return YES;
 }
 

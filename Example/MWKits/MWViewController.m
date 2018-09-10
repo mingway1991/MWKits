@@ -61,7 +61,6 @@
         [self.navigationController pushViewController:[[MWDemoViewController alloc] init] animated:YES];
     } else if (indexPath.row == 1) {
         [self presentViewController:[[MWDemoViewController alloc] init] animated:YES completion:^{
-            
         }];
     } else if (indexPath.row == 2) {
         [self.navigationController pushViewController:[[MWCountDownDemoViewController alloc] init] animated:YES];

@@ -21,7 +21,7 @@
 - (void)animateTransition:(id <UIViewControllerContextTransitioning>)transitionContext {
     UIViewController *toVC = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
     CGRect finalRect = [transitionContext finalFrameForViewController:toVC];
-    toVC.view.frame = CGRectOffset(finalRect, 0, ScreenHeight);
+    toVC.view.frame = CGRectOffset(finalRect, 0, MWScreenHeight);
     [[transitionContext containerView] addSubview:toVC.view];
     [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
         toVC.view.frame = finalRect;

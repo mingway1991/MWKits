@@ -23,6 +23,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.canDragBack = YES;
     _panGestureRecognizer = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(panGestureRecognizer:)];
     _panGestureRecognizer.edges = UIRectEdgeLeft;
     [self.view addGestureRecognizer:_panGestureRecognizer];
@@ -31,8 +32,9 @@
 #pragma mark - PanGesture
 /* 响应手势的方法 */
 - (void)panGestureRecognizer:(UIPanGestureRecognizer *)panGestureRecognizer {
-    // 如果当前显示的控制器已经是根控制器了，不需要做任何切换动画,直接返回
-    if(self.visibleViewController == self.viewControllers.firstObject) return;
+    if (self.viewControllers.count <= 1 ||
+        self.visibleViewController == self.viewControllers.firstObject ||
+        !self.canDragBack) return;
     switch (panGestureRecognizer.state) {
         case UIGestureRecognizerStateBegan:{
             [self dragBegin];
@@ -60,7 +62,7 @@
     // 开启上下文,使用参数之后,截出来的是原图（YES  0.0 质量高）
     UIGraphicsBeginImageContextWithOptions(size, YES, 0.0);
     // 要裁剪的矩形范围
-    CGRect rect = CGRectMake(0, 0, ScreenWidth, ScreenHeight);
+    CGRect rect = CGRectMake(0, 0, MWScreenWidth, MWScreenHeight);
     //注：iOS7以后renderInContext：由drawViewHierarchyInRect：afterScreenUpdates：替代
     [beyondVC.view drawViewHierarchyInRect:rect afterScreenUpdates:NO];
     // 从上下文中,取出UIImage
@@ -111,7 +113,7 @@
     
     // 并且,让imgView显示截图数组中的最后(最新)一张截图
     self.screenshotImageView.image = [self.screenshotImages lastObject];
-    self.screenshotImageView.transform = CGAffineTransformMakeTranslation(ScreenWidth, 0);
+    self.screenshotImageView.transform = CGAffineTransformMakeTranslation(MWScreenWidth, 0);
 }
 
 #pragma mark - 正在拖动,动画效果的精髓,进行位移和透明度变化
@@ -123,8 +125,8 @@
         self.view.transform = CGAffineTransformMakeTranslation(offsetX, 0);
     }
     // 计算目前手指拖动位移占屏幕总的宽高的比例,当这个比例达到3/4时, 就让imageview完全显示，遮盖完全消失
-    if (offsetX < ScreenWidth) {
-        self.screenshotImageView.transform = CGAffineTransformMakeTranslation((offsetX - ScreenWidth) * 0.6, 0);
+    if (offsetX < MWScreenWidth) {
+        self.screenshotImageView.transform = CGAffineTransformMakeTranslation((offsetX - MWScreenWidth) * 0.6, 0);
     }
 }
 
@@ -141,7 +143,7 @@
             // 重要~~让被右移的view弹回归位,只要清空transform即可办到
             self.view.transform = CGAffineTransformIdentity;
             // 让imageView大小恢复默认的translation
-            self.screenshotImageView.transform = CGAffineTransformMakeTranslation(-ScreenWidth, 0);
+            self.screenshotImageView.transform = CGAffineTransformMakeTranslation(-MWScreenWidth, 0);
         } completion:^(BOOL finished) {
             // 重要,动画完成之后,每次都要记得 移除两个view,下次开始拖动时,再添加进来
             [self.screenshotImageView removeFromSuperview];
@@ -158,7 +160,6 @@
             self.view.transform = CGAffineTransformIdentity;
             // 移除两个view,下次开始拖动时,再加回来
             [self.screenshotImageView removeFromSuperview];
-            
             // 执行正常的Pop操作:移除栈顶控制器,让真正的前一个控制器成为导航控制器的栈顶控制器
             [self popViewControllerAnimated:NO];
         }];
@@ -169,7 +170,7 @@
 - (UIImageView *)screenshotImageView {
     if (!_screenshotImageView) {
         self.screenshotImageView = [[UIImageView alloc] init];
-        _screenshotImageView.frame = CGRectMake(0, 0, ScreenWidth, ScreenHeight);
+        _screenshotImageView.frame = CGRectMake(0, 0, MWScreenWidth, MWScreenHeight);
     }
     return _screenshotImageView;
 }
