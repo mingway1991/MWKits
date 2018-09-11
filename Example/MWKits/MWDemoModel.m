@@ -10,11 +10,6 @@
 
 @implementation MWDemoModel
 
-- (NSArray *)mw_customMappingPropertyArray {
-    return @[@[@"test",@"test1"],
-             @[@"model",@"demo2"]];
-}
-
 - (BOOL)mw_customMappingPropertiesWithKey:(NSString *)key value:(id)value {
     if ([key isEqualToString:@"demos"]) {
         self.demos = [MWDemo2Model mw_initWithArray:value];

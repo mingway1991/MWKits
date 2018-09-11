@@ -24,8 +24,8 @@
 @property (nonatomic, strong) NSDictionary *nameDict;
 @property (nonatomic, strong) NSMutableDictionary *nameMutableDict;
 @property (nonatomic, copy) NSString *type;
-@property (nonatomic, copy) NSString *test1;
-@property (nonatomic, strong) MWDemo2Model *demo2;
+@property (nonatomic, copy) NSString *test;
+@property (nonatomic, strong) MWDemo2Model *model;
 @property (nonatomic, strong) NSArray<MWDemo2Model *> *demos;
 @property (nonatomic, strong) NSDate *date;
 
