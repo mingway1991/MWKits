@@ -9,6 +9,7 @@
 #import "MWViewController.h"
 #import "MWDemoViewController.h"
 #import "MWCountDownDemoViewController.h"
+#import "MWModelDemoViewController.h"
 @import MWKits;
 
 @interface MWViewController () <UITableViewDataSource, UITableViewDelegate>
@@ -22,12 +23,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view addSubview:self.demoTableView];
-    [self mwSetupPresentAndDismiss];
+    [self mw_setupPresentAndDismiss];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self mwSetupPushAndPop];
+    [self mw_setupPushAndPop];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 
@@ -37,7 +38,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 3;
+    return 4;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -50,7 +51,9 @@
     } else if (indexPath.row == 1) {
         cell.textLabel.text = @"UIViewController present dismiss";
     } else if (indexPath.row == 2) {
-        cell.textLabel.text = @"CountDown";
+        cell.textLabel.text = @"CountDown倒计时";
+    } else if (indexPath.row == 3) {
+        cell.textLabel.text = @"Model解析";
     }
     return cell;
 }
@@ -64,6 +67,8 @@
         }];
     } else if (indexPath.row == 2) {
         [self.navigationController pushViewController:[[MWCountDownDemoViewController alloc] init] animated:YES];
+    } else if (indexPath.row == 3) {
+        [self.navigationController pushViewController:[[MWModelDemoViewController alloc] init] animated:YES];
     }
 }
 

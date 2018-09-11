@@ -17,7 +17,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self mwSetupPresentAndDismiss];
+    [self mw_setupPresentAndDismiss];
     
     self.view.backgroundColor = [UIColor yellowColor];
     
@@ -32,7 +32,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self mwSetupPushAndPop];
+    [self mw_setupPushAndPop];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 

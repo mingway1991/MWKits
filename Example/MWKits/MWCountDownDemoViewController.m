@@ -56,6 +56,12 @@
     }];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self mw_setupPushAndPop];
+    [self.navigationController setNavigationBarHidden:NO animated:YES];
+}
+
 - (void)dealloc {
     [MWCountdownUtil cancalTimer:_time1];
     [MWCountdownUtil cancalTimer:_time2];
