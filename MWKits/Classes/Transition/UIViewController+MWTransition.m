@@ -17,14 +17,14 @@ static NSString *canDragBackKey = @"canDragBack";
 
 @implementation UIViewController (MWTransition)
 
-- (void)setupPresentAndDismiss {
+- (void)mwSetupPresentAndDismiss {
     self.presentAnimation = [[MWPresentAnimation alloc] init];
     self.dismissAnimation = [[MWDismissAnimation alloc] init];
     self.transitioningDelegate = self;
     self.modalPresentationStyle = UIModalPresentationCustom;
 }
 
-- (void)setupPushAndPop {
+- (void)mwSetupPushAndPop {
     self.pushAnimation = [[MWPushAnimation alloc] init];
     self.popAnimation = [[MWPopAnimation alloc] init];
     self.navigationController.delegate = self;

@@ -27,7 +27,7 @@
     time1Label.textColor = [UIColor redColor];
     [self.view addSubview:time1Label];
     
-//    time1Label.text = [@"111111111" mwMoneyFormat];
+//    time1Label.text = [@"111111111" mw_moneyFormat];
     
     NSTimeInterval count1 = 10;
     time1Label.text = [NSString stringWithFormat:@"%@",@(count1)];
@@ -57,8 +57,8 @@
 }
 
 - (void)dealloc {
-    [MWCountdownUtil cancalTimer:self.time1];
-    [MWCountdownUtil cancalTimer:self.time2];
+    [MWCountdownUtil cancalTimer:_time1];
+    [MWCountdownUtil cancalTimer:_time2];
 }
 
 @end

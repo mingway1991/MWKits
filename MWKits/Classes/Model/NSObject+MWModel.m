@@ -9,13 +9,13 @@
 
 @implementation NSObject (MWModel)
 
-- (instancetype)mwModelWithData:(NSData *)data {
+- (instancetype)mw_modelWithData:(NSData *)data {
     if (!data || data == (id)kCFNull) return nil;
     
-    return [self mwModelWithDictionary:[NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:NULL]];
+    return [self mw_modelWithDictionary:[NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:NULL]];
 }
 
-- (instancetype)mwModelWithDictionary:(NSDictionary *)dictionary {
+- (instancetype)mw_modelWithDictionary:(NSDictionary *)dictionary {
     if (!dictionary || dictionary == (id)kCFNull) return nil;
     if (![dictionary isKindOfClass:[NSDictionary class]]) return nil;
     

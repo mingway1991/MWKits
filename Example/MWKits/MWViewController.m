@@ -22,12 +22,12 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.view addSubview:self.demoTableView];
-    [self setupPresentAndDismiss];
+    [self mwSetupPresentAndDismiss];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self setupPushAndPop];
+    [self mwSetupPushAndPop];
     [self.navigationController setNavigationBarHidden:NO animated:YES];
 }
 

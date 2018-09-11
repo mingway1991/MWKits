@@ -11,22 +11,22 @@
 @implementation NSString (MWUtil)
 
 #pragma mark - 校验
-- (BOOL)mwCheckEmpty {
+- (BOOL)mw_checkEmpty {
     if (self == nil) return self == nil;
     NSString *newStr = [self stringByReplacingOccurrencesOfString:@" " withString:@""];
     return [newStr isEqualToString:@""];
 }
 
-- (BOOL)mwIsValidEmail {
-    if ([self mwCheckEmpty]) return NO;
+- (BOOL)mw_isValidEmail {
+    if ([self mw_checkEmpty]) return NO;
     
     NSString *emailRegex = @"^(([a-zA-Z0-9_-]+)|([a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)))@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$";
     NSPredicate *emailTest = [NSPredicate predicateWithFormat:@"SELF MATCHES %@", emailRegex];
     return [emailTest evaluateWithObject:self];
 }
 
-- (BOOL)mwIsVaildIDCardNo {
-    if ([self mwCheckEmpty]) return NO;
+- (BOOL)mw_isVaildIDCardNo {
+    if ([self mw_checkEmpty]) return NO;
     
     NSString *regxStr = @"^[1-9][0-9]{5}[1-9][0-9]{3}((0[0-9])|(1[0-2]))(([0|1|2][0-9])|3[0-1])[0-9]{3}([0-9]|X|x)$";
     
@@ -35,7 +35,7 @@
 }
 
 #pragma mark - 加密
-- (NSString *)mwMD5 {
+- (NSString *)mw_MD5 {
     const char *orgin_cstr = [self UTF8String];
     unsigned char result_cstr[CC_MD5_DIGEST_LENGTH];
     CC_MD5(orgin_cstr, (CC_LONG)strlen(orgin_cstr), result_cstr);
@@ -46,7 +46,7 @@
     return [result_str lowercaseString];
 }
 
-- (NSString *)mwSHA1 {
+- (NSString *)mw_SHA1 {
     const char *cstr = [self cStringUsingEncoding:NSUTF8StringEncoding];
     NSData *data = [NSData dataWithBytes:cstr length:self.length];
     
@@ -63,8 +63,8 @@
 }
 
 #pragma mark - 格式化
-- (NSString *)mwMoneyFormat {
-    if ([self mwCheckEmpty]) return self;
+- (NSString *)mw_moneyFormat {
+    if ([self mw_checkEmpty]) return self;
     
     BOOL hasPoint = NO;
     if ([self rangeOfString:@"."].length > 0) {
@@ -83,7 +83,7 @@
         return [NSString stringWithFormat:@"%@.00", moneys[0]];
     } else {
         // 整数部分每隔 3 位插入一个逗号
-        NSString *frontMoney = [self mwStringFormatToThreeBit:moneys[0]];
+        NSString *frontMoney = [self mw_stringFormatToThreeBit:moneys[0]];
         if ([frontMoney isEqualToString:@""]) {
             frontMoney = @"0";
         }
@@ -99,7 +99,7 @@
     }
 }
 
-- (NSString *)mwStringFormatToThreeBit:(NSString *)string {
+- (NSString *)mw_stringFormatToThreeBit:(NSString *)string {
     NSString *tempString = [string stringByReplacingOccurrencesOfString:@"," withString:@""];
     NSMutableString *mutableString = [NSMutableString stringWithString:tempString];
     NSInteger n = 2;

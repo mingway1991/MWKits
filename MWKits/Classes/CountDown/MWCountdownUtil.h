@@ -67,6 +67,7 @@ typedef void(^MWCountDownEndBlock)(void);
 
 /**
  结束timer
+ dealloc中调用，销毁计时
  */
 + (void)cancalTimer:(dispatch_source_t)timer;
 

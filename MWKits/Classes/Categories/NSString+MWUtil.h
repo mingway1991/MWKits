@@ -15,14 +15,14 @@
  
  @return 如果为空返回`YES`  不为空返回`NO`    若果传入这些字符(nil @"" @" "  @"   ")，结果为`YES`
  */
-- (BOOL)mwCheckEmpty;
+- (BOOL)mw_checkEmpty;
 
 /**
  判断是否是有效的邮箱
  
  @return 如果是有效的邮箱，返回`YES`  否则返回`NO`
  */
-- (BOOL)mwIsValidEmail;
+- (BOOL)mw_isValidEmail;
 
 /**
  判断是否是有效的身份证号码
@@ -31,7 +31,7 @@
  
  仅允许  数字 && 最后一位是{数字 || Xx}）
  */
-- (BOOL)mwIsVaildIDCardNo;
+- (BOOL)mw_isVaildIDCardNo;
 
 #pragma mark - 加密
 /**
@@ -39,14 +39,14 @@
  
  @return 加密字串
  */
-- (NSString *)mwMD5;
+- (NSString *)mw_MD5;
 
 /**
  SHA1加密
  
  @return 加密字串
  */
-- (NSString *)mwSHA1;
+- (NSString *)mw_SHA1;
 
 #pragma mark - 格式化
 /**
@@ -57,6 +57,6 @@
  102000 --> 102,000.00
  10204500 --> 10,204,500.00
  */
-- (NSString *)mwMoneyFormat;
+- (NSString *)mw_moneyFormat;
 
 @end

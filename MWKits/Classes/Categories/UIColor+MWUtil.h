@@ -15,7 +15,7 @@
  @param hexString 十六进制字符串
  @return UIColor
  */
-+ (UIColor *)mwColorWithHexString:(NSString *)hexString;
++ (UIColor *)mw_colorWithHexString:(NSString *)hexString;
 
 /**
  根据十六进制生成UIColor，带透明度
@@ -24,6 +24,6 @@
  @param alpha 透明度（0-1）
  @return UIColor
  */
-+ (UIColor *)mwColorWithHexString:(NSString *)hexString alpha:(CGFloat)alpha;
++ (UIColor *)mw_colorWithHexString:(NSString *)hexString alpha:(CGFloat)alpha;
 
 @end

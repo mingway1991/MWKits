@@ -10,11 +10,11 @@
 @implementation UIColor (MWUtil)
 
 #pragma mark - HexColor
-+ (UIColor *)mwColorWithHexString:(NSString *)hexString {
-    return [self mwColorWithHexString:hexString alpha:1.0f];
++ (UIColor *)mw_colorWithHexString:(NSString *)hexString {
+    return [self mw_colorWithHexString:hexString alpha:1.0f];
 }
 
-+ (UIColor *)mwColorWithHexString:(NSString *)hexString alpha:(CGFloat)alpha {
++ (UIColor *)mw_colorWithHexString:(NSString *)hexString alpha:(CGFloat)alpha {
     
     NSString *cString = [[hexString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]] uppercaseString];
     

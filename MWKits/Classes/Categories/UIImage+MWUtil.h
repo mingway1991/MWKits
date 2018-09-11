@@ -16,7 +16,7 @@
  @param size 需要生成的图片大小
  @return UIImage
  */
-+ (UIImage *)mwImageWithColor:(UIColor *)color size:(CGSize)size;
++ (UIImage *)mw_imageWithColor:(UIColor *)color size:(CGSize)size;
 
 /**
  根据base64字符串生成图片
@@ -24,7 +24,7 @@
  @param base64Str base64字符串
  @return UIImage
  */
-+ (UIImage *)mwImageWithBase64String:(NSString *)base64Str;
++ (UIImage *)mw_imageWithBase64String:(NSString *)base64Str;
 
 /**
  图片生成base64字符串
@@ -32,6 +32,6 @@
  @param UIImage 需要转化的图片
  @return NSString base64字符串
  */
-+ (NSString *)mwBase64StringFromImage:(UIImage *)image;
++ (NSString *)mw_base64StringFromImage:(UIImage *)image;
 
 @end

@@ -14,6 +14,7 @@
 #import "UIColor+MWUtil.h"
 #import "UIImage+MWUtil.h"
 #import "MWCountdownUtil.h"
+#import "NSObject+MWModel.h"
 #import "MWDefines.h"
 #import "MWBaseNavigationController.h"
 #import "MWDismissAnimation.h"

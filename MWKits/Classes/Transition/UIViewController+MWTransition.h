@@ -22,8 +22,8 @@
 @property (nonatomic, assign) BOOL canDragBack;
 
 /* 初始化模态动画相关，放在viewDidLoad调用 */
-- (void)setupPresentAndDismiss;
+- (void)mwSetupPresentAndDismiss;
 /* 初始化模态动画相关，放在viewWillAppear调用 */
-- (void)setupPushAndPop;
+- (void)mwSetupPushAndPop;
 
 @end

@@ -10,7 +10,7 @@
 @implementation UIImage (MWUtil)
 
 #pragma mark - ColorToImage
-+ (UIImage *)mwImageWithColor:(UIColor *)color size:(CGSize)size {
++ (UIImage *)mw_imageWithColor:(UIColor *)color size:(CGSize)size {
     CGRect rect = CGRectMake(0, 0, size.width, size.height);
     UIGraphicsBeginImageContext(rect.size);
     CGContextRef context = UIGraphicsGetCurrentContext();
@@ -24,7 +24,7 @@
 }
 
 #pragma mark - base64ToImage
-+ (UIImage *)mwImageWithBase64String:(NSString *)base64Str {
++ (UIImage *)mw_imageWithBase64String:(NSString *)base64Str {
     NSString *str = [NSString string];
     if ([base64Str hasPrefix:@"data:image/jpg;base64,"]) {
         str = base64Str;
@@ -35,20 +35,20 @@
     NSURL *url = [NSURL URLWithString:str];
     NSData *imageData = [NSData dataWithContentsOfURL:url];
     
-    return [UIImage mwImageWithImgData:imageData];
+    return [UIImage mw_imageWithImgData:imageData];
 }
 
-+ (UIImage *)mwImageWithImgData:(NSData *)imgData {
++ (UIImage *)mw_imageWithImgData:(NSData *)imgData {
     return [UIImage imageWithData:imgData scale:[UIScreen mainScreen].scale];
 }
 
 #pragma mark - ImageToBase64
-+ (NSString *)mwBase64StringFromImage:(UIImage *)image {
++ (NSString *)mw_base64StringFromImage:(UIImage *)image {
     NSData *imageData = UIImageJPEGRepresentation(image, 0.5);
-    return [UIImage mwBase64forData:imageData];
+    return [UIImage mw_base64forData:imageData];
 }
 
-+ (NSString*)mwBase64forData:(NSData*)theData {
++ (NSString*)mw_base64forData:(NSData*)theData {
     const uint8_t* input = (const uint8_t*)[theData bytes];
     NSInteger length = [theData length];
     
