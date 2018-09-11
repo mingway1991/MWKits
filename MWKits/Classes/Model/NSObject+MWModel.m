@@ -46,7 +46,7 @@
         [propertyNames enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             NSArray *tmpPropertyArray = obj;
             if (tmpPropertyArray && [tmpPropertyArray isKindOfClass:[NSArray class]] && [tmpPropertyArray count] >= 2) {
-                if (tmpPropertyArray[0] == key) {
+                if ([tmpPropertyArray[0] isEqualToString:key]) {
                     aKey = tmpPropertyArray[1];
                     *stop = YES;
                 }
