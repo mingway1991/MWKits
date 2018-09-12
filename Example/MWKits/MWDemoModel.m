@@ -10,6 +10,13 @@
 
 @implementation MWDemoModel
 
+- (NSString *)mw_redirectForKey:(NSString *)key {
+    if ([key isEqualToString:@"model"]) {
+        return @"demo2";
+    }
+    return [super mw_redirectForKey:key];
+}
+
 - (BOOL)mw_customMappingPropertiesWithKey:(NSString *)key value:(id)value {
     if ([key isEqualToString:@"demos"]) {
         self.demos = [MWDemo2Model mw_initWithArray:value];

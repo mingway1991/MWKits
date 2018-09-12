@@ -37,22 +37,8 @@
 
 #pragma mark - Private Methods
 - (void)mw_setValue:(id)value forKey:(NSString *)key {
-    __block NSString *aKey = key;
+    NSString *aKey = [self mw_redirectForKey:key];
     id aValue = value;
-    
-    //查找映射数组，是否存在需要替换的key
-    NSArray *propertyNames = [self mw_customMappingPropertyArray];
-    if (propertyNames && [propertyNames count] > 0) {
-        [propertyNames enumerateObjectsUsingBlock:^(id  _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-            NSArray *tmpPropertyArray = obj;
-            if (tmpPropertyArray && [tmpPropertyArray isKindOfClass:[NSArray class]] && [tmpPropertyArray count] >= 2) {
-                if ([tmpPropertyArray[0] isEqualToString:key]) {
-                    aKey = tmpPropertyArray[1];
-                    *stop = YES;
-                }
-            }
-        }];
-    }
     
     //判断当前key是否为需要自己处理的字段，如为false则进入自动处理流程
     if (![self mw_customMappingPropertiesWithKey:aKey value:aValue]) {
@@ -170,8 +156,8 @@
 }
 
 #pragma mark - Custom
-- (NSArray *)mw_customMappingPropertyArray {
-    return @[];
+- (NSString *)mw_redirectForKey:(NSString *)key {
+    return key;
 }
 
 - (BOOL)mw_customMappingPropertiesWithKey:(NSString *)key value:(id)value {

@@ -30,10 +30,9 @@
 
 #pragma mark - Custom
 /**
- 如果需要则重写该方法，重新指向映射表
- 获取重新映射属性数组@[@[@"待映射字段",@"被映射字段"]]
+ 将原key指向其他字段，默认返回原始值
  */
-- (NSArray *)mw_customMappingPropertyArray;
+- (NSString *)mw_redirectForKey:(NSString *)key;
 
 /**
  如果需要则重写该方法，自定义映射
