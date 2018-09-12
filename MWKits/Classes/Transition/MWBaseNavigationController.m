@@ -24,7 +24,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.canDragBack = YES;
     _panGestureRecognizer = [[UIScreenEdgePanGestureRecognizer alloc]initWithTarget:self action:@selector(panGestureRecognizer:)];
     _panGestureRecognizer.edges = UIRectEdgeLeft;
     [self.view addGestureRecognizer:_panGestureRecognizer];

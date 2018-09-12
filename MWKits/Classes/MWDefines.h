@@ -21,6 +21,7 @@
 #define MWScreenWidth [UIScreen mainScreen].bounds.size.width
 #define MWScreenHeight [UIScreen mainScreen].bounds.size.height
 
+//get
 #define MWGetMinX(view) CGRectGetMinX(view.frame)//视图最小X坐标
 #define MWGetMinY(view) CGRectGetMinY(view.frame)//视图最小Y坐标
 #define MWGetMidX(view) CGRectGetMidX(view.frame)//视图中间X坐标
@@ -29,6 +30,18 @@
 #define MWGetMaxY(view) CGRectGetMaxY(view.frame)//视图最大Y坐标
 #define MWGetWidth(view) CGRectGetWidth(view.frame)//视图宽度
 #define MWGetHeight(view) CGRectGetHeight(view.frame)//视图高度
+
+#define MWGetCenterX(view) view.center.x//centerX
+#define MWGetCenterY(view) view.center.y//centerY
+
+//set
+#define MWSetMinX(view,x) view.frame = CGRectMake(x,MWGetMinY(view),MWGetWidth(view),MWGetHeight(view))
+#define MWSetMinY(view,y) view.frame = CGRectMake(MWGetMinX(view),y,MWGetWidth(view),MWGetHeight(view))
+#define MWSetWidth(view,width) view.frame = CGRectMake(MWGetMinX(view),MWGetMinY(view),width,MWGetHeight(view))
+#define MWSetHeight(view,height) view.frame = CGRectMake(MWGetMinX(view),MWGetMinY(view),MWGetWidth(view),height)
+
+#define MWSetCenterX(view,x) view.center = CGPointMake(x,MWGetCenterY(view))
+#define MWSetCenterY(view,y) view.center = CGPointMake(MWGetCenterX(view),y)
 
 //导航条高度
 #define MWNavigationBarHeight 44.f
