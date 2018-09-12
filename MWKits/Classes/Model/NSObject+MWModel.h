@@ -54,6 +54,11 @@
 
 #pragma mark - Helper
 /**
+ 自定义对象转换成字典
+ */
+- (NSDictionary *)mw_customModelConvertDictionary;
+
+/**
  转换成json字符串
  */
 - (NSString *)mw_convertJsonString;

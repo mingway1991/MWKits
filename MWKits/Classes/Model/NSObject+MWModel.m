@@ -7,6 +7,8 @@
 
 #import "NSObject+MWModel.h"
 #import <objc/runtime.h>
+#import "NSArray+MWModel.h"
+#import "NSDictionary+MWModel.h"
 
 @implementation NSObject (MWModel)
 
@@ -169,25 +171,25 @@
 }
 
 #pragma mark - Helper
-- (NSDictionary *)mw_convertDictionary {
+/**
+ 自定义对象调用转换自身内容
+ **/
+- (NSDictionary *)mw_customModelConvertDictionary {
     u_int count = 0;
     objc_property_t* properties = class_copyPropertyList([self class], &count);
     NSMutableArray* propertyArray = [NSMutableArray arrayWithCapacity:count];
     NSMutableArray* typeArray = [NSMutableArray arrayWithCapacity:count];
-    for (int i = 0; i<count; i++) {
-        objc_property_t pro = properties[i];
-        const char* propertyName = property_getName(pro);
+    for (NSInteger i=0; i<count; i++) {
+        objc_property_t property = properties[i];
+        const char* propertyName = property_getName(property);
         NSString* propertyNameString = [NSString stringWithUTF8String:propertyName];
-        //        if([propertyNameString isEqualToString:@"ID"]){
-        //            propertyNameString = @"id";
-        //        }
         [propertyArray addObject:propertyNameString];
-        NSString* typecode = [NSString stringWithUTF8String:property_getAttributes(pro)];
+        NSString* typecode = [NSString stringWithUTF8String:property_getAttributes(property)];
         NSArray* attributesArray = [typecode componentsSeparatedByString:@","];
-        if(attributesArray.count == 4){
+        if(attributesArray.count == 4) {
             NSString* type = [attributesArray[0] substringWithRange:NSMakeRange(3, [(NSString*)attributesArray[0] length]-4)];
             [typeArray addObject:type];
-        }else{
+        } else {
             NSString* type = [attributesArray[0] substringWithRange:NSMakeRange(1, 1)];
             [typeArray addObject:type];
         }
@@ -195,28 +197,35 @@
     
     count = (u_int)propertyArray.count;
     NSMutableArray* valueArray = [NSMutableArray arrayWithCapacity:count];
-    for (int i = 0; i<count; i++) {
-        
-        if([[typeArray objectAtIndex:i]isEqualToString:@"c"]){
+    for (NSInteger i=0; i<count; i++) {
+        if ([[typeArray objectAtIndex:i] isEqualToString:@"c"]) {
             NSNumber* number = [self valueForKey:propertyArray[i]];
             [valueArray addObject:number];
-        }else{
-            NSString* key = propertyArray[i];
-            //            if([key isEqualToString:@"id"]){
-            //                key = @"ID";
-            //            }
-            NSObject* obj = [self valueForKey:key];
-            //当值为空时，自动填充NSNull
-            if(obj == nil){
-                obj = [NSNull null];
+        } else {
+            NSString *propertyName = propertyArray[i];
+            NSObject* obj = [self valueForKey:propertyName];
+            if (obj == nil) {
+                [valueArray addObject:[NSNull null]];
+            } else if ([self mw_isSystemClass:propertyName]) {
+                Class cls = [self mw_getAttributeClass:propertyName];
+                if ([cls isSubclassOfClass:[NSArray class]]) {
+                    //array
+                    [valueArray addObject:[(NSArray *)obj mw_arrayConvertArray]];
+                } else if ([cls isSubclassOfClass:[NSDictionary class]]) {
+                    //dictionary
+                    [valueArray addObject:[(NSDictionary *)obj mw_dictionaryConvertDictionary]];
+                } else {
+                    //其他类型
+                    [valueArray addObject:obj];
+                }
+            } else {
+                //自定义类
+                [valueArray addObject:[obj mw_customModelConvertDictionary]];
             }
-            [valueArray addObject:obj];
         }
-        
     }
     
     NSDictionary* dict = [NSDictionary dictionaryWithObjects:valueArray forKeys:propertyArray];
-    
     return dict;
 }
 

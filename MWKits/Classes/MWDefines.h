@@ -30,7 +30,6 @@
 #define MWGetMaxY(view) CGRectGetMaxY(view.frame)//视图最大Y坐标
 #define MWGetWidth(view) CGRectGetWidth(view.frame)//视图宽度
 #define MWGetHeight(view) CGRectGetHeight(view.frame)//视图高度
-
 #define MWGetCenterX(view) view.center.x//centerX
 #define MWGetCenterY(view) view.center.y//centerY
 
@@ -39,7 +38,6 @@
 #define MWSetMinY(view,y) view.frame = CGRectMake(MWGetMinX(view),y,MWGetWidth(view),MWGetHeight(view))
 #define MWSetWidth(view,width) view.frame = CGRectMake(MWGetMinX(view),MWGetMinY(view),width,MWGetHeight(view))
 #define MWSetHeight(view,height) view.frame = CGRectMake(MWGetMinX(view),MWGetMinY(view),MWGetWidth(view),height)
-
 #define MWSetCenterX(view,x) view.center = CGPointMake(x,MWGetCenterY(view))
 #define MWSetCenterY(view,y) view.center = CGPointMake(MWGetCenterX(view),y)
 
