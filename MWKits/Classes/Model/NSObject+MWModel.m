@@ -54,49 +54,48 @@
         }];
     }
     
+    //判断当前key是否为需要自己处理的字段，如为false则进入自动处理流程
     if (![self mw_customMappingPropertiesWithKey:aKey value:aValue]) {
-        //判断当前key为不需要自己处理的字段
-        
-        if (value == [NSNull null]) {
-            //如果value为null，直接给字段赋值为nil
-            [self setValue:nil forKey:aKey];
-            return;
-        }
-        
+        //判断是否有这个属性
         BOOL hasKey = NO;
-        
         unsigned int count;
         objc_property_t *properties = class_copyPropertyList([self class], &count);
         for(int i = 0; i < count; i++) {
             objc_property_t property = properties[i];
             NSString *propertyName = [NSString stringWithUTF8String:property_getName(property)];
             if ([propertyName isEqualToString:aKey]) {
-                //判断是否有这个属性
                 hasKey = YES;
-                if (![self mw_isSystemClass:aKey]) {
-                    //自定义类，需初始化
-                    Class aClass = [self mw_getAttributeClass:aKey];
-                    aValue = [[aClass alloc] mw_initWithDictionary:aValue];
-                } else {
-                    //系统类，一些需要特殊处理的类型
-                    Class aClass = [self mw_getAttributeClass:aKey];
-                    if ([aClass isSubclassOfClass:[NSDate class]]) {
-                        //日期类型，内容为NSString，转换为NSDate
-                        if ([aValue isKindOfClass:[NSString class]]) {
-                            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                            [dateFormatter setDateFormat:[self mw_dateFormat]];
-                            aValue = [dateFormatter dateFromString:aValue];
-                        }
-                    }
-                }
                 break;
             }
         }
         free(properties);
         
+        //如果key存在，则对value进行处理，之后赋值
         if (hasKey) {
-            if (aValue) {
+            //处理value
+            if (![self mw_isSystemClass:aKey]) {
+                //自定义类，需初始化
+                Class aClass = [self mw_getAttributeClass:aKey];
+                aValue = [[aClass alloc] mw_initWithDictionary:aValue];
+            } else {
+                //系统类，一些需要特殊处理的类型
+                Class aClass = [self mw_getAttributeClass:aKey];
+                if ([aClass isSubclassOfClass:[NSDate class]]) {
+                    //日期类型，内容为NSString，转换为NSDate
+                    if ([aValue isKindOfClass:[NSString class]]) {
+                        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                        [dateFormatter setDateFormat:[self mw_dateFormat]];
+                        aValue = [dateFormatter dateFromString:aValue];
+                    }
+                }
+            }
+            
+            if (aValue == [NSNull null]) {
+                //如果value为null，直接给字段赋值为nil
+                [self setValue:nil forKey:aKey];
+            } else if (aValue) {
                 [self setValue:aValue forKey:aKey];
+                [self mw_afterSetValueForKey:aKey];
             } else {
                 NSLog(@"赋值失败 --> key:%@ value:%@",aKey,value);
             }
@@ -161,6 +160,10 @@
     return aClass;
 }
 
+- (void)mw_afterSetValueForKey:(NSString *)key {
+    //子类根据需要自己实现
+}
+
 #pragma mark - Undefined Key
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key {
     NSLog(@"Class %@ ,UndefineKey %@", [self class],key);
@@ -181,6 +184,7 @@
 
 #pragma mark - Helper
 - (NSString *)mw_convertJsonString {
+//TODO:待实现
     return @"";
 }
 

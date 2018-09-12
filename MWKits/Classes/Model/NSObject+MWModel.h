@@ -30,18 +30,23 @@
 
 #pragma mark - Custom
 /**
- 重写，重新指向映射表
+ 如果需要则重写该方法，重新指向映射表
  获取重新映射属性数组@[@[@"待映射字段",@"被映射字段"]]
  */
 - (NSArray *)mw_customMappingPropertyArray;
 
 /**
- 重写，自定义映射
+ 如果需要则重写该方法，自定义映射
  @param key 字段名
  @param value 字段内容
  @return YES表示自己定义，则不会自动处理该key。NO表示自动处理该key
  */
 - (BOOL)mw_customMappingPropertiesWithKey:(NSString *)key value:(id)value;
+
+/**
+ 如果需要则重写该方法，处理某个字段赋值之后的操作
+ */
+- (void)mw_afterSetValueForKey:(NSString *)key;
 
 /**
  重写，自定义日期格式，默认yyyy-MM-dd HH:mm:ss
