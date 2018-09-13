@@ -10,6 +10,9 @@
 
 @implementation MWDemo2Model
 
+MWCodingImplementation
+MWCopingImplementation
+
 - (NSDictionary<NSString *,Class> *)mw_modelContainerPropertyGenericClass {
     return @{@"demos":[MWDemo3Model class]};
 }

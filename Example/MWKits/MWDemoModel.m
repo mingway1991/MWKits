@@ -10,6 +10,9 @@
 
 @implementation MWDemoModel
 
+MWCodingImplementation
+MWCopingImplementation
+
 - (NSDictionary *)mw_redirectMapper {
     return @{@"model":@"demo2"};
 }

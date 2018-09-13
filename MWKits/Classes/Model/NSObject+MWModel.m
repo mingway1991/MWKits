@@ -45,19 +45,35 @@
 }
 
 #pragma mark - NSCoding
-//- (instancetype)mw_initWithCoder:(NSCoder *)coder {
-//
-//}
+- (void)mw_deCoder:(NSCoder *)coder {
+    [self mw_enumerateProppertiesWithBlock:^(const char *name, const char *att, BOOL *stop) {
+        NSString *propertyName = [NSString stringWithUTF8String:name];
+        id value = [coder decodeObjectForKey:propertyName];
+        if (value == nil) return;
+        [self setValue:value forKey:propertyName];
+    }];
+}
 
-//- (void)mw_modelEncodeWithCoder:(NSCoder *)aCoder {
-//
-//}
+- (void)mw_encodeWithCoder:(NSCoder *)aCoder {
+    [self mw_enumerateProppertiesWithBlock:^(const char *name, const char *att, BOOL *stop) {
+        NSString *propertyName = [NSString stringWithUTF8String:name];
+        id value = [self valueForKey:propertyName];
+        if (value == nil) return;
+        [aCoder encodeObject:value forKey:propertyName];
+    }];
+}
 
 #pragma mark - NSCoping
-//- (instancetype)mw_copyWithZone(NSZone *)zone {
-//    if (self == (id)kCFNull) return self;
-//
-//}
+- (instancetype)mw_copy {
+    id obj = [[[self class] alloc] init];
+    [self mw_enumerateProppertiesWithBlock:^(const char *name, const char *att, BOOL *stop) {
+        NSString *propertyName = [NSString stringWithUTF8String:name];
+        id value = [self valueForKey:propertyName];
+        if (value == nil) return;
+        [obj setValue:[value copy] forKey:propertyName];
+    }];
+    return obj;
+}
 
 #pragma mark - Private Methods
 - (void)mw_setValue:(id)value forKey:(NSString *)key {
@@ -137,6 +153,7 @@
         
         //赋值
         [self setValue:aValue forKey:aKey];
+        //赋值完成后回调
         [self mw_afterSetValueForKey:aKey];
     }
 }

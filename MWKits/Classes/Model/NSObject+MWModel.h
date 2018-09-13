@@ -14,12 +14,32 @@
  4.支持赋值后回调mw_afterSetValueForKey:key
  5.调整日期格式mw_dateFormat()，自动将字符串转成NSDate
  6.自动生成可变数组、可变字典
+ 7.NSCoding、NSCopy自动实现(MWCodingImplementation,MWCopingImplementation)
  
  待支持：
- 1.NSCoding、NSCopy自动实现
- 2.转json字符串，过滤掉不可转换类型
+ 1.转json字符串，过滤掉不可转换类型
 
  */
+
+#define MWCodingImplementation \
+- (id)initWithCoder:(NSCoder *)decoder \
+{ \
+if (self = [super init]) { \
+[self mw_deCoder:decoder]; \
+} \
+return self; \
+} \
+\
+- (void)encodeWithCoder:(NSCoder *)encoder \
+{ \
+[self mw_encodeWithCoder:encoder]; \
+}
+
+#define MWCopingImplementation \
+- (id)copyWithZone:(NSZone *)zone \
+{\
+return [self mw_copy]; \
+} \
 
 #import <Foundation/Foundation.h>
 
@@ -42,6 +62,13 @@ NS_ASSUME_NONNULL_BEGIN
  实例方法：解析dictionary
  */
 - (instancetype)mw_initWithDictionary:(NSDictionary *)dictionary;
+
+#pragma mark - NSCoding
+- (void)mw_encodeWithCoder:(NSCoder *)aCoder;
+- (void)mw_deCoder:(NSCoder *)coder;
+
+#pragma mark - NSCoping
+- (instancetype)mw_copy;
 
 #pragma mark - Custom
 /**

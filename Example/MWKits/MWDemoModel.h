@@ -11,7 +11,7 @@
 #import "MWBaseModel.h"
 #import "MWDemo2Model.h"
 
-@interface MWDemoModel : MWBaseModel
+@interface MWDemoModel : MWBaseModel <NSCoding, NSCopying>
 
 @property (nonatomic, assign) NSInteger t_id;
 @property (nonatomic, assign) BOOL test_bool;

@@ -24,6 +24,7 @@
 #import "MWPopAnimation.h"
 #import "MWPresentAnimation.h"
 #import "MWPushAnimation.h"
+#import "MWTransitionDefines.h"
 #import "UIViewController+MWTransition.h"
 
 FOUNDATION_EXPORT double MWKitsVersionNumber;

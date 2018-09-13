@@ -7,8 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <MWKits/NSObject+MWModel.h>
 
-@interface MWDemo3Model : NSObject
+@interface MWDemo3Model : NSObject <NSCoding, NSCopying>
 
 @property (nonatomic, assign) int n_id;
 @property (nonatomic, copy) NSString *name;

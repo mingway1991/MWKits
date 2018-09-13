@@ -10,7 +10,7 @@
 #import <MWKits/NSObject+MWModel.h>
 #import "MWDemo3Model.h"
 
-@interface MWDemo2Model : NSObject
+@interface MWDemo2Model : NSObject <NSCoding, NSCopying>
 
 @property (nonatomic, assign) int n_id;
 @property (nonatomic, copy) NSString *name;

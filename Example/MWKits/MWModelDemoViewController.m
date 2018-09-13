@@ -32,6 +32,18 @@
     MWDemoModel *demo = [[MWDemoModel alloc] mw_initWithDictionary:@{@"t_id":@(123),@"names":@[@"a",@"b",@"c"],@"type":@"book",@"test":[NSNull null],@"model":@{@"n_id":@(1),@"name":@"aaa"},@"demos":@[@{@"n_id":@(1),@"name":@"aaa",@"demos":@[@{@"n_id":@(1),@"name":@"aaa"},@{@"n_id":@(1),@"name":@"aaa"}]},@{@"n_id":@(1),@"name":@"aaa",@"demos":@[@{@"n_id":@(1),@"name":@"aaa"},@{@"n_id":@(1),@"name":@"aaa"}]},@{@"n_id":@(1),@"name":@"aaa"}],@"test_bool":@(YES),@"aaaa":@[@"1",@"2"],@"nameMutableDict":@{@"a":@"b"}}];
     [demo.nameMutableDict setObject:@"v" forKey:@"b"];
     self.descLabel.text = [demo mw_convertJsonString];
+    
+    //copy
+    MWDemoModel *demo2 = [demo copy];
+    NSLog(@"%@",[demo2 mw_convertJsonString]);
+    
+    //archive
+    NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSString *path = [docPath stringByAppendingPathComponent:@"data.archiver"];
+    [NSKeyedArchiver archiveRootObject:demo toFile:path];
+    
+    MWDemoModel *demo3 = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+    NSLog(@"%@",[demo3 mw_convertJsonString]);
 }
 
 @end

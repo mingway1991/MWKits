@@ -10,4 +10,7 @@
 
 @implementation MWDemo3Model
 
+MWCodingImplementation
+MWCopingImplementation
+
 @end
