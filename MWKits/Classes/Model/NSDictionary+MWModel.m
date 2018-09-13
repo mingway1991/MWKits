@@ -19,7 +19,7 @@
         NSObject *obj = tDictionary[key];
         if (![MWHelper checkClassIsSystemClass:[obj class]]) {
             //自定义类
-            [resultDictionary setObject:[obj mw_customModelConvertDictionary] forKey:key];
+            [resultDictionary setObject:[obj mw_modelConvertDictionary] forKey:key];
         } else if ([[obj class] isSubclassOfClass:[NSArray class]]) {
             //array
             [resultDictionary setObject:[(NSArray *)obj mw_arrayConvertArray] forKey:key];

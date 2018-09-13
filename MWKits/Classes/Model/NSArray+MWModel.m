@@ -18,7 +18,7 @@
     for (NSObject *obj in tArray) {
         if (![MWHelper checkClassIsSystemClass:[obj class]]) {
             //自定义类
-            [resultArray addObject:[obj mw_customModelConvertDictionary]];
+            [resultArray addObject:[obj mw_modelConvertDictionary]];
         } else if ([[obj class] isSubclassOfClass:[NSArray class]]) {
             //array
             [resultArray addObject:[(NSArray *)obj mw_arrayConvertArray]];

@@ -6,10 +6,10 @@
 //
 
 #import "NSObject+MWModel.h"
-#import <objc/runtime.h>
 #import "NSArray+MWModel.h"
 #import "NSDictionary+MWModel.h"
 #import "MWHelper.h"
+#import <objc/runtime.h>
 
 @implementation NSObject (MWModel)
 
@@ -44,6 +44,21 @@
     return self;
 }
 
+#pragma mark - NSCoding
+//- (instancetype)mw_initWithCoder:(NSCoder *)coder {
+//
+//}
+
+//- (void)mw_modelEncodeWithCoder:(NSCoder *)aCoder {
+//
+//}
+
+#pragma mark - NSCoping
+//- (instancetype)mw_copyWithZone(NSZone *)zone {
+//    if (self == (id)kCFNull) return self;
+//
+//}
+
 #pragma mark - Private Methods
 - (void)mw_setValue:(id)value forKey:(NSString *)key {
     NSString *redirectKey = [self mw_redirectMapper][key];
@@ -53,18 +68,14 @@
     //判断当前key是否为需要自己处理的字段，如为NO则进入自动处理流程
     if (![self mw_customMappingPropertiesWithKey:aKey value:aValue]) {
         //判断是否有这个属性
-        BOOL hasKey = NO;
-        unsigned int count;
-        objc_property_t *properties = class_copyPropertyList([self class], &count);
-        for(int i = 0; i < count; i++) {
-            objc_property_t property = properties[i];
-            NSString *propertyName = [NSString stringWithUTF8String:property_getName(property)];
+        __block BOOL hasKey = NO;
+        [self mw_enumerateProppertiesWithBlock:^(const char *name, const char *att, BOOL *stop) {
+            NSString *propertyName = [NSString stringWithUTF8String:name];
             if ([propertyName isEqualToString:aKey]) {
                 hasKey = YES;
-                break;
+                *stop = YES;
             }
-        }
-        free(properties);
+        }];
         
         if (!hasKey) {
             //不存在这个key，调用undefinedkey方法后直接返回
@@ -78,12 +89,12 @@
             return;
         }
         
+        Class aKeyClass = [self mw_getAttributeClass:aKey];
         //如果key存在，则对value进行处理，之后赋值
         if (![self mw_isSystemClass:aKey]) {
             //自定义类
             if ([aValue isKindOfClass:[NSDictionary class]]) {
                 //NSDitionary，初始化对应的类对象进行赋值
-                Class aKeyClass = [self mw_getAttributeClass:aKey];
                 aValue = [[aKeyClass alloc] mw_initWithDictionary:aValue];
             } else {
                 //其他类型的对象，不具备初始化赋值的条件，将内容置为nil，打印log
@@ -92,7 +103,6 @@
             }
         } else {
             //系统类，一些需要特殊处理的类型
-            Class aKeyClass = [self mw_getAttributeClass:aKey];
             if (aKeyClass) {
                 //系统对象类型
                 Class aValueClass = [self mw_modelContainerPropertyGenericClass][aKey];
@@ -118,6 +128,14 @@
             }
         }
         
+        //数组和字典的可变处理
+        if ([aKeyClass isSubclassOfClass:[NSMutableArray class]]) {
+            aValue = [NSMutableArray arrayWithArray:aValue];
+        } else if ([aKeyClass isSubclassOfClass:[NSMutableDictionary class]]) {
+            aValue = [NSMutableDictionary dictionaryWithDictionary:aValue];
+        }
+        
+        //赋值
         [self setValue:aValue forKey:aKey];
         [self mw_afterSetValueForKey:aKey];
     }
@@ -140,39 +158,41 @@
     }
 }
 
-/** 获取属性的类 **/
-- (Class)mw_getAttributeClass:(NSString *)key {
-    Class aClass;
+- (void)mw_enumerateProppertiesWithBlock:(void(^)(const char *name, const char *att, BOOL *stop))block {
+    BOOL stop = NO;
     unsigned int count;
-    NSRange objRange;
-    NSRange dotRange;
-    NSString *aClassStr;
-    NSMutableString *aAttribute;
-    const char *att = "";
-    
-    objc_property_t *propertyList = class_copyPropertyList([self class], &count);
-    
-    for (int i = 0 ; i < count; i++) {
-        const char *propertyName = property_getName(propertyList[i]);
-        NSString *tStr = [NSString stringWithUTF8String:propertyName];
-        if([key isEqualToString:tStr]){
-            att = property_getAttributes(propertyList[i]);
+    objc_property_t *properties = class_copyPropertyList([self class], &count);
+    for(int i = 0; i < count; i++) {
+        if (stop) {
             break;
         }
+        objc_property_t property = properties[i];
+        block(property_getName(property), property_getAttributes(property), &stop);
     }
-    free(propertyList);
-    
-    aAttribute  = [[NSMutableString alloc] initWithUTF8String:att];
-    objRange = [aAttribute rangeOfString:@"@"];
-    if (objRange.location != NSNotFound) {
-        // key是对象，不是基本类型
-        dotRange = [aAttribute rangeOfString:@","];
-        aClassStr = [aAttribute substringWithRange:NSMakeRange(3, dotRange.location-1-3)];
-        aClass = NSClassFromString(aClassStr);
-    } else {
-        return nil;
-    }
-    
+    free(properties);
+}
+
+/** 获取属性的类 **/
+- (Class)mw_getAttributeClass:(NSString *)key {
+    __block Class aClass;
+    [self mw_enumerateProppertiesWithBlock:^(const char *name, const char *att, BOOL *stop) {
+        if ([key isEqualToString:[NSString stringWithUTF8String:name]]) {
+            NSRange objRange;
+            NSRange dotRange;
+            NSString *aClassStr;
+            NSMutableString *aAttribute;
+            
+            aAttribute  = [[NSMutableString alloc] initWithUTF8String:att];
+            objRange = [aAttribute rangeOfString:@"@"];
+            if (objRange.location != NSNotFound) {
+                // key是对象，不是基本类型
+                dotRange = [aAttribute rangeOfString:@","];
+                aClassStr = [aAttribute substringWithRange:NSMakeRange(3, dotRange.location-1-3)];
+                aClass = NSClassFromString(aClassStr);
+            }
+            *stop = YES;
+        }
+    }];
     return aClass;
 }
 
@@ -206,7 +226,7 @@
 /**
  自定义对象调用转换自身内容
  **/
-- (NSDictionary *)mw_customModelConvertDictionary {
+- (NSDictionary *)mw_modelConvertDictionary {
     u_int count = 0;
     objc_property_t* properties = class_copyPropertyList([self class], &count);
     NSMutableArray* propertyArray = [NSMutableArray arrayWithCapacity:count];
@@ -252,7 +272,7 @@
                 }
             } else {
                 //自定义类
-                [valueArray addObject:[obj mw_customModelConvertDictionary]];
+                [valueArray addObject:[obj mw_modelConvertDictionary]];
             }
         }
     }
@@ -265,7 +285,7 @@
     NSData *jsonData;
     @try {
         NSError *parseError = nil;
-        jsonData = [NSJSONSerialization dataWithJSONObject:[self mw_customModelConvertDictionary] options:NSJSONWritingPrettyPrinted error:&parseError];
+        jsonData = [NSJSONSerialization dataWithJSONObject:[self mw_modelConvertDictionary] options:NSJSONWritingPrettyPrinted error:&parseError];
     } @catch (NSException *exception) {
         NSLog(@"covert json error:%@",exception.debugDescription);
     } @finally {

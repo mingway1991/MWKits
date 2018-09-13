@@ -29,7 +29,8 @@
     self.descLabel.numberOfLines = 0;
     [self.view addSubview:self.descLabel];
     
-    MWDemoModel *demo = [[MWDemoModel alloc] mw_initWithDictionary:@{@"t_id":@(123),@"names":@[@"a",@"b",@"c"],@"type":@"book",@"test":[NSNull null],@"model":@{@"n_id":@(1),@"name":@"aaa"},@"demos":@[@{@"n_id":@(1),@"name":@"aaa",@"demos":@[@{@"n_id":@(1),@"name":@"aaa"},@{@"n_id":@(1),@"name":@"aaa"}]},@{@"n_id":@(1),@"name":@"aaa",@"demos":@[@{@"n_id":@(1),@"name":@"aaa"},@{@"n_id":@(1),@"name":@"aaa"}]},@{@"n_id":@(1),@"name":@"aaa"}],@"test_bool":@(YES),@"aaaa":@[@"1",@"2"]}];
+    MWDemoModel *demo = [[MWDemoModel alloc] mw_initWithDictionary:@{@"t_id":@(123),@"names":@[@"a",@"b",@"c"],@"type":@"book",@"test":[NSNull null],@"model":@{@"n_id":@(1),@"name":@"aaa"},@"demos":@[@{@"n_id":@(1),@"name":@"aaa",@"demos":@[@{@"n_id":@(1),@"name":@"aaa"},@{@"n_id":@(1),@"name":@"aaa"}]},@{@"n_id":@(1),@"name":@"aaa",@"demos":@[@{@"n_id":@(1),@"name":@"aaa"},@{@"n_id":@(1),@"name":@"aaa"}]},@{@"n_id":@(1),@"name":@"aaa"}],@"test_bool":@(YES),@"aaaa":@[@"1",@"2"],@"nameMutableDict":@{@"a":@"b"}}];
+    [demo.nameMutableDict setObject:@"v" forKey:@"b"];
     self.descLabel.text = [demo mw_convertJsonString];
 }
 

@@ -13,11 +13,11 @@
  3.NSArray，NSDictionary，配置泛型方法mw_modelContainerPropertyGenericClass()，自动转换model
  4.支持赋值后回调mw_afterSetValueForKey:key
  5.调整日期格式mw_dateFormat()，自动将字符串转成NSDate
+ 6.自动生成可变数组、可变字典
  
  待支持：
  1.NSCoding、NSCopy自动实现
- 2.可变数组的转换
- 3.转json字符串，过滤掉不可转换类型
+ 2.转json字符串，过滤掉不可转换类型
 
  */
 
@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSDictionary<NSString *, NSString *> *)mw_redirectMapper;
 
 /**
- 针对数组和字典的泛型，为对象指定具体的类型
+ 针对数组和字典，如为自定义对象，为对象指定具体的类型
  @return NSDictionary @{@"属性名":[CustomClass class]}
  */
 - (NSDictionary<NSString *, Class> *)mw_modelContainerPropertyGenericClass;
@@ -82,7 +82,7 @@ NS_ASSUME_NONNULL_BEGIN
  自定义对象转换成字典
  @return NSDictionary 根据对象转换的字典
  */
-- (NSDictionary *)mw_customModelConvertDictionary;
+- (NSDictionary *)mw_modelConvertDictionary;
 
 /**
  转换成json字符串
