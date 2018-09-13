@@ -22,6 +22,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.automaticallyAdjustsScrollViewInsets = NO;
     [self.view addSubview:self.demoTableView];
     [self mw_setupPresentAndDismiss];
 }

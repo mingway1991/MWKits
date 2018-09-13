@@ -6,6 +6,7 @@
 //
 
 #import "MWPresentAnimation.h"
+#import "MWTransitionDefines.h"
 #import "MWDefines.h"
 
 @interface MWPresentAnimation ()

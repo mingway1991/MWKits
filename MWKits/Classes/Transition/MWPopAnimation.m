@@ -6,6 +6,7 @@
 //
 
 #import "MWPopAnimation.h"
+#import "MWTransitionDefines.h"
 #import "MWDefines.h"
 
 @interface MWPopAnimation ()

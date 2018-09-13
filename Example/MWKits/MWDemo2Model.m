@@ -10,12 +10,8 @@
 
 @implementation MWDemo2Model
 
-- (BOOL)mw_customMappingPropertiesWithKey:(NSString *)key value:(id)value {
-    if ([key isEqualToString:@"demos"]) {
-        self.demos = [MWDemo3Model mw_initWithArray:value];
-        return YES;
-    }
-    return [super mw_customMappingPropertiesWithKey:key value:value];
+- (NSDictionary<NSString *,Class> *)mw_modelContainerPropertyGenericClass {
+    return @{@"demos":[MWDemo3Model class]};
 }
 
 @end

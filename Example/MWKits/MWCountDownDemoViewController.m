@@ -20,6 +20,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.automaticallyAdjustsScrollViewInsets = NO;
     self.view.backgroundColor = [UIColor whiteColor];
     //Demo1
     UILabel *time1Label = [[UILabel alloc] initWithFrame:CGRectMake(10, 120, 100, 60)];

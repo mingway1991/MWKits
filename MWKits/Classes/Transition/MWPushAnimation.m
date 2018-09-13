@@ -6,6 +6,7 @@
 //
 
 #import "MWPushAnimation.h"
+#import "MWTransitionDefines.h"
 #import "MWDefines.h"
 
 @interface MWPushAnimation ()

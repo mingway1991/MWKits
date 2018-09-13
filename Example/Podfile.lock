@@ -1,5 +1,5 @@
 PODS:
-  - MWKits (0.1.0)
+  - MWKits (0.1.5)
 
 DEPENDENCIES:
   - MWKits (from `../`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: ../
 
 SPEC CHECKSUMS:
-  MWKits: 10fcefb0d33410c3472efa330db7886bf8608c43
+  MWKits: 981ecdf34e2b8d2eb72508a304bcb42492c02548
 
 PODFILE CHECKSUM: 976d72c248dcca0746868f48892bd347b0dc9137
 

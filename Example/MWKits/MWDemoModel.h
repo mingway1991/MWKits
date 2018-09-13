@@ -8,9 +8,10 @@
 
 #import <Foundation/Foundation.h>
 #import <MWKits/NSObject+MWModel.h>
+#import "MWBaseModel.h"
 #import "MWDemo2Model.h"
 
-@interface MWDemoModel : NSObject
+@interface MWDemoModel : MWBaseModel
 
 @property (nonatomic, assign) NSInteger t_id;
 @property (nonatomic, assign) BOOL test_bool;
@@ -27,6 +28,7 @@
 @property (nonatomic, copy) NSString *test;
 @property (nonatomic, strong) MWDemo2Model *demo2;
 @property (nonatomic, strong) NSArray<MWDemo2Model *> *demos;
-@property (nonatomic, strong) NSDate *date;
+@property (nonatomic, strong) NSDictionary<NSString *, MWDemo2Model *> *dict;
+@property (nonatomic, strong) NSArray<NSString *> *aaaa;
 
 @end

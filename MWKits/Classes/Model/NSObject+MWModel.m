@@ -9,6 +9,7 @@
 #import <objc/runtime.h>
 #import "NSArray+MWModel.h"
 #import "NSDictionary+MWModel.h"
+#import "MWHelper.h"
 
 @implementation NSObject (MWModel)
 
@@ -20,10 +21,16 @@
     NSMutableArray *datas = [NSMutableArray arrayWithCapacity:array.count];
     for (NSDictionary *dict in array) {
         id obj = [[self alloc] mw_initWithDictionary:dict];
-        [datas addObject:obj];
+        if (obj) {
+            [datas addObject:obj];
+        }
     }
     
     return datas;
+}
+
++ (instancetype)mw_initWithDictionary:(NSDictionary *)dictionary {
+    return [[self alloc] mw_initWithDictionary:dictionary];
 }
 
 - (instancetype)mw_initWithDictionary:(NSDictionary *)dictionary {
@@ -39,10 +46,11 @@
 
 #pragma mark - Private Methods
 - (void)mw_setValue:(id)value forKey:(NSString *)key {
-    NSString *aKey = [self mw_redirectForKey:key];
+    NSString *redirectKey = [self mw_redirectMapper][key];
+    NSString *aKey = redirectKey ? redirectKey : key;
     id aValue = value;
     
-    //判断当前key是否为需要自己处理的字段，如为false则进入自动处理流程
+    //判断当前key是否为需要自己处理的字段，如为NO则进入自动处理流程
     if (![self mw_customMappingPropertiesWithKey:aKey value:aValue]) {
         //判断是否有这个属性
         BOOL hasKey = NO;
@@ -58,54 +66,73 @@
         }
         free(properties);
         
+        if (!hasKey) {
+            //不存在这个key，调用undefinedkey方法后直接返回
+            [self setValue:aValue forUndefinedKey:aKey];
+            return;
+        }
+        
+        if (!aValue || aValue == [NSNull null]) {
+            //value为空值，直接赋值nil
+            [self setValue:nil forUndefinedKey:aKey];
+            return;
+        }
+        
         //如果key存在，则对value进行处理，之后赋值
-        if (hasKey) {
-            //处理value
-            if (![self mw_isSystemClass:aKey]) {
-                //自定义类，需初始化
-                Class aClass = [self mw_getAttributeClass:aKey];
-                aValue = [[aClass alloc] mw_initWithDictionary:aValue];
+        if (![self mw_isSystemClass:aKey]) {
+            //自定义类
+            if ([aValue isKindOfClass:[NSDictionary class]]) {
+                //NSDitionary，初始化对应的类对象进行赋值
+                Class aKeyClass = [self mw_getAttributeClass:aKey];
+                aValue = [[aKeyClass alloc] mw_initWithDictionary:aValue];
             } else {
-                //系统类，一些需要特殊处理的类型
-                Class aClass = [self mw_getAttributeClass:aKey];
-                if ([aClass isSubclassOfClass:[NSDate class]]) {
-                    //日期类型，内容为NSString，转换为NSDate
-                    if ([aValue isKindOfClass:[NSString class]]) {
-                        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                        [dateFormatter setDateFormat:[self mw_dateFormat]];
-                        aValue = [dateFormatter dateFromString:aValue];
-                    }
-                }
-            }
-            
-            if (aValue == [NSNull null]) {
-                //如果value为null，直接给字段赋值为nil
-                [self setValue:nil forKey:aKey];
-            } else if (aValue) {
-                [self setValue:aValue forKey:aKey];
-                [self mw_afterSetValueForKey:aKey];
-            } else {
-                NSLog(@"赋值失败 --> key:%@ value:%@",aKey,value);
+                //其他类型的对象，不具备初始化赋值的条件，将内容置为nil，打印log
+                aValue = nil;
+                NSLog(@"Class %@ ,Key %@ : 内容为非NSDictionary，不能初始化", [self class], aKey);
             }
         } else {
-            [self setValue:aValue forUndefinedKey:aKey];
+            //系统类，一些需要特殊处理的类型
+            Class aKeyClass = [self mw_getAttributeClass:aKey];
+            if (aKeyClass) {
+                //系统对象类型
+                Class aValueClass = [self mw_modelContainerPropertyGenericClass][aKey];
+                if ([aKeyClass isSubclassOfClass:[NSDate class]] && [aValue isKindOfClass:[NSString class]]) {
+                    //NSDate，内容为NSString，自动转换
+                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                    [dateFormatter setDateFormat:[self mw_dateFormat]];
+                    aValue = [dateFormatter dateFromString:aValue];
+                } else if (aValueClass && [aKeyClass isSubclassOfClass:[NSArray class]] && [aValue isKindOfClass:[NSArray class]]) {
+                    //NSArray
+                    aValue = [aValueClass mw_initWithArray:aValue];
+                } else if (aValueClass && [aKeyClass isSubclassOfClass:[NSDictionary class]] && [aValue isKindOfClass:[NSDictionary class]]) {
+                    //NSDictionary
+                    NSDictionary *dictValue = (NSDictionary *)aValue;
+                    NSMutableDictionary *newDictValue = [NSMutableDictionary dictionaryWithCapacity:dictValue.count];
+                    [dictValue enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
+                        if (obj && [obj isKindOfClass:[NSDictionary class]]) {
+                            [newDictValue setObject:[[aValueClass alloc] mw_initWithDictionary:obj] forKey:key];
+                        }
+                    }];
+                    aValue = newDictValue;
+                }
+            }
         }
+        
+        [self setValue:aValue forKey:aKey];
+        [self mw_afterSetValueForKey:aKey];
     }
 }
 
 /** 判断key是否是系统的类 **/
 - (BOOL)mw_isSystemClass:(NSString *)key {
     Class aClass = [self mw_getAttributeClass:key];
-    
     if (aClass) {
-        // 判断key的类型是否是系统类
-        NSBundle *aBundle = [NSBundle bundleForClass:aClass];
-        if (aBundle == [NSBundle mainBundle]) {
-            // 自定义的类
-            return NO;
-        } else {
+        if ([MWHelper checkClassIsSystemClass:aClass]) {
             // 系统类
             return YES;
+        } else {
+            // 自定义的类
+            return NO;
         }
     } else {
         // 基本类型
@@ -124,6 +151,7 @@
     const char *att = "";
     
     objc_property_t *propertyList = class_copyPropertyList([self class], &count);
+    
     for (int i = 0 ; i < count; i++) {
         const char *propertyName = property_getName(propertyList[i]);
         NSString *tStr = [NSString stringWithUTF8String:propertyName];
@@ -148,22 +176,26 @@
     return aClass;
 }
 
-- (void)mw_afterSetValueForKey:(NSString *)key {
-    //子类根据需要自己实现
-}
-
 #pragma mark - Undefined Key
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key {
     NSLog(@"Class %@ ,UndefineKey %@", [self class],key);
 }
 
 #pragma mark - Custom
-- (NSString *)mw_redirectForKey:(NSString *)key {
-    return key;
+- (NSDictionary<NSString *, NSString *> *)mw_redirectMapper {
+    return @{};
+}
+
+- (NSDictionary<NSString *, Class> *)mw_modelContainerPropertyGenericClass {
+    return @{};
 }
 
 - (BOOL)mw_customMappingPropertiesWithKey:(NSString *)key value:(id)value {
     return NO;
+}
+
+- (void)mw_afterSetValueForKey:(NSString *)key {
+    //子类根据需要自己实现
 }
 
 - (NSString *)mw_dateFormat {
@@ -230,8 +262,19 @@
 }
 
 - (NSString *)mw_convertJsonString {
-//TODO:待实现
-    return @"";
+    NSData *jsonData;
+    @try {
+        NSError *parseError = nil;
+        jsonData = [NSJSONSerialization dataWithJSONObject:[self mw_customModelConvertDictionary] options:NSJSONWritingPrettyPrinted error:&parseError];
+    } @catch (NSException *exception) {
+        NSLog(@"covert json error:%@",exception.debugDescription);
+    } @finally {
+        if (jsonData) {
+            return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        } else {
+            return @"";
+        }
+    }
 }
 
 @end

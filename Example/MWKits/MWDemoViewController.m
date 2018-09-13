@@ -18,7 +18,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self mw_setupPresentAndDismiss];
-    
+    self.automaticallyAdjustsScrollViewInsets = NO;
     self.view.backgroundColor = [UIColor yellowColor];
     
     UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];

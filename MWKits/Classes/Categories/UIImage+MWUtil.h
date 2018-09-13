@@ -29,7 +29,7 @@
 /**
  图片生成base64字符串
  
- @param UIImage 需要转化的图片
+ @param image 需要转化的图片
  @return NSString base64字符串
  */
 + (NSString *)mw_base64StringFromImage:(UIImage *)image;

@@ -8,19 +8,16 @@
 #import "NSDictionary+MWModel.h"
 #import "NSObject+MWModel.h"
 #import "NSArray+MWModel.h"
+#import "MWHelper.h"
 
 @implementation NSDictionary (MWModel)
 
-/**
- 字典对象调用转换自身内容
- **/
 - (NSDictionary *)mw_dictionaryConvertDictionary {
     NSDictionary *tDictionary = (NSDictionary *)self;
     NSMutableDictionary *resultDictionary = [NSMutableDictionary dictionaryWithCapacity:tDictionary.count];
     for (NSString *key in tDictionary.allKeys) {
         NSObject *obj = tDictionary[key];
-        NSBundle *aBundle = [NSBundle bundleForClass:[obj class]];
-        if (aBundle == [NSBundle mainBundle]) {
+        if (![MWHelper checkClassIsSystemClass:[obj class]]) {
             //自定义类
             [resultDictionary setObject:[obj mw_customModelConvertDictionary] forKey:key];
         } else if ([[obj class] isSubclassOfClass:[NSArray class]]) {
@@ -35,6 +32,22 @@
         }
     }
     return resultDictionary;
+}
+
+- (NSString *)mw_convertJsonString {
+    NSData *jsonData;
+    @try {
+        NSError *parseError = nil;
+        jsonData = [NSJSONSerialization dataWithJSONObject:[self mw_dictionaryConvertDictionary] options:NSJSONWritingPrettyPrinted error:&parseError];
+    } @catch (NSException *exception) {
+        NSLog(@"covert json error:%@",exception.debugDescription);
+    } @finally {
+        if (jsonData) {
+            return [[NSString alloc] initWithData:jsonData encoding:NSUTF8StringEncoding];
+        } else {
+            return @"";
+        }
+    }
 }
 
 @end

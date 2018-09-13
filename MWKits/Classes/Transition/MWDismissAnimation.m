@@ -6,6 +6,7 @@
 //
 
 #import "MWDismissAnimation.h"
+#import "MWTransitionDefines.h"
 #import "MWDefines.h"
 
 @interface MWDismissAnimation ()

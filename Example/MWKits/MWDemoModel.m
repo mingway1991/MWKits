@@ -10,19 +10,14 @@
 
 @implementation MWDemoModel
 
-- (NSString *)mw_redirectForKey:(NSString *)key {
-    if ([key isEqualToString:@"model"]) {
-        return @"demo2";
-    }
-    return [super mw_redirectForKey:key];
+- (NSDictionary *)mw_redirectMapper {
+    return @{@"model":@"demo2"};
 }
 
-- (BOOL)mw_customMappingPropertiesWithKey:(NSString *)key value:(id)value {
-    if ([key isEqualToString:@"demos"]) {
-        self.demos = [MWDemo2Model mw_initWithArray:value];
-        return YES;
-    }
-    return [super mw_customMappingPropertiesWithKey:key value:value];
+- (NSDictionary<NSString *,Class> *)mw_modelContainerPropertyGenericClass {
+    return @{@"demos":[MWDemo2Model class],
+             @"dict":[MWDemo2Model class]
+             };
 }
 
 @end

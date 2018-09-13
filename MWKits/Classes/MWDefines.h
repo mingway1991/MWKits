@@ -48,16 +48,4 @@
 //状态栏加导航条高度
 #define MWTopBarHeight MWStatusBarHeight+MWNavigationBarHeight
 
-/*
- Transition 相关配置
- */
-//动画时间
-#define kMWPushAnimationDuration 0.3f
-#define kMWPopAnimationDuration 0.3f
-#define kMWPresentAnimationDuration 0.3f
-#define kMWDismissAnimationDuration 0.3f
-
-// 当拖动的距离,占了屏幕的总宽高的3/4时, 就让imageview完全显示，遮盖完全消失
-#define kMWNaviTargetTranslateScale 0.75
-
 #endif /* MWDefines_h */

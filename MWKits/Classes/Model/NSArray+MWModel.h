@@ -9,6 +9,14 @@
 
 @interface NSArray (MWModel)
 
+/**
+ 数组转换成数组（自定义类转化为字典）
+ */
 - (NSArray *)mw_arrayConvertArray;
+
+/**
+ 转换成json字符串
+ */
+- (NSString *)mw_convertJsonString;
 
 @end
