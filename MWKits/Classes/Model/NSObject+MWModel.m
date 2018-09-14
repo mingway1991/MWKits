@@ -334,13 +334,13 @@ static force_inline NSDate *mw_NSDateFromString(__unsafe_unretained NSString *st
                     default:
                         break;
                 }
-                [self mw_setValue:aValue forKey:aKey];
             } else {
                 //自定义对象
                 if ([aValue isKindOfClass:[NSDictionary class]]) {
                     aValue = [[propertyInfo.cls alloc] mw_initWithDictionary:aValue];
                 }
             }
+            [self mw_setValue:aValue forKey:aKey];
         }
         
         //赋值完成后回调
