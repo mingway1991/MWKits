@@ -9,7 +9,7 @@
 #import "MWDefines.h"
 
 /** 根据attrType转换成对应的枚举 **/
-MWPropertyType MWPropertyGetType(const char *attrType) {
+MWPropertyType MWPropertyGetType(const char *attrType, Class cls) {
     char *type = (char *)attrType;
     if (!type) return MWPropertyTypeUnknown;
     size_t len = strlen(type);
@@ -46,13 +46,7 @@ MWPropertyType MWPropertyGetType(const char *attrType) {
                 return MWPropertyTypeBlock;
             else {
                 //针对对象类型的，获取类名
-                NSScanner *scanner = [NSScanner scannerWithString:[NSString stringWithUTF8String:type]];
-                if ([scanner scanString:@"@\"" intoString:NULL]) {
-                    Class cls;
-                    NSString *clsName = nil;
-                    if ([scanner scanUpToCharactersFromSet: [NSCharacterSet characterSetWithCharactersInString:@"\"<"] intoString:&clsName]) {
-                        if (clsName.length) cls = objc_getClass(clsName.UTF8String);
-                    }
+                if (cls) {
                     if (!cls) return MWPropertyTypeUnknown;
                     if ([cls isSubclassOfClass:[NSMutableString class]]) return MWPropertyTypeNSMutableString;
                     if ([cls isSubclassOfClass:[NSString class]]) return MWPropertyTypeNSString;
@@ -133,7 +127,14 @@ static force_inline BOOL MWPropertyTypeIsNumber(MWPropertyType type) {
                 case 'T': { // Type
                     if (attrs[i].value) {
                         _attrType = [NSString stringWithUTF8String:attrs[i].value];
-                        _type = MWPropertyGetType(attrs[i].value);
+                        NSScanner *scanner = [NSScanner scannerWithString:_attrType];
+                        if ([scanner scanString:@"@\"" intoString:NULL]) {
+                            NSString *clsName = nil;
+                            if ([scanner scanUpToCharactersFromSet: [NSCharacterSet characterSetWithCharactersInString:@"\"<"] intoString:&clsName]) {
+                                if (clsName.length) _cls = objc_getClass(clsName.UTF8String);
+                            }
+                        }
+                        _type = MWPropertyGetType(attrs[i].value, _cls);
                         _isNumber = MWPropertyTypeIsNumber(_type);
                         _isFromFoundation = (_type == MWPropertyTypeUnknown) ? NO : YES;
                     }
