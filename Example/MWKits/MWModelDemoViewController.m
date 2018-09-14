@@ -7,7 +7,7 @@
 //
 
 #import "MWModelDemoViewController.h"
-#import "MWDemoModel.h"
+#import "MWWeiboModel.h"
 @import MWKits;
 
 @interface MWModelDemoViewController ()
@@ -23,27 +23,34 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.view.backgroundColor = [UIColor whiteColor];
     
-    self.descLabel = [[UILabel alloc] initWithFrame:self.view.bounds];
-    self.descLabel.font = [UIFont systemFontOfSize:16.f];
-    self.descLabel.textColor = [UIColor redColor];
-    self.descLabel.numberOfLines = 0;
-    [self.view addSubview:self.descLabel];
+//    self.descLabel = [[UILabel alloc] initWithFrame:self.view.bounds];
+//    self.descLabel.font = [UIFont systemFontOfSize:16.f];
+//    self.descLabel.textColor = [UIColor redColor];
+//    self.descLabel.numberOfLines = 0;
+//    [self.view addSubview:self.descLabel];
     
-    MWDemoModel *demo = [[MWDemoModel alloc] mw_initWithDictionary:@{@"t_id":@(123),@"names":@[@"a",@"b",@"c"],@"type":@"book",@"test":[NSNull null],@"model":@{@"n_id":@(1),@"name":@"aaa"},@"demos":@[@{@"n_id":@(1),@"name":@"aaa",@"demos":@[@{@"n_id":@(1),@"name":@"aaa"},@{@"n_id":@(1),@"name":@"aaa"}]},@{@"n_id":@(1),@"name":@"aaa",@"demos":@[@{@"n_id":@(1),@"name":@"aaa"},@{@"n_id":@(1),@"name":@"aaa"}]},@{@"n_id":@(1),@"name":@"aaa"}],@"test_bool":@(YES),@"aaaa":@[@"1",@"2"],@"nameMutableDict":@{@"a":@"b"}}];
-    [demo.nameMutableDict setObject:@"v" forKey:@"b"];
-    self.descLabel.text = [demo mw_convertJsonString];
+    int count = 1000;
+    NSTimeInterval begin, end;
+    NSMutableArray *holder = [NSMutableArray new];
+    for (int i = 0; i < count; i++) {
+        [holder addObject:[NSData new]];
+    }
+    [holder removeAllObjects];
     
-    //copy
-    MWDemoModel *demo2 = [demo copy];
-    NSLog(@"%@",[demo2 mw_convertJsonString]);
+    NSString *path = [[NSBundle mainBundle] pathForResource:@"weibo" ofType:@"json"];
+    NSData *data = [NSData dataWithContentsOfFile:path];
+    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
     
-    //archive
-    NSString *docPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-    NSString *path = [docPath stringByAppendingPathComponent:@"data.archiver"];
-    [NSKeyedArchiver archiveRootObject:demo toFile:path];
-    
-    MWDemoModel *demo3 = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
-    NSLog(@"%@",[demo3 mw_convertJsonString]);
+    begin = CACurrentMediaTime();
+    @autoreleasepool {
+        for (int i = 0; i < count; i++) {
+            MWWeiboStatus *feed = [MWWeiboStatus mw_initWithDictionary:json];
+            [holder addObject:feed];
+            NSLog(@"%@",[feed mw_convertJsonString]);
+        }
+    }
+    end = CACurrentMediaTime();
+    printf("MWModel:     %8.2f   ", (end - begin) * 1000);
 }
 
 @end

@@ -8,6 +8,8 @@
 #ifndef MWDefines_h
 #define MWDefines_h
 
+#define force_inline __inline__ __attribute__((always_inline))
+
 //NSLog
 #ifdef DEBUG
 #define NSLog(fmt, ...)  NSLog((@"%s [Line %d] " fmt), __PRETTY_FUNCTION__, __LINE__, ##__VA_ARGS__)

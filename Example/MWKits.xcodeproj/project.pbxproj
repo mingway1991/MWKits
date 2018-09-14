@@ -22,12 +22,10 @@
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
 		71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */; };
 		7A5B047A2147981300BE0E89 /* MWModelDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A5B04792147981300BE0E89 /* MWModelDemoViewController.m */; };
-		7A5B047D2147988D00BE0E89 /* MWDemoModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A5B047C2147988D00BE0E89 /* MWDemoModel.m */; };
 		7AD2643421461A55000A132E /* MWDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AD2643321461A55000A132E /* MWDemoViewController.m */; };
 		7AD2643721461B4D000A132E /* MWCountDownDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AD2643621461B4D000A132E /* MWCountDownDemoViewController.m */; };
-		7AE35A2E214913BE00A6E28C /* MWDemo2Model.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AE35A2D214913BE00A6E28C /* MWDemo2Model.m */; };
-		7AE35A31214913C900A6E28C /* MWDemo3Model.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AE35A30214913C900A6E28C /* MWDemo3Model.m */; };
-		7AF58E1C214A0BFB007E428F /* MWBaseModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AF58E1B214A0BFB007E428F /* MWBaseModel.m */; };
+		7AF58E27214A815A007E428F /* weibo.json in Resources */ = {isa = PBXBuildFile; fileRef = 7AF58E24214A815A007E428F /* weibo.json */; };
+		7AF58E28214A815A007E428F /* MWWeiboModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AF58E25214A815A007E428F /* MWWeiboModel.m */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
 		C122D9E48FB5456AA692EEE6 /* Pods_MWKits_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 766E5425B9121A21BC10868A /* Pods_MWKits_Tests.framework */; };
 		D2F1BB30FFDB163115B9C86C /* Pods_MWKits_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37894A7EED2F08810BA76333 /* Pods_MWKits_Example.framework */; };
@@ -70,18 +68,13 @@
 		766E5425B9121A21BC10868A /* Pods_MWKits_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MWKits_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A5B04782147981300BE0E89 /* MWModelDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWModelDemoViewController.h; sourceTree = "<group>"; };
 		7A5B04792147981300BE0E89 /* MWModelDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MWModelDemoViewController.m; sourceTree = "<group>"; };
-		7A5B047B2147988D00BE0E89 /* MWDemoModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWDemoModel.h; sourceTree = "<group>"; };
-		7A5B047C2147988D00BE0E89 /* MWDemoModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MWDemoModel.m; sourceTree = "<group>"; };
 		7AD2643221461A55000A132E /* MWDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWDemoViewController.h; sourceTree = "<group>"; };
 		7AD2643321461A55000A132E /* MWDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MWDemoViewController.m; sourceTree = "<group>"; };
 		7AD2643521461B4D000A132E /* MWCountDownDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWCountDownDemoViewController.h; sourceTree = "<group>"; };
 		7AD2643621461B4D000A132E /* MWCountDownDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MWCountDownDemoViewController.m; sourceTree = "<group>"; };
-		7AE35A2C214913BE00A6E28C /* MWDemo2Model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWDemo2Model.h; sourceTree = "<group>"; };
-		7AE35A2D214913BE00A6E28C /* MWDemo2Model.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MWDemo2Model.m; sourceTree = "<group>"; };
-		7AE35A2F214913C900A6E28C /* MWDemo3Model.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWDemo3Model.h; sourceTree = "<group>"; };
-		7AE35A30214913C900A6E28C /* MWDemo3Model.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MWDemo3Model.m; sourceTree = "<group>"; };
-		7AF58E1A214A0BFB007E428F /* MWBaseModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWBaseModel.h; sourceTree = "<group>"; };
-		7AF58E1B214A0BFB007E428F /* MWBaseModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MWBaseModel.m; sourceTree = "<group>"; };
+		7AF58E24214A815A007E428F /* weibo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = weibo.json; sourceTree = "<group>"; };
+		7AF58E25214A815A007E428F /* MWWeiboModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MWWeiboModel.m; sourceTree = "<group>"; };
+		7AF58E26214A815A007E428F /* MWWeiboModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWWeiboModel.h; sourceTree = "<group>"; };
 		8449E9D3B06565DCB2E9A460 /* MWKits.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = MWKits.podspec; path = ../MWKits.podspec; sourceTree = "<group>"; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8D2F3895308002E59DF3C0A5 /* Pods-MWKits_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MWKits_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MWKits_Tests/Pods-MWKits_Tests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -175,14 +168,9 @@
 				7AD2643621461B4D000A132E /* MWCountDownDemoViewController.m */,
 				7A5B04782147981300BE0E89 /* MWModelDemoViewController.h */,
 				7A5B04792147981300BE0E89 /* MWModelDemoViewController.m */,
-				7A5B047B2147988D00BE0E89 /* MWDemoModel.h */,
-				7A5B047C2147988D00BE0E89 /* MWDemoModel.m */,
-				7AE35A2C214913BE00A6E28C /* MWDemo2Model.h */,
-				7AE35A2D214913BE00A6E28C /* MWDemo2Model.m */,
-				7AE35A2F214913C900A6E28C /* MWDemo3Model.h */,
-				7AE35A30214913C900A6E28C /* MWDemo3Model.m */,
-				7AF58E1A214A0BFB007E428F /* MWBaseModel.h */,
-				7AF58E1B214A0BFB007E428F /* MWBaseModel.m */,
+				7AF58E24214A815A007E428F /* weibo.json */,
+				7AF58E26214A815A007E428F /* MWWeiboModel.h */,
+				7AF58E25214A815A007E428F /* MWWeiboModel.m */,
 				71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */,
 				6003F5A8195388D20070C39A /* Images.xcassets */,
 				6003F594195388D20070C39A /* Supporting Files */,
@@ -324,6 +312,7 @@
 				873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */,
 				71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */,
 				6003F5A9195388D20070C39A /* Images.xcassets in Resources */,
+				7AF58E27214A815A007E428F /* weibo.json in Resources */,
 				6003F598195388D20070C39A /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -445,15 +434,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7AF58E1C214A0BFB007E428F /* MWBaseModel.m in Sources */,
 				6003F59E195388D20070C39A /* MWAppDelegate.m in Sources */,
 				7AD2643421461A55000A132E /* MWDemoViewController.m in Sources */,
-				7A5B047D2147988D00BE0E89 /* MWDemoModel.m in Sources */,
 				7AD2643721461B4D000A132E /* MWCountDownDemoViewController.m in Sources */,
 				7A5B047A2147981300BE0E89 /* MWModelDemoViewController.m in Sources */,
-				7AE35A31214913C900A6E28C /* MWDemo3Model.m in Sources */,
-				7AE35A2E214913BE00A6E28C /* MWDemo2Model.m in Sources */,
 				6003F5A7195388D20070C39A /* MWViewController.m in Sources */,
+				7AF58E28214A815A007E428F /* MWWeiboModel.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

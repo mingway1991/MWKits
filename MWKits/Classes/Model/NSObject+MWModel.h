@@ -12,12 +12,12 @@
  2.可以根据关键字自定义映射mw_customMappingPropertiesWithKey:value:
  3.NSArray，NSDictionary，配置泛型方法mw_modelContainerPropertyGenericClass()，自动转换model
  4.支持赋值后回调mw_afterSetValueForKey:key
- 5.调整日期格式mw_dateFormat()，自动将字符串转成NSDate
- 6.自动生成可变数组、可变字典
- 7.NSCoding、NSCopy自动实现(MWCodingImplementation,MWCopingImplementation)
+ 5.自动将字符串转成NSDate
+ 6.NSCoding、NSCopy自动实现(MWCodingImplementation,MWCopingImplementation)
  
- 待支持：
- 1.转json字符串，过滤掉不可转换类型
+ 待优化：
+ objc_send 优化调用速度
+ 转化类型异常处理
 
  */
 
@@ -96,13 +96,6 @@ NS_ASSUME_NONNULL_BEGIN
  @param key 针对该key赋值之后的处理，类似于其他自定义字段需要在该字段处理后赋值
  */
 - (void)mw_afterSetValueForKey:(NSString *)key;
-
-/**
- 自定义日期格式
- 如需要转成NSDate，根据json中日期字符串格式设置
- @return 新的日期格式，默认"yyyy-MM-dd HH:mm:ss"
- */
-- (NSString *)mw_dateFormat;
 
 #pragma mark - Helper
 /**

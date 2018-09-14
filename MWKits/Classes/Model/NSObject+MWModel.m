@@ -6,10 +6,194 @@
 //
 
 #import "NSObject+MWModel.h"
-#import "NSArray+MWModel.h"
-#import "NSDictionary+MWModel.h"
-#import "MWHelper.h"
+#import "MWDefines.h"
+#import "MWClassInfo.h"
 #import <objc/runtime.h>
+
+#pragma mark - Convert
+static force_inline NSDateFormatter *MWISODateFormatter() {
+    static NSDateFormatter *formatter = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        formatter = [[NSDateFormatter alloc] init];
+        formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+        formatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZ";
+    });
+    return formatter;
+}
+
+/**
+ 将id类型转化成NSNumber
+ 取自于MWModel
+ */
+static force_inline NSNumber *mw_NSNumberCreateFromID(__unsafe_unretained id value) {
+    static NSCharacterSet *dot;
+    static NSDictionary *dic;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        dot = [NSCharacterSet characterSetWithRange:NSMakeRange('.', 1)];
+        dic = @{@"TRUE" :   @(YES),
+                @"True" :   @(YES),
+                @"true" :   @(YES),
+                @"FALSE" :  @(NO),
+                @"False" :  @(NO),
+                @"false" :  @(NO),
+                @"YES" :    @(YES),
+                @"Yes" :    @(YES),
+                @"yes" :    @(YES),
+                @"NO" :     @(NO),
+                @"No" :     @(NO),
+                @"no" :     @(NO),
+                @"NIL" :    (id)kCFNull,
+                @"Nil" :    (id)kCFNull,
+                @"nil" :    (id)kCFNull,
+                @"NULL" :   (id)kCFNull,
+                @"Null" :   (id)kCFNull,
+                @"null" :   (id)kCFNull,
+                @"(NULL)" : (id)kCFNull,
+                @"(Null)" : (id)kCFNull,
+                @"(null)" : (id)kCFNull,
+                @"<NULL>" : (id)kCFNull,
+                @"<Null>" : (id)kCFNull,
+                @"<null>" : (id)kCFNull};
+    });
+    
+    if (!value || value == (id)kCFNull) return nil;
+    if ([value isKindOfClass:[NSNumber class]]) return value;
+    if ([value isKindOfClass:[NSString class]]) {
+        NSNumber *num = dic[value];
+        if (num) {
+            if (num == (id)kCFNull) return nil;
+            return num;
+        }
+        if ([(NSString *)value rangeOfCharacterFromSet:dot].location != NSNotFound) {
+            const char *cstring = ((NSString *)value).UTF8String;
+            if (!cstring) return nil;
+            double num = atof(cstring);
+            if (isnan(num) || isinf(num)) return nil;
+            return @(num);
+        } else {
+            const char *cstring = ((NSString *)value).UTF8String;
+            if (!cstring) return nil;
+            return @(atoll(cstring));
+        }
+    }
+    return nil;
+}
+
+/**
+ 将字符串转化成NSDate
+ 取自于MWModel
+ */
+static force_inline NSDate *mw_NSDateFromString(__unsafe_unretained NSString *string) {
+    typedef NSDate* (^MWNSDateParseBlock)(NSString *string);
+#define kParserNum 34
+    static MWNSDateParseBlock blocks[kParserNum + 1] = {0};
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        {
+            /*
+             2014-01-20  // Google
+             */
+            NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+            formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+            formatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+            formatter.dateFormat = @"MWMW-MM-dd";
+            blocks[10] = ^(NSString *string) { return [formatter dateFromString:string]; };
+        }
+        
+        {
+            /*
+             2014-01-20 12:24:48
+             2014-01-20T12:24:48   // Google
+             2014-01-20 12:24:48.000
+             2014-01-20T12:24:48.000
+             */
+            NSDateFormatter *formatter1 = [[NSDateFormatter alloc] init];
+            formatter1.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+            formatter1.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+            formatter1.dateFormat = @"MWMW-MM-dd'T'HH:mm:ss";
+            
+            NSDateFormatter *formatter2 = [[NSDateFormatter alloc] init];
+            formatter2.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+            formatter2.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+            formatter2.dateFormat = @"MWMW-MM-dd HH:mm:ss";
+            
+            NSDateFormatter *formatter3 = [[NSDateFormatter alloc] init];
+            formatter3.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+            formatter3.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+            formatter3.dateFormat = @"MWMW-MM-dd'T'HH:mm:ss.SSS";
+            
+            NSDateFormatter *formatter4 = [[NSDateFormatter alloc] init];
+            formatter4.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+            formatter4.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+            formatter4.dateFormat = @"MWMW-MM-dd HH:mm:ss.SSS";
+            
+            blocks[19] = ^(NSString *string) {
+                if ([string characterAtIndex:10] == 'T') {
+                    return [formatter1 dateFromString:string];
+                } else {
+                    return [formatter2 dateFromString:string];
+                }
+            };
+            
+            blocks[23] = ^(NSString *string) {
+                if ([string characterAtIndex:10] == 'T') {
+                    return [formatter3 dateFromString:string];
+                } else {
+                    return [formatter4 dateFromString:string];
+                }
+            };
+        }
+        
+        {
+            /*
+             2014-01-20T12:24:48Z        // Github, Apple
+             2014-01-20T12:24:48+0800    // Facebook
+             2014-01-20T12:24:48+12:00   // Google
+             2014-01-20T12:24:48.000Z
+             2014-01-20T12:24:48.000+0800
+             2014-01-20T12:24:48.000+12:00
+             */
+            NSDateFormatter *formatter = [NSDateFormatter new];
+            formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+            formatter.dateFormat = @"MWMW-MM-dd'T'HH:mm:ssZ";
+            
+            NSDateFormatter *formatter2 = [NSDateFormatter new];
+            formatter2.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+            formatter2.dateFormat = @"MWMW-MM-dd'T'HH:mm:ss.SSSZ";
+            
+            blocks[20] = ^(NSString *string) { return [formatter dateFromString:string]; };
+            blocks[24] = ^(NSString *string) { return [formatter dateFromString:string]?: [formatter2 dateFromString:string]; };
+            blocks[25] = ^(NSString *string) { return [formatter dateFromString:string]; };
+            blocks[28] = ^(NSString *string) { return [formatter2 dateFromString:string]; };
+            blocks[29] = ^(NSString *string) { return [formatter2 dateFromString:string]; };
+        }
+        
+        {
+            /*
+             Fri Sep 04 00:12:21 +0800 2015 // Weibo, Twitter
+             Fri Sep 04 00:12:21.000 +0800 2015
+             */
+            NSDateFormatter *formatter = [NSDateFormatter new];
+            formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+            formatter.dateFormat = @"EEE MMM dd HH:mm:ss Z MWMW";
+            
+            NSDateFormatter *formatter2 = [NSDateFormatter new];
+            formatter2.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+            formatter2.dateFormat = @"EEE MMM dd HH:mm:ss.SSS Z MWMW";
+            
+            blocks[30] = ^(NSString *string) { return [formatter dateFromString:string]; };
+            blocks[34] = ^(NSString *string) { return [formatter2 dateFromString:string]; };
+        }
+    });
+    if (!string) return nil;
+    if (string.length > kParserNum) return nil;
+    MWNSDateParseBlock parser = blocks[string.length];
+    if (!parser) return nil;
+    return parser(string);
+#undef kParserNum
+}
 
 @implementation NSObject (MWModel)
 
@@ -46,31 +230,31 @@
 
 #pragma mark - NSCoding
 - (void)mw_deCoder:(NSCoder *)coder {
-    [self mw_enumerateProppertiesWithBlock:^(const char *name, const char *att, BOOL *stop) {
-        NSString *propertyName = [NSString stringWithUTF8String:name];
-        id value = [coder decodeObjectForKey:propertyName];
+    MWClassInfo *info = [self mw_getClassInfo];
+    [info.propertyDict enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, MWPropertyInfo * _Nonnull obj, BOOL * _Nonnull stop) {
+        id value = [coder decodeObjectForKey:key];
         if (value == nil) return;
-        [self setValue:value forKey:propertyName];
+        [self setValue:obj forKey:key];
     }];
 }
 
 - (void)mw_encodeWithCoder:(NSCoder *)aCoder {
-    [self mw_enumerateProppertiesWithBlock:^(const char *name, const char *att, BOOL *stop) {
-        NSString *propertyName = [NSString stringWithUTF8String:name];
-        id value = [self valueForKey:propertyName];
+    MWClassInfo *info = [self mw_getClassInfo];
+    [info.propertyDict enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, MWPropertyInfo * _Nonnull obj, BOOL * _Nonnull stop) {
+        id value = [self valueForKey:key];
         if (value == nil) return;
-        [aCoder encodeObject:value forKey:propertyName];
+        [aCoder encodeObject:value forKey:key];
     }];
 }
 
 #pragma mark - NSCoping
 - (instancetype)mw_copy {
+    MWClassInfo *info = [self mw_getClassInfo];
     id obj = [[[self class] alloc] init];
-    [self mw_enumerateProppertiesWithBlock:^(const char *name, const char *att, BOOL *stop) {
-        NSString *propertyName = [NSString stringWithUTF8String:name];
-        id value = [self valueForKey:propertyName];
+    [info.propertyDict enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, MWPropertyInfo * _Nonnull obj, BOOL * _Nonnull stop) {
+        id value = [self valueForKey:key];
         if (value == nil) return;
-        [obj setValue:[value copy] forKey:propertyName];
+        [obj setValue:[value copy] forKey:key];
     }];
     return obj;
 }
@@ -84,14 +268,10 @@
     //判断当前key是否为需要自己处理的字段，如为NO则进入自动处理流程
     if (![self mw_customMappingPropertiesWithKey:aKey value:aValue]) {
         //判断是否有这个属性
-        __block BOOL hasKey = NO;
-        [self mw_enumerateProppertiesWithBlock:^(const char *name, const char *att, BOOL *stop) {
-            NSString *propertyName = [NSString stringWithUTF8String:name];
-            if ([propertyName isEqualToString:aKey]) {
-                hasKey = YES;
-                *stop = YES;
-            }
-        }];
+        BOOL hasKey = NO;
+        
+        MWClassInfo *info = [self mw_getClassInfo];
+        hasKey = [info.propertyDict.allKeys containsObject:aKey] ? YES : NO;
         
         if (!hasKey) {
             //不存在这个key，调用undefinedkey方法后直接返回
@@ -105,117 +285,79 @@
             return;
         }
         
-        Class aKeyClass = [self mw_getAttributeClass:aKey];
-        //如果key存在，则对value进行处理，之后赋值
-        if (![self mw_isSystemClass:aKey]) {
-            //自定义类
-            if ([aValue isKindOfClass:[NSDictionary class]]) {
-                //NSDitionary，初始化对应的类对象进行赋值
-                aValue = [[aKeyClass alloc] mw_initWithDictionary:aValue];
-            } else {
-                //其他类型的对象，不具备初始化赋值的条件，将内容置为nil，打印log
-                aValue = nil;
-                NSLog(@"Class %@ ,Key %@ : 内容为非NSDictionary，不能初始化", [self class], aKey);
-            }
+        MWPropertyInfo *propertyInfo = info.propertyDict[aKey];
+        
+        if (propertyInfo.isNumber) {
+            NSNumber *num = mw_NSNumberCreateFromID(aValue);
+            [self setValue:num forKey:aKey];
         } else {
-            //系统类，一些需要特殊处理的类型
-            if (aKeyClass) {
-                //系统对象类型
-                Class aValueClass = [self mw_modelContainerPropertyGenericClass][aKey];
-                if ([aKeyClass isSubclassOfClass:[NSDate class]] && [aValue isKindOfClass:[NSString class]]) {
-                    //NSDate，内容为NSString，自动转换
-                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-                    [dateFormatter setDateFormat:[self mw_dateFormat]];
-                    aValue = [dateFormatter dateFromString:aValue];
-                } else if (aValueClass && [aKeyClass isSubclassOfClass:[NSArray class]] && [aValue isKindOfClass:[NSArray class]]) {
-                    //NSArray
-                    aValue = [aValueClass mw_initWithArray:aValue];
-                } else if (aValueClass && [aKeyClass isSubclassOfClass:[NSDictionary class]] && [aValue isKindOfClass:[NSDictionary class]]) {
-                    //NSDictionary
-                    NSDictionary *dictValue = (NSDictionary *)aValue;
-                    NSMutableDictionary *newDictValue = [NSMutableDictionary dictionaryWithCapacity:dictValue.count];
-                    [dictValue enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-                        if (obj && [obj isKindOfClass:[NSDictionary class]]) {
-                            [newDictValue setObject:[[aValueClass alloc] mw_initWithDictionary:obj] forKey:key];
+            if (propertyInfo.isFromFoundation) {
+                //系统类型对象
+                switch (propertyInfo.type) {
+                    case MWPropertyTypeNSArray:
+                    case MWPropertyTypeNSMutableArray: {
+                        Class contentClass = [self mw_modelContainerPropertyGenericClass][propertyInfo.propertyName];
+                        if (contentClass && [aValue isKindOfClass:[NSArray class]]) {
+                            NSMutableArray *objectArr = [NSMutableArray new];
+                            for (id aValueObj in aValue) {
+                                if ([aValueObj isKindOfClass:[NSDictionary class]]) {
+                                    [objectArr addObject:[[contentClass alloc] mw_initWithDictionary:aValueObj]];
+                                }
+                            }
+                            aValue = objectArr;
                         }
-                    }];
-                    aValue = newDictValue;
+                        break;
+                    }
+                    case MWPropertyTypeNSDictionary:
+                    case MWPropertyTypeNSMutableDictionary: {
+                        Class contentClass = [self mw_modelContainerPropertyGenericClass][propertyInfo.propertyName];
+                        if (contentClass && [aValue isKindOfClass:[NSDictionary class]]) {
+                            NSDictionary *tmpDictValue = (NSDictionary *)aValue;
+                            NSMutableDictionary *objectDict = [NSMutableDictionary new];
+                            for (NSString *aValueKey in tmpDictValue.allKeys) {
+                                id aValueObj = tmpDictValue[aValueKey];
+                                if ([aValueObj isKindOfClass:[NSDictionary class]]) {
+                                    [objectDict setObject:[[contentClass alloc] mw_initWithDictionary:aValueObj] forKey:aValueKey];
+                                }
+                            }
+                            aValue = objectDict;
+                        }
+                        break;
+                    }
+                    case MWPropertyTypeNSDate: {
+                        if ([aValue isKindOfClass:[NSString class]]) {
+                            aValue = mw_NSDateFromString(aValue);
+                        }
+                        break;
+                    }
+                    default:
+                        break;
+                }
+                [self setValue:aValue forKey:aKey];
+            } else {
+                //自定义对象
+                if ([aValue isKindOfClass:[NSDictionary class]]) {
+                    aValue = [[propertyInfo.cls alloc] mw_initWithDictionary:aValue];
                 }
             }
         }
         
-        //数组和字典的可变处理
-        if ([aKeyClass isSubclassOfClass:[NSMutableArray class]]) {
-            aValue = [NSMutableArray arrayWithArray:aValue];
-        } else if ([aKeyClass isSubclassOfClass:[NSMutableDictionary class]]) {
-            aValue = [NSMutableDictionary dictionaryWithDictionary:aValue];
-        }
-        
-        //赋值
-        [self setValue:aValue forKey:aKey];
         //赋值完成后回调
         [self mw_afterSetValueForKey:aKey];
     }
 }
 
-/** 判断key是否是系统的类 **/
-- (BOOL)mw_isSystemClass:(NSString *)key {
-    Class aClass = [self mw_getAttributeClass:key];
-    if (aClass) {
-        if ([MWHelper checkClassIsSystemClass:aClass]) {
-            // 系统类
-            return YES;
-        } else {
-            // 自定义的类
-            return NO;
-        }
-    } else {
-        // 基本类型
-        return YES;
+- (MWClassInfo *)mw_getClassInfo {
+    MWClassInfo *info = [MWClassCache classInfoForKey:NSStringFromClass([self class])];
+    if (!info) {
+        [MWClassCache saveClassInfo:[[MWClassInfo alloc] initWithClass:[self class]] forKey:NSStringFromClass([self class])];
     }
-}
-
-- (void)mw_enumerateProppertiesWithBlock:(void(^)(const char *name, const char *att, BOOL *stop))block {
-    BOOL stop = NO;
-    unsigned int count;
-    objc_property_t *properties = class_copyPropertyList([self class], &count);
-    for(int i = 0; i < count; i++) {
-        if (stop) {
-            break;
-        }
-        objc_property_t property = properties[i];
-        block(property_getName(property), property_getAttributes(property), &stop);
-    }
-    free(properties);
-}
-
-/** 获取属性的类 **/
-- (Class)mw_getAttributeClass:(NSString *)key {
-    __block Class aClass;
-    [self mw_enumerateProppertiesWithBlock:^(const char *name, const char *att, BOOL *stop) {
-        if ([key isEqualToString:[NSString stringWithUTF8String:name]]) {
-            NSRange objRange;
-            NSRange dotRange;
-            NSString *aClassStr;
-            NSMutableString *aAttribute;
-            
-            aAttribute  = [[NSMutableString alloc] initWithUTF8String:att];
-            objRange = [aAttribute rangeOfString:@"@"];
-            if (objRange.location != NSNotFound) {
-                // key是对象，不是基本类型
-                dotRange = [aAttribute rangeOfString:@","];
-                aClassStr = [aAttribute substringWithRange:NSMakeRange(3, dotRange.location-1-3)];
-                aClass = NSClassFromString(aClassStr);
-            }
-            *stop = YES;
-        }
-    }];
-    return aClass;
+    return info;
 }
 
 #pragma mark - Undefined Key
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key {
-    NSLog(@"Class %@ ,UndefineKey %@", [self class],key);
+//    NSLog(@"Class %@ ,UndefineKey %@", [self class],key);
 }
 
 #pragma mark - Custom
@@ -235,67 +377,69 @@
     //子类根据需要自己实现
 }
 
-- (NSString *)mw_dateFormat {
-    return @"yyyy-MM-dd HH:mm:ss";
-}
-
 #pragma mark - Helper
 /**
  自定义对象调用转换自身内容
  **/
 - (NSDictionary *)mw_modelConvertDictionary {
-    u_int count = 0;
-    objc_property_t* properties = class_copyPropertyList([self class], &count);
-    NSMutableArray* propertyArray = [NSMutableArray arrayWithCapacity:count];
-    NSMutableArray* typeArray = [NSMutableArray arrayWithCapacity:count];
-    for (NSInteger i=0; i<count; i++) {
-        objc_property_t property = properties[i];
-        const char* propertyName = property_getName(property);
-        NSString* propertyNameString = [NSString stringWithUTF8String:propertyName];
-        [propertyArray addObject:propertyNameString];
-        NSString* typecode = [NSString stringWithUTF8String:property_getAttributes(property)];
-        NSArray* attributesArray = [typecode componentsSeparatedByString:@","];
-        if(attributesArray.count == 4) {
-            NSString* type = [attributesArray[0] substringWithRange:NSMakeRange(3, [(NSString*)attributesArray[0] length]-4)];
-            [typeArray addObject:type];
+    NSMutableDictionary *toDict = [NSMutableDictionary dictionary];
+    MWClassInfo *classInfo = [self mw_getClassInfo];
+    for (NSString *key in classInfo.propertyDict.allKeys) {
+        MWPropertyInfo *propertyInfo = classInfo.propertyDict[key];
+        if (propertyInfo.isNumber) {
+            [toDict setObject:[self valueForKey:key] forKey:key];
         } else {
-            NSString* type = [attributesArray[0] substringWithRange:NSMakeRange(1, 1)];
-            [typeArray addObject:type];
-        }
-    }
-    
-    count = (u_int)propertyArray.count;
-    NSMutableArray* valueArray = [NSMutableArray arrayWithCapacity:count];
-    for (NSInteger i=0; i<count; i++) {
-        if ([[typeArray objectAtIndex:i] isEqualToString:@"c"]) {
-            NSNumber* number = [self valueForKey:propertyArray[i]];
-            [valueArray addObject:number];
-        } else {
-            NSString *propertyName = propertyArray[i];
-            NSObject* obj = [self valueForKey:propertyName];
-            if (obj == nil) {
-                [valueArray addObject:[NSNull null]];
-            } else if ([self mw_isSystemClass:propertyName]) {
-                Class cls = [self mw_getAttributeClass:propertyName];
-                if ([cls isSubclassOfClass:[NSArray class]]) {
-                    //array
-                    [valueArray addObject:[(NSArray *)obj mw_arrayConvertArray]];
-                } else if ([cls isSubclassOfClass:[NSDictionary class]]) {
-                    //dictionary
-                    [valueArray addObject:[(NSDictionary *)obj mw_dictionaryConvertDictionary]];
-                } else {
-                    //其他类型
-                    [valueArray addObject:obj];
+            if (propertyInfo.isFromFoundation) {
+                id obj = [self valueForKey:key];
+                switch (propertyInfo.type) {
+                    case MWPropertyTypeNSArray:
+                    case MWPropertyTypeNSMutableArray: {
+                        Class contentClass = [self mw_modelContainerPropertyGenericClass][propertyInfo.propertyName];
+                        if (contentClass) {
+                            NSArray *tmpObjArray = (NSArray *)obj;
+                            NSMutableArray *newObjArray = [NSMutableArray arrayWithCapacity:tmpObjArray.count];
+                            for (id arrayValue in tmpObjArray) {
+                                [newObjArray addObject:[arrayValue mw_modelConvertDictionary]];
+                            }
+                            obj = newObjArray;
+                        }
+                        break;
+                    }
+                    case MWPropertyTypeNSDictionary:
+                    case MWPropertyTypeNSMutableDictionary: {
+                        Class contentClass = [self mw_modelContainerPropertyGenericClass][propertyInfo.propertyName];
+                        if (contentClass) {
+                            NSDictionary *tmpObjDict = (NSDictionary *)obj;
+                            NSMutableDictionary *newObjDict = [NSMutableDictionary dictionaryWithCapacity:tmpObjDict.count];
+                            for (NSString *dictKey in tmpObjDict.allKeys) {
+                                id dictValue = tmpObjDict[dictKey];
+                                [newObjDict setObject:[dictValue mw_modelConvertDictionary] forKey:dictKey];
+                            }
+                            obj = newObjDict;
+                        }
+                        break;
+                    }
+                    case MWPropertyTypeNSDate: {
+                        if ([obj isKindOfClass:[NSDate class]]) {
+                            obj = [MWISODateFormatter() stringFromDate:obj];
+                        }
+                        break;
+                    }
+                    default:
+                        break;
+                }
+                if (obj) {
+                    [toDict setObject:obj forKey:key];
                 }
             } else {
-                //自定义类
-                [valueArray addObject:[obj mw_modelConvertDictionary]];
+                id obj = [self valueForKey:key];
+                if (obj) {
+                    [toDict setObject:[obj mw_modelConvertDictionary] forKey:key];
+                }
             }
         }
     }
-    
-    NSDictionary* dict = [NSDictionary dictionaryWithObjects:valueArray forKeys:propertyArray];
-    return dict;
+    return toDict;
 }
 
 - (NSString *)mw_convertJsonString {

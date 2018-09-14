@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		01EE0A9F439D90179103949B85BA3E4F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6604A7D69453B4569E4E4827FB9155A9 /* Foundation.framework */; };
 		09AA21660A45969E61B56FB37513E81A /* Pods-MWKits_Tests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = FEB2531F0F4A1B72D4414AF0EABE91F8 /* Pods-MWKits_Tests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		0A1DBFD3224B54FA6B3B4C632D54BF72 /* MWHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = 773823C9299B52FC5DB4DC9E3BC7710C /* MWHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		0C29F5CDD30E71F88647341EA3CFD248 /* NSObject+MWModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 8394DA44EA6FA195AA0B03402ECBD94A /* NSObject+MWModel.m */; };
 		0DE9E164A470552274538633845DB1BC /* MWBaseNavigationController.h in Headers */ = {isa = PBXBuildFile; fileRef = A34BA0180103C34602EA6FC87E376BB3 /* MWBaseNavigationController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		15060C11ADD272F64762BC8DB45C23BC /* MWPresentAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 13A7671058572AF8D521F2421C4BB8B7 /* MWPresentAnimation.m */; };
@@ -17,16 +16,14 @@
 		1755C7CFA2F7D7B8C9119DDDA6C88B56 /* UIColor+MWUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 692953EED8220BBC9A098F0C7BC1CD79 /* UIColor+MWUtil.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		27B00A24A250F65248F77FEDC78CE5CA /* UIImage+MWUtil.h in Headers */ = {isa = PBXBuildFile; fileRef = 36F744780369B5081EEC0C0244A2586B /* UIImage+MWUtil.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2A83669B6709E2BA50D687AF0EA19592 /* Pods-MWKits_Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 4A66E10E0CB065E5BBCA5EDBC6A94769 /* Pods-MWKits_Tests-dummy.m */; };
-		3B69F69FE48C0C4F0E094DC0B7143FED /* NSDictionary+MWModel.h in Headers */ = {isa = PBXBuildFile; fileRef = F20D191B19908278C740DA0913917FF4 /* NSDictionary+MWModel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3C2F721D888D94444722DAC6453C0B6E /* UIViewController+MWTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 37DA4C8F6E01B90071C7E787DB986696 /* UIViewController+MWTransition.m */; };
 		48E128977D4CF2D614FA3FAF056E20E9 /* MWPresentAnimation.h in Headers */ = {isa = PBXBuildFile; fileRef = 4ACC43F08312F5E0BB8EBBA805BE08CC /* MWPresentAnimation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4BECFF3032AC08ACEFECD324C625F8D1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6604A7D69453B4569E4E4827FB9155A9 /* Foundation.framework */; };
-		4D34BD757339513025EF77A1D3109D53 /* NSArray+MWModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 3909C9E2766A3FBB3F71D048020BE561 /* NSArray+MWModel.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		5DF8ACAC8CE8733EC0344C9A5F161C69 /* NSArray+MWModel.m in Sources */ = {isa = PBXBuildFile; fileRef = BF03B34CF23617FCA9D2D78D9F468DAE /* NSArray+MWModel.m */; };
 		63C5E64131DC15F7E415527CE7D4800A /* MWKits-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 6AF8A205953B8F4AE6CD40AD1AC2EB98 /* MWKits-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		69F6B9614E29C7ABDEC6CBD1910ADA0E /* MWCountdownUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 14F18BB5CAF6A6F4630B9E8303345DF8 /* MWCountdownUtil.m */; };
 		6BCEDA09B4CCE45134BE4688F6929289 /* MWPushAnimation.h in Headers */ = {isa = PBXBuildFile; fileRef = D1E8CBB022F5032EACA3AEE833EB6143 /* MWPushAnimation.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		7AA4ED7ED63A0D6F87821A2363B5D605 /* NSDictionary+MWModel.m in Sources */ = {isa = PBXBuildFile; fileRef = F18EC4EE98A687E7A972303A66B90D77 /* NSDictionary+MWModel.m */; };
+		7A027F26214B52CA003CA65D /* MWClassInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A027F24214B52CA003CA65D /* MWClassInfo.h */; };
+		7A027F27214B52CA003CA65D /* MWClassInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A027F25214B52CA003CA65D /* MWClassInfo.m */; };
 		7F14D4F8A10FF6F870E1A5CB81BD8C55 /* MWBaseNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4662EE0B63ABF8955173E75A3E4EE7A5 /* MWBaseNavigationController.m */; };
 		924A141F5DC3B1711402631FCEC5AF47 /* NSString+MWUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = A5D58E6A55D748036F2AE82A6A821246 /* NSString+MWUtil.m */; };
 		9793CB0B0F20A38F3EA629CD04CD42AA /* MWDismissAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 25416E0854556CEBA2492F2A544D63A2 /* MWDismissAnimation.m */; };
@@ -39,7 +36,6 @@
 		C607C0ADF22FFD5BBEBC8B54AFA8DA1E /* Pods-MWKits_Example-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 145BD67C73C60D990C63CADD303C1458 /* Pods-MWKits_Example-dummy.m */; };
 		DC45BB2620035D1B9EB5DF2D5AB2A04E /* UIImage+MWUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = CB79646E0545C9767818F51694949C72 /* UIImage+MWUtil.m */; };
 		DE88AF4307C3ACA44BBE0E47B16A07DE /* Pods-MWKits_Example-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = DCEE56FE9815ED227B81DE9503B29D41 /* Pods-MWKits_Example-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E8B216997A331340BA1CEC2CD776A0C2 /* MWHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = B33FEF419BD7068E541DD696A3067B0E /* MWHelper.m */; };
 		ECAA6BCD46B74D99AD59EAB25254DBC7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6604A7D69453B4569E4E4827FB9155A9 /* Foundation.framework */; };
 		F08A4511A0AED9F24D632BD96B0674BA /* NSObject+MWModel.h in Headers */ = {isa = PBXBuildFile; fileRef = 74981F362D6FF05D55F8387889F10330 /* NSObject+MWModel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F78EC9A5695BB0808C81807210098E92 /* MWDefines.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D6485BA254390D9EAB02A5E88193BEC /* MWDefines.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -67,16 +63,15 @@
 		14F18BB5CAF6A6F4630B9E8303345DF8 /* MWCountdownUtil.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = MWCountdownUtil.m; sourceTree = "<group>"; };
 		1D095AE85F1E250A00C8B11BB8DC3F37 /* MWPushAnimation.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = MWPushAnimation.m; sourceTree = "<group>"; };
 		201EB06151C468F314B99F41EB4DDD9F /* Pods-MWKits_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-MWKits_Example-frameworks.sh"; sourceTree = "<group>"; };
-		203FC3EEA875783827E444497D0C77BF /* Pods-MWKits_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = "Pods-MWKits_Example.modulemap"; sourceTree = "<group>"; };
+		203FC3EEA875783827E444497D0C77BF /* Pods-MWKits_Example.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-MWKits_Example.modulemap"; sourceTree = "<group>"; };
 		25416E0854556CEBA2492F2A544D63A2 /* MWDismissAnimation.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = MWDismissAnimation.m; sourceTree = "<group>"; };
 		2BB1DC96078B9035D680FBF2C6E33034 /* Pods-MWKits_Tests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-MWKits_Tests-frameworks.sh"; sourceTree = "<group>"; };
 		2D6485BA254390D9EAB02A5E88193BEC /* MWDefines.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MWDefines.h; path = MWKits/Classes/MWDefines.h; sourceTree = "<group>"; };
 		312577BA384061DBFB987F0142D33ED4 /* Pods-MWKits_Example-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-MWKits_Example-resources.sh"; sourceTree = "<group>"; };
 		343D7AA579F1962526593DD0369E644C /* MWDismissAnimation.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = MWDismissAnimation.h; sourceTree = "<group>"; };
 		36F744780369B5081EEC0C0244A2586B /* UIImage+MWUtil.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UIImage+MWUtil.h"; sourceTree = "<group>"; };
-		3738DD11FAAA6150C0E951CE439BED6E /* MWKits.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = MWKits.modulemap; sourceTree = "<group>"; };
+		3738DD11FAAA6150C0E951CE439BED6E /* MWKits.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = MWKits.modulemap; sourceTree = "<group>"; };
 		37DA4C8F6E01B90071C7E787DB986696 /* UIViewController+MWTransition.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+MWTransition.m"; sourceTree = "<group>"; };
-		3909C9E2766A3FBB3F71D048020BE561 /* NSArray+MWModel.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "NSArray+MWModel.h"; sourceTree = "<group>"; };
 		3B919D311A7B0AC4076C9FD33C31D9E1 /* Pods-MWKits_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MWKits_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		4662EE0B63ABF8955173E75A3E4EE7A5 /* MWBaseNavigationController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = MWBaseNavigationController.m; sourceTree = "<group>"; };
 		48615985700C6F0685F55D24DCEC642C /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -90,11 +85,12 @@
 		692953EED8220BBC9A098F0C7BC1CD79 /* UIColor+MWUtil.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UIColor+MWUtil.h"; sourceTree = "<group>"; };
 		6AF8A205953B8F4AE6CD40AD1AC2EB98 /* MWKits-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MWKits-umbrella.h"; sourceTree = "<group>"; };
 		74981F362D6FF05D55F8387889F10330 /* NSObject+MWModel.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "NSObject+MWModel.h"; sourceTree = "<group>"; };
-		773823C9299B52FC5DB4DC9E3BC7710C /* MWHelper.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = MWHelper.h; sourceTree = "<group>"; };
-		7FCD35FDA241CA1D64F7C9199D664672 /* MWKits.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = MWKits.framework; path = MWKits.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A027F24214B52CA003CA65D /* MWClassInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWClassInfo.h; sourceTree = "<group>"; };
+		7A027F25214B52CA003CA65D /* MWClassInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MWClassInfo.m; sourceTree = "<group>"; };
+		7FCD35FDA241CA1D64F7C9199D664672 /* MWKits.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MWKits.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8394DA44EA6FA195AA0B03402ECBD94A /* NSObject+MWModel.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "NSObject+MWModel.m"; sourceTree = "<group>"; };
 		8D2543B2CCAF735EAFD2A2775428A966 /* UIColor+MWUtil.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "UIColor+MWUtil.m"; sourceTree = "<group>"; };
-		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		93A4A3777CF96A4AAC1D13BA6DCCEA73 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		949B64872C04173735AB07DBC73F5A09 /* Pods-MWKits_Tests-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MWKits_Tests-acknowledgements.plist"; sourceTree = "<group>"; };
 		99D09AC33F86C490C04282E63496CC56 /* UIViewController+MWTransition.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "UIViewController+MWTransition.h"; sourceTree = "<group>"; };
 		A233143437EB487AEB595658495E962F /* MWKits-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "MWKits-dummy.m"; sourceTree = "<group>"; };
@@ -102,22 +98,18 @@
 		A5D58E6A55D748036F2AE82A6A821246 /* NSString+MWUtil.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "NSString+MWUtil.m"; sourceTree = "<group>"; };
 		ACBDB7AED092587EE10CB08400BECCB6 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0D68897CD5CBC09823A7B0007C1AC5E /* Pods-MWKits_Example-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MWKits_Example-acknowledgements.plist"; sourceTree = "<group>"; };
-		B33FEF419BD7068E541DD696A3067B0E /* MWHelper.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = MWHelper.m; sourceTree = "<group>"; };
-		B485213637F69C15AA933F48BF770B29 /* Pods_MWKits_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_MWKits_Tests.framework; path = "Pods-MWKits_Tests.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B485213637F69C15AA933F48BF770B29 /* Pods_MWKits_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MWKits_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B83BAD5E24CFD086DBEBD7787CA8B235 /* Pods-MWKits_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MWKits_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		BF03B34CF23617FCA9D2D78D9F468DAE /* NSArray+MWModel.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "NSArray+MWModel.m"; sourceTree = "<group>"; };
 		C824A4488A7759893BA095FFF5E5E670 /* Pods-MWKits_Tests-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-MWKits_Tests-acknowledgements.markdown"; sourceTree = "<group>"; };
 		CB79646E0545C9767818F51694949C72 /* UIImage+MWUtil.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "UIImage+MWUtil.m"; sourceTree = "<group>"; };
-		CD3E87C5C586EE54E58D7A1C04E6279D /* Pods-MWKits_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; path = "Pods-MWKits_Tests.modulemap"; sourceTree = "<group>"; };
+		CD3E87C5C586EE54E58D7A1C04E6279D /* Pods-MWKits_Tests.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = "sourcecode.module-map"; path = "Pods-MWKits_Tests.modulemap"; sourceTree = "<group>"; };
 		D01FC79643BE4B7DD1B0DC5AA1C724EF /* Pods-MWKits_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MWKits_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		D1E8CBB022F5032EACA3AEE833EB6143 /* MWPushAnimation.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = MWPushAnimation.h; sourceTree = "<group>"; };
 		D44352B78182C245D804E20E092863A3 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		D5655A63A458E29755C635A16E3CA7B1 /* Pods_MWKits_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_MWKits_Example.framework; path = "Pods-MWKits_Example.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D5655A63A458E29755C635A16E3CA7B1 /* Pods_MWKits_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MWKits_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DADAF080868C9BA1F8506CB2AA9E366B /* MWKits.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = MWKits.xcconfig; sourceTree = "<group>"; };
 		DCEE56FE9815ED227B81DE9503B29D41 /* Pods-MWKits_Example-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-MWKits_Example-umbrella.h"; sourceTree = "<group>"; };
 		E53747BC41968DDA60599BAF15F6B830 /* MWCountdownUtil.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = MWCountdownUtil.h; sourceTree = "<group>"; };
-		F18EC4EE98A687E7A972303A66B90D77 /* NSDictionary+MWModel.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+MWModel.m"; sourceTree = "<group>"; };
-		F20D191B19908278C740DA0913917FF4 /* NSDictionary+MWModel.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+MWModel.h"; sourceTree = "<group>"; };
 		F47C2914503887EB4DCDDED45246F2B3 /* MWPopAnimation.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = MWPopAnimation.m; sourceTree = "<group>"; };
 		FEB2531F0F4A1B72D4414AF0EABE91F8 /* Pods-MWKits_Tests-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-MWKits_Tests-umbrella.h"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -270,12 +262,8 @@
 		D3B0A1280C3AC16A6BAA074A9C413EAB /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				773823C9299B52FC5DB4DC9E3BC7710C /* MWHelper.h */,
-				B33FEF419BD7068E541DD696A3067B0E /* MWHelper.m */,
-				3909C9E2766A3FBB3F71D048020BE561 /* NSArray+MWModel.h */,
-				BF03B34CF23617FCA9D2D78D9F468DAE /* NSArray+MWModel.m */,
-				F20D191B19908278C740DA0913917FF4 /* NSDictionary+MWModel.h */,
-				F18EC4EE98A687E7A972303A66B90D77 /* NSDictionary+MWModel.m */,
+				7A027F24214B52CA003CA65D /* MWClassInfo.h */,
+				7A027F25214B52CA003CA65D /* MWClassInfo.m */,
 				74981F362D6FF05D55F8387889F10330 /* NSObject+MWModel.h */,
 				8394DA44EA6FA195AA0B03402ECBD94A /* NSObject+MWModel.m */,
 			);
@@ -348,14 +336,12 @@
 				C56BFA7A173771AB4D0826DED7B8396A /* MWCountdownUtil.h in Headers */,
 				F78EC9A5695BB0808C81807210098E92 /* MWDefines.h in Headers */,
 				174D9353654FFB68E61061FFC042428B /* MWDismissAnimation.h in Headers */,
-				0A1DBFD3224B54FA6B3B4C632D54BF72 /* MWHelper.h in Headers */,
 				63C5E64131DC15F7E415527CE7D4800A /* MWKits-umbrella.h in Headers */,
 				FA46E4C1ECE17F2354E86DD2B5C30CE1 /* MWPopAnimation.h in Headers */,
 				48E128977D4CF2D614FA3FAF056E20E9 /* MWPresentAnimation.h in Headers */,
 				6BCEDA09B4CCE45134BE4688F6929289 /* MWPushAnimation.h in Headers */,
+				7A027F26214B52CA003CA65D /* MWClassInfo.h in Headers */,
 				C05DC6399D73C6DE062A4F6992A4216A /* MWTransitionDefines.h in Headers */,
-				4D34BD757339513025EF77A1D3109D53 /* NSArray+MWModel.h in Headers */,
-				3B69F69FE48C0C4F0E094DC0B7143FED /* NSDictionary+MWModel.h in Headers */,
 				F08A4511A0AED9F24D632BD96B0674BA /* NSObject+MWModel.h in Headers */,
 				BA82DE3580A5E02294BD9523604DF2B7 /* NSString+MWUtil.h in Headers */,
 				1755C7CFA2F7D7B8C9119DDDA6C88B56 /* UIColor+MWUtil.h in Headers */,
@@ -479,17 +465,15 @@
 				7F14D4F8A10FF6F870E1A5CB81BD8C55 /* MWBaseNavigationController.m in Sources */,
 				69F6B9614E29C7ABDEC6CBD1910ADA0E /* MWCountdownUtil.m in Sources */,
 				9793CB0B0F20A38F3EA629CD04CD42AA /* MWDismissAnimation.m in Sources */,
-				E8B216997A331340BA1CEC2CD776A0C2 /* MWHelper.m in Sources */,
 				F9380C9D6CE8077D25D5664971063A67 /* MWKits-dummy.m in Sources */,
 				B5778C47303C512C73FE067CF635395C /* MWPopAnimation.m in Sources */,
 				15060C11ADD272F64762BC8DB45C23BC /* MWPresentAnimation.m in Sources */,
 				FAE3AA5655CCBBB6A777ACDE2C2A3D8E /* MWPushAnimation.m in Sources */,
-				5DF8ACAC8CE8733EC0344C9A5F161C69 /* NSArray+MWModel.m in Sources */,
-				7AA4ED7ED63A0D6F87821A2363B5D605 /* NSDictionary+MWModel.m in Sources */,
 				0C29F5CDD30E71F88647341EA3CFD248 /* NSObject+MWModel.m in Sources */,
 				924A141F5DC3B1711402631FCEC5AF47 /* NSString+MWUtil.m in Sources */,
 				A2BBB08D1A7C580BF28B2E16A11574B6 /* UIColor+MWUtil.m in Sources */,
 				DC45BB2620035D1B9EB5DF2D5AB2A04E /* UIImage+MWUtil.m in Sources */,
+				7A027F27214B52CA003CA65D /* MWClassInfo.m in Sources */,
 				3C2F721D888D94444722DAC6453C0B6E /* UIViewController+MWTransition.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
