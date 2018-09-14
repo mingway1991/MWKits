@@ -80,14 +80,7 @@ typedef NS_ENUM (NSUInteger, MWPropertyType) {
 @property (nonatomic, copy, readonly) NSString *className;
 @property (nonatomic, strong, readonly) NSDictionary<NSString *, MWPropertyInfo *> *propertyDict;
 
-- (instancetype)initWithClass:(Class)cls;
-
-@end
-
-@interface MWClassCache : NSObject
-
-+ (void)saveClassInfo:(MWClassInfo *)classInfo forKey:(NSString *)key;
-+ (MWClassInfo *)classInfoForKey:(NSString *)key;
++ (instancetype)classInfoWithClass:(Class)cls;
 
 @end
 

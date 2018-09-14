@@ -202,6 +202,29 @@ static force_inline BOOL MWPropertyTypeIsNumber(MWPropertyType type) {
     return info;
 }
 
++ (instancetype)classInfoWithClass:(Class)cls {
+    if (!cls) return nil;
+    static CFMutableDictionaryRef classCache;
+    static dispatch_once_t onceToken;
+    static dispatch_semaphore_t lock;
+    dispatch_once(&onceToken, ^{
+        classCache = CFDictionaryCreateMutable(CFAllocatorGetDefault(), 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+        lock = dispatch_semaphore_create(1);
+    });
+    dispatch_semaphore_wait(lock, DISPATCH_TIME_FOREVER);
+    MWClassInfo *info = CFDictionaryGetValue(classCache, (__bridge const void *)(cls));
+    dispatch_semaphore_signal(lock);
+    if (!info) {
+        info = [[MWClassInfo alloc] initWithClass:cls];
+        if (info) {
+            dispatch_semaphore_wait(lock, DISPATCH_TIME_FOREVER);
+            CFDictionarySetValue(classCache, (__bridge const void *)(cls), (__bridge const void *)(info));
+            dispatch_semaphore_signal(lock);
+        }
+    }
+    return info;
+}
+
 - (instancetype)initWithClass:(Class)cls {
     if (self = [super init]) {
         _cls = cls;
@@ -225,25 +248,6 @@ static force_inline BOOL MWPropertyTypeIsNumber(MWPropertyType type) {
         _propertyDict = propertyDict;
     }
     return self;
-}
-
-@end
-
-#pragma mark - MWClassCache
-
-@implementation MWClassCache
-
-static NSMutableDictionary *savedClassInfoDict;
-
-+ (void)saveClassInfo:(MWClassInfo *)classInfo forKey:(NSString *)key {
-    if (!savedClassInfoDict) {
-        savedClassInfoDict = [NSMutableDictionary dictionary];
-    }
-    [savedClassInfoDict setObject:classInfo forKey:key];
-}
-
-+ (MWClassInfo *)classInfoForKey:(NSString *)key {
-    return savedClassInfoDict[key];
 }
 
 @end
