@@ -51,7 +51,7 @@ return self; \
 [self mw_encodeWithCoder:encoder]; \
 }
 
-#define MWCopingImplementation \
+#define MWCopyingImplementation \
 - (id)copyWithZone:(NSZone *)zone \
 {\
 return [self mw_copy]; \
