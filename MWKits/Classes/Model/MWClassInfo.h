@@ -57,10 +57,14 @@ typedef NS_ENUM (NSUInteger, MWPropertyType) {
 
 @interface MWPropertyInfo : NSObject <NSCopying>
 
-@property (nonatomic, assign, readonly, nullable) Class cls;
+//原始数据
 @property (nonatomic, assign, readonly) objc_property_t property;
 @property (nonatomic, copy, readonly) NSString *propertyName;
 @property (nonatomic, copy, readonly) NSString *attrType; //property的objc_property_attribute_t记录的type字符串
+@property (nonatomic, assign, readonly) SEL getter;
+@property (nonatomic, assign, readonly) SEL setter;
+//自己转化的
+@property (nonatomic, assign, readonly, nullable) Class cls;
 @property (nonatomic, assign, readonly) MWPropertyType type;//通过attrType转化的枚举类型
 @property (nonatomic, assign ,readonly) BOOL isNumber;//是否是基本数据类型
 @property (nonatomic, assign ,readonly) BOOL isFromFoundation;//是否是系统类型

@@ -9,6 +9,7 @@
 #import "MWDefines.h"
 #import "MWClassInfo.h"
 #import <objc/runtime.h>
+#import <objc/message.h>
 
 #pragma mark - Convert
 static force_inline NSDateFormatter *MWISODateFormatter() {
@@ -222,7 +223,7 @@ static force_inline NSDate *mw_NSDateFromString(__unsafe_unretained NSString *st
     if (![dictionary isKindOfClass:[NSDictionary class]]) return nil;
     
     [dictionary enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-        [self mw_setValue:obj forKey:key];
+        [self mw_setPropertyValue:obj forKey:key];
     }];
     
     return self;
@@ -234,14 +235,14 @@ static force_inline NSDate *mw_NSDateFromString(__unsafe_unretained NSString *st
     [info.propertyDict enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, MWPropertyInfo * _Nonnull obj, BOOL * _Nonnull stop) {
         id value = [coder decodeObjectForKey:key];
         if (value == nil) return;
-        [self setValue:obj forKey:key];
+        [self mw_setValue:obj forKey:key];
     }];
 }
 
 - (void)mw_encodeWithCoder:(NSCoder *)aCoder {
     MWClassInfo *info = [self mw_getClassInfo];
     [info.propertyDict enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, MWPropertyInfo * _Nonnull obj, BOOL * _Nonnull stop) {
-        id value = [self valueForKey:key];
+        id value = [self mw_valueWithProperty:obj];
         if (value == nil) return;
         [aCoder encodeObject:value forKey:key];
     }];
@@ -252,15 +253,15 @@ static force_inline NSDate *mw_NSDateFromString(__unsafe_unretained NSString *st
     MWClassInfo *info = [self mw_getClassInfo];
     id obj = [[[self class] alloc] init];
     [info.propertyDict enumerateKeysAndObjectsUsingBlock:^(NSString * _Nonnull key, MWPropertyInfo * _Nonnull obj, BOOL * _Nonnull stop) {
-        id value = [self valueForKey:key];
+        id value = [self mw_valueWithProperty:obj];
         if (value == nil) return;
-        [obj setValue:[value copy] forKey:key];
+        [obj mw_setValue:[value copy] forKey:key];
     }];
     return obj;
 }
 
 #pragma mark - Private Methods
-- (void)mw_setValue:(id)value forKey:(NSString *)key {
+- (void)mw_setPropertyValue:(id)value forKey:(NSString *)key {
     NSString *redirectKey = [self mw_redirectMapper][key];
     NSString *aKey = redirectKey ? redirectKey : key;
     id aValue = value;
@@ -281,7 +282,7 @@ static force_inline NSDate *mw_NSDateFromString(__unsafe_unretained NSString *st
         
         if (!aValue || aValue == [NSNull null]) {
             //value为空值，直接赋值nil
-            [self setValue:nil forUndefinedKey:aKey];
+            [self mw_setValue:nil forKey:aKey];
             return;
         }
         
@@ -289,7 +290,7 @@ static force_inline NSDate *mw_NSDateFromString(__unsafe_unretained NSString *st
         
         if (propertyInfo.isNumber) {
             NSNumber *num = mw_NSNumberCreateFromID(aValue);
-            [self setValue:num forKey:aKey];
+            [self mw_setValue:num forKey:aKey];
         } else {
             if (propertyInfo.isFromFoundation) {
                 //系统类型对象
@@ -333,7 +334,7 @@ static force_inline NSDate *mw_NSDateFromString(__unsafe_unretained NSString *st
                     default:
                         break;
                 }
-                [self setValue:aValue forKey:aKey];
+                [self mw_setValue:aValue forKey:aKey];
             } else {
                 //自定义对象
                 if ([aValue isKindOfClass:[NSDictionary class]]) {
@@ -348,11 +349,78 @@ static force_inline NSDate *mw_NSDateFromString(__unsafe_unretained NSString *st
 }
 
 - (MWClassInfo *)mw_getClassInfo {
-    MWClassInfo *info = [MWClassCache classInfoForKey:NSStringFromClass([self class])];
-    if (!info) {
+    MWClassInfo *classInfo = [MWClassCache classInfoForKey:NSStringFromClass([self class])];
+    if (!classInfo) {
         [MWClassCache saveClassInfo:[[MWClassInfo alloc] initWithClass:[self class]] forKey:NSStringFromClass([self class])];
     }
-    return info;
+    return classInfo;
+}
+
+#pragma mark - Set/Get value for key
+- (void)mw_setValue:(id)value forKey:(NSString *)key {
+    MWClassInfo *classInfo = [MWClassCache classInfoForKey:NSStringFromClass([self class])];
+    MWPropertyInfo *propertyInfo = classInfo.propertyDict[key];
+    if (!propertyInfo) return;
+    
+    [self mw_setValueWithProperty:propertyInfo value:value];
+}
+
+- (void)mw_setValueWithProperty:(MWPropertyInfo *)propertyInfo value:(id)value {
+    if (propertyInfo.setter) {
+        ((void (*)(id, SEL, id))(void *) objc_msgSend)((id)self, propertyInfo.setter, value);
+    } else {
+        [self setValue:value forKey:propertyInfo.propertyName];
+    }
+}
+
+- (id)mw_valueforKey:(NSString *)key {
+    MWClassInfo *classInfo = [MWClassCache classInfoForKey:NSStringFromClass([self class])];
+    MWPropertyInfo *propertyInfo = classInfo.propertyDict[key];
+    if (!propertyInfo) return nil;
+    
+    return [self mw_valueWithProperty:propertyInfo];
+}
+
+- (id)mw_valueWithProperty:(MWPropertyInfo *)propertyInfo {
+    if (propertyInfo.getter) {
+        if ([propertyInfo isNumber]) {
+            id value;
+            switch (propertyInfo.type) {
+                case MWPropertyTypeBool: {
+                    bool result = ((bool (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    value = [NSNumber numberWithBool:result];
+                    break;
+                }
+                case MWPropertyTypeInt8:
+                case MWPropertyTypeUInt8:
+                case MWPropertyTypeInt16:
+                case MWPropertyTypeUInt16:
+                case MWPropertyTypeInt32:
+                case MWPropertyTypeUInt32:
+                case MWPropertyTypeInt64:
+                case MWPropertyTypeUInt64: {
+                    int result = ((int (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    value = [NSNumber numberWithInt:result];
+                    break;
+                }
+                case MWPropertyTypeFloat: {
+                    float result = ((float (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    value = [NSNumber numberWithFloat:result];
+                    break;
+                }
+                case MWPropertyTypeDouble: {
+                    double result = ((double (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+                    value = [NSNumber numberWithDouble:result];
+                    break;
+                }
+                default:
+                    break;
+            }
+            return value;
+        }
+        return ((id (*)(id, SEL))(void *) objc_msgSend)((id)self, propertyInfo.getter);
+    }
+    return [self valueForKey:propertyInfo.propertyName];
 }
 
 #pragma mark - Undefined Key
@@ -387,10 +455,14 @@ static force_inline NSDate *mw_NSDateFromString(__unsafe_unretained NSString *st
     for (NSString *key in classInfo.propertyDict.allKeys) {
         MWPropertyInfo *propertyInfo = classInfo.propertyDict[key];
         if (propertyInfo.isNumber) {
-            [toDict setObject:[self valueForKey:key] forKey:key];
+            id num = [self mw_valueWithProperty:propertyInfo];
+            if (!num) {
+                num = [NSNull null];
+            }
+            [toDict setObject:num forKey:key];
         } else {
             if (propertyInfo.isFromFoundation) {
-                id obj = [self valueForKey:key];
+                id obj = [self mw_valueWithProperty:propertyInfo];
                 switch (propertyInfo.type) {
                     case MWPropertyTypeNSArray:
                     case MWPropertyTypeNSMutableArray: {
@@ -429,13 +501,17 @@ static force_inline NSDate *mw_NSDateFromString(__unsafe_unretained NSString *st
                         break;
                 }
                 if (obj) {
+                    if (!obj) {
+                        obj = [NSNull null];
+                    }
                     [toDict setObject:obj forKey:key];
                 }
             } else {
-                id obj = [self valueForKey:key];
-                if (obj) {
-                    [toDict setObject:[obj mw_modelConvertDictionary] forKey:key];
+                id obj = [self mw_valueWithProperty:propertyInfo];
+                if (!obj) {
+                    obj = [NSNull null];
                 }
+                [toDict setObject:[obj mw_modelConvertDictionary] forKey:key];
             }
         }
     }

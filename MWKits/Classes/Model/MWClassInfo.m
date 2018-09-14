@@ -98,10 +98,13 @@ static force_inline BOOL MWPropertyTypeIsNumber(MWPropertyType type) {
 
 @interface MWPropertyInfo ()
 
-@property (nonatomic, assign, readwrite, nullable) Class cls;
 @property (nonatomic, assign, readwrite) objc_property_t property;
 @property (nonatomic, copy, readwrite) NSString *propertyName;
 @property (nonatomic, copy, readwrite) NSString *attrType;
+@property (nonatomic, assign, readwrite) SEL getter;
+@property (nonatomic, assign, readwrite) SEL setter;
+
+@property (nonatomic, assign, readwrite, nullable) Class cls;
 @property (nonatomic, assign, readwrite) MWPropertyType type;
 @property (nonatomic, assign ,readwrite) BOOL isNumber;
 @property (nonatomic, assign ,readwrite) BOOL isFromFoundation;
@@ -134,21 +137,42 @@ static force_inline BOOL MWPropertyTypeIsNumber(MWPropertyType type) {
                         _isNumber = MWPropertyTypeIsNumber(_type);
                         _isFromFoundation = (_type == MWPropertyTypeUnknown) ? NO : YES;
                     }
-                }break;
+                    break;
+                }
+                case 'G':{
+                    if (attrs[i].value) {
+                        _getter = NSSelectorFromString([NSString stringWithUTF8String:attrs[i].value]);
+                    }
+                    break;
+                }
+                case 'S': {
+                    if (attrs[i].value) {
+                        _setter = NSSelectorFromString([NSString stringWithUTF8String:attrs[i].value]);
+                    }
+                    break;
+                }
                 case 'V':
                 case 'R':
                 case 'C':
                 case '&':
                 case 'N':
                 case 'D':
-                case 'G':
-                case 'S': {
-                }break;
+                    break;
             }
         }
         if (attrs) {
             free(attrs);
             attrs = NULL;
+        }
+        
+        if (_propertyName.length) {
+            //默认的getter和setter方法
+            if (!_getter) {
+                _getter = NSSelectorFromString(_propertyName);
+            }
+            if (!_setter) {
+                _setter = NSSelectorFromString([NSString stringWithFormat:@"set%@%@:", [_propertyName substringToIndex:1].uppercaseString, [_propertyName substringFromIndex:1]]);
+            }
         }
     }
     return self;
@@ -180,9 +204,9 @@ static force_inline BOOL MWPropertyTypeIsNumber(MWPropertyType type) {
 
 - (instancetype)initWithClass:(Class)cls {
     if (self = [super init]) {
-        objc_property_t *properties;
+        _cls = cls;
         unsigned int count;
-        properties = class_copyPropertyList(cls, &count);
+        objc_property_t *properties = class_copyPropertyList(cls, &count);
         NSMutableDictionary *propertyDict = [NSMutableDictionary dictionaryWithCapacity:count];
         
         for(int i = 0; i < count; i++) {
@@ -197,7 +221,6 @@ static force_inline BOOL MWPropertyTypeIsNumber(MWPropertyType type) {
             properties = NULL;
         }
         
-        _cls = cls;
         _className = NSStringFromClass(cls);
         _propertyDict = propertyDict;
     }
