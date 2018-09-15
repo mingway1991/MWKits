@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'MWKits'
-  s.version          = '0.2.6'
+  s.version          = '0.2.7'
   s.summary          = 'iOS 常用工具库'
 
   s.description      = 'MWKits'
