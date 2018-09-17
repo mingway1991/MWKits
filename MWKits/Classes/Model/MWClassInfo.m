@@ -70,6 +70,7 @@ MWPropertyType MWPropertyGetType(const char *attrType, Class cls) {
     }
 }
 
+/** 判断属性是否为记本数据类型 **/
 static force_inline BOOL MWPropertyTypeIsNumber(MWPropertyType type) {
     switch (type) {
         case MWPropertyTypeBool:
@@ -179,8 +180,6 @@ static force_inline BOOL MWPropertyTypeIsNumber(MWPropertyType type) {
     return self;
 }
 
-
-
 @end
 
 #pragma mark - MWClassInfo
@@ -205,6 +204,7 @@ static force_inline BOOL MWPropertyTypeIsNumber(MWPropertyType type) {
 
 + (instancetype)classInfoWithClass:(Class)cls {
     if (!cls) return nil;
+    //缓存类信息，使用dispatch_semaphore_t加锁读取和缓存
     static CFMutableDictionaryRef classCache;
     static dispatch_once_t onceToken;
     static dispatch_semaphore_t lock;

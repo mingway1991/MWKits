@@ -223,7 +223,7 @@ static force_inline NSDate *mw_NSDateFromString(__unsafe_unretained NSString *st
     if (![dictionary isKindOfClass:[NSDictionary class]]) return nil;
     
     [dictionary enumerateKeysAndObjectsUsingBlock:^(id  _Nonnull key, id  _Nonnull obj, BOOL * _Nonnull stop) {
-        [self mw_setPropertyValue:obj forKey:key];
+        [self mw_mappingPropertyValue:obj forKey:key];
     }];
     
     return self;
@@ -261,7 +261,8 @@ static force_inline NSDate *mw_NSDateFromString(__unsafe_unretained NSString *st
 }
 
 #pragma mark - Private Methods
-- (void)mw_setPropertyValue:(id)value forKey:(NSString *)key {
+//处理属性赋值
+- (void)mw_mappingPropertyValue:(id)value forKey:(NSString *)key {
     NSString *redirectKey = [self mw_redirectMapper][key];
     NSString *aKey = redirectKey ? redirectKey : key;
     id aValue = value;
@@ -401,7 +402,7 @@ static force_inline NSDate *mw_NSDateFromString(__unsafe_unretained NSString *st
 
 #pragma mark - Undefined Key
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key {
-    //    NSLog(@"Class %@ ,UndefineKey %@", [self class],key);
+    NSLog(@"Class %@ ,UndefineKey %@", [self class],key);
 }
 
 #pragma mark - Custom
