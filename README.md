@@ -5,6 +5,12 @@
 [![License](https://img.shields.io/cocoapods/l/MWKits.svg?style=flat)](https://cocoapods.org/pods/MWKits)
 [![Platform](https://img.shields.io/cocoapods/p/MWKits.svg?style=flat)](https://cocoapods.org/pods/MWKits)
 
+## 结构
+1.Categories 各种类别
+2.Countdown GCD实现倒计时
+3.Model json转model，model转json
+4.Transition 转场动画，push、pop、present、dismiss
+
 ## Example
 
 To run the example project, clone the repo, and run `pod install` from the Example directory first.
