@@ -12,8 +12,6 @@
 
 @interface MWModelDemoViewController ()
 
-@property (nonatomic, strong) UILabel *descLabel;
-
 @end
 
 @implementation MWModelDemoViewController
@@ -22,12 +20,6 @@
     [super viewDidLoad];
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.view.backgroundColor = [UIColor whiteColor];
-    
-//    self.descLabel = [[UILabel alloc] initWithFrame:self.view.bounds];
-//    self.descLabel.font = [UIFont systemFontOfSize:16.f];
-//    self.descLabel.textColor = [UIColor redColor];
-//    self.descLabel.numberOfLines = 0;
-//    [self.view addSubview:self.descLabel];
     
     int count = 1000;
     NSTimeInterval begin, end;
@@ -46,7 +38,7 @@
         for (int i = 0; i < count; i++) {
             MWWeiboStatus *feed = [MWWeiboStatus mw_initWithDictionary:json];
             [holder addObject:feed];
-            NSLog(@"%@",[feed mw_convertJsonString]);
+//            NSLog(@"%@",[feed mw_convertJsonString]);
         }
     }
     end = CACurrentMediaTime();

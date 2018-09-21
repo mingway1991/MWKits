@@ -1,5 +1,19 @@
 PODS:
-  - MWKits (0.1.5)
+  - MWKits (0.3.0):
+    - MWKits/Common (= 0.3.0)
+    - MWKits/CountDown (= 0.3.0)
+    - MWKits/Label (= 0.3.0)
+    - MWKits/Model (= 0.3.0)
+    - MWKits/Transition (= 0.3.0)
+  - MWKits/Common (0.3.0)
+  - MWKits/CountDown (0.3.0):
+    - MWKits/Common
+  - MWKits/Label (0.3.0):
+    - MWKits/Common
+  - MWKits/Model (0.3.0):
+    - MWKits/Common
+  - MWKits/Transition (0.3.0):
+    - MWKits/Common
 
 DEPENDENCIES:
   - MWKits (from `../`)
@@ -9,7 +23,7 @@ EXTERNAL SOURCES:
     :path: ../
 
 SPEC CHECKSUMS:
-  MWKits: 981ecdf34e2b8d2eb72508a304bcb42492c02548
+  MWKits: 60d5cfec4dc54010e384c1c8d022142ae9e90426
 
 PODFILE CHECKSUM: 976d72c248dcca0746868f48892bd347b0dc9137
 

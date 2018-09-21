@@ -21,6 +21,7 @@
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
 		71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */; };
+		7A56551C2150CCF100DF3158 /* MWLabelDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A56551B2150CCF100DF3158 /* MWLabelDemoViewController.m */; };
 		7A5B047A2147981300BE0E89 /* MWModelDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A5B04792147981300BE0E89 /* MWModelDemoViewController.m */; };
 		7AD2643421461A55000A132E /* MWDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AD2643321461A55000A132E /* MWDemoViewController.m */; };
 		7AD2643721461B4D000A132E /* MWCountDownDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AD2643621461B4D000A132E /* MWCountDownDemoViewController.m */; };
@@ -66,6 +67,8 @@
 		67928A0822040C4A9C05865A /* Pods-MWKits_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MWKits_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MWKits_Example/Pods-MWKits_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		71719F9E1E33DC2100824A3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		766E5425B9121A21BC10868A /* Pods_MWKits_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MWKits_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A56551A2150CCF100DF3158 /* MWLabelDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWLabelDemoViewController.h; sourceTree = "<group>"; };
+		7A56551B2150CCF100DF3158 /* MWLabelDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MWLabelDemoViewController.m; sourceTree = "<group>"; };
 		7A5B04782147981300BE0E89 /* MWModelDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWModelDemoViewController.h; sourceTree = "<group>"; };
 		7A5B04792147981300BE0E89 /* MWModelDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MWModelDemoViewController.m; sourceTree = "<group>"; };
 		7AD2643221461A55000A132E /* MWDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWDemoViewController.h; sourceTree = "<group>"; };
@@ -168,6 +171,8 @@
 				7AD2643621461B4D000A132E /* MWCountDownDemoViewController.m */,
 				7A5B04782147981300BE0E89 /* MWModelDemoViewController.h */,
 				7A5B04792147981300BE0E89 /* MWModelDemoViewController.m */,
+				7A56551A2150CCF100DF3158 /* MWLabelDemoViewController.h */,
+				7A56551B2150CCF100DF3158 /* MWLabelDemoViewController.m */,
 				7AF58E24214A815A007E428F /* weibo.json */,
 				7AF58E26214A815A007E428F /* MWWeiboModel.h */,
 				7AF58E25214A815A007E428F /* MWWeiboModel.m */,
@@ -440,6 +445,7 @@
 				7A5B047A2147981300BE0E89 /* MWModelDemoViewController.m in Sources */,
 				6003F5A7195388D20070C39A /* MWViewController.m in Sources */,
 				7AF58E28214A815A007E428F /* MWWeiboModel.m in Sources */,
+				7A56551C2150CCF100DF3158 /* MWLabelDemoViewController.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

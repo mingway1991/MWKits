@@ -10,6 +10,7 @@
 #import "MWDemoViewController.h"
 #import "MWCountDownDemoViewController.h"
 #import "MWModelDemoViewController.h"
+#import "MWLabelDemoViewController.h"
 @import MWKits;
 
 @interface MWViewController () <UITableViewDataSource, UITableViewDelegate>
@@ -40,7 +41,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 4;
+    return 5;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -56,6 +57,8 @@
         cell.textLabel.text = @"CountDown倒计时";
     } else if (indexPath.row == 3) {
         cell.textLabel.text = @"Model解析";
+    } else if (indexPath.row == 4) {
+        cell.textLabel.text = @"Label";
     }
     return cell;
 }
@@ -71,6 +74,8 @@
         [self.navigationController pushViewController:[[MWCountDownDemoViewController alloc] init] animated:YES];
     } else if (indexPath.row == 3) {
         [self.navigationController pushViewController:[[MWModelDemoViewController alloc] init] animated:YES];
+    } else if (indexPath.row == 4) {
+        [self.navigationController pushViewController:[[MWLabelDemoViewController alloc] init] animated:YES];
     }
 }
 

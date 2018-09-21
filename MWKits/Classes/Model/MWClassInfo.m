@@ -93,16 +93,16 @@ static force_inline BOOL MWPropertyTypeIsNumber(MWPropertyType type) {
 
 @interface MWPropertyInfo ()
 
-@property (nonatomic, assign, readwrite) objc_property_t property;
+@property (nonatomic, readwrite) objc_property_t property;
 @property (nonatomic, copy, readwrite) NSString *propertyName;
 @property (nonatomic, copy, readwrite) NSString *attrType;
-@property (nonatomic, assign, readwrite) SEL getter;
-@property (nonatomic, assign, readwrite) SEL setter;
+@property (nonatomic, readwrite) SEL getter;
+@property (nonatomic, readwrite) SEL setter;
 
-@property (nonatomic, assign, readwrite, nullable) Class cls;
-@property (nonatomic, assign, readwrite) MWPropertyType type;
-@property (nonatomic, assign ,readwrite) BOOL isNumber;
-@property (nonatomic, assign ,readwrite) BOOL isFromFoundation;
+@property (nonatomic, readwrite, nullable) Class cls;
+@property (nonatomic, readwrite) MWPropertyType type;
+@property (nonatomic, readwrite) BOOL isNumber;
+@property (nonatomic, readwrite) BOOL isFromFoundation;
 
 @end
 
