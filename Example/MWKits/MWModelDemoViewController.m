@@ -21,28 +21,30 @@
     self.automaticallyAdjustsScrollViewInsets = NO;
     self.view.backgroundColor = [UIColor whiteColor];
     
-    int count = 1000;
-    NSTimeInterval begin, end;
-    NSMutableArray *holder = [NSMutableArray new];
-    for (int i = 0; i < count; i++) {
-        [holder addObject:[NSData new]];
-    }
-    [holder removeAllObjects];
-    
-    NSString *path = [[NSBundle mainBundle] pathForResource:@"weibo" ofType:@"json"];
-    NSData *data = [NSData dataWithContentsOfFile:path];
-    NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-    
-    begin = CACurrentMediaTime();
-    @autoreleasepool {
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        int count = 1000;
+        NSTimeInterval begin, end;
+        NSMutableArray *holder = [NSMutableArray new];
         for (int i = 0; i < count; i++) {
-            MWWeiboStatus *feed = [MWWeiboStatus mw_initWithDictionary:json];
-            [holder addObject:feed];
-//            NSLog(@"%@",[feed mw_convertJsonString]);
+            [holder addObject:[NSData new]];
         }
-    }
-    end = CACurrentMediaTime();
-    printf("MWModel:     %8.2f   ", (end - begin) * 1000);
+        [holder removeAllObjects];
+        
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"weibo" ofType:@"json"];
+        NSData *data = [NSData dataWithContentsOfFile:path];
+        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        
+        begin = CACurrentMediaTime();
+        @autoreleasepool {
+            for (int i = 0; i < count; i++) {
+                MWWeiboStatus *feed = [MWWeiboStatus mw_initWithDictionary:json];
+                [holder addObject:feed];
+                //            NSLog(@"%@",[feed mw_convertJsonString]);
+            }
+        }
+        end = CACurrentMediaTime();
+        printf("MWModel:     %8.2f   ", (end - begin) * 1000);
+    });
 }
 
 @end
