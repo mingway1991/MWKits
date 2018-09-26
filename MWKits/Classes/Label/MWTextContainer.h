@@ -7,15 +7,18 @@
 
 #import <Foundation/Foundation.h>
 
+@class MWTextLine;
+
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MWTextContainer : NSObject <NSCopying>
+@interface MWTextContainer : NSObject <NSCopying, NSCoding>
+
+@property (nullable, copy) UIBezierPath *path;
+@property (nullable, copy) NSAttributedString *truncationToken;
 
 @property CGSize size;
 @property UIEdgeInsets insets;
-@property (nullable, copy) UIBezierPath *path;
 @property NSUInteger maximumNumberOfRows;
-@property BOOL isVertical;
 
 + (instancetype)containerWithSize:(CGSize)size;
 

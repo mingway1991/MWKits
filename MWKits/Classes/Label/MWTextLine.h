@@ -10,14 +10,13 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MWTextLine : NSObject
+@interface MWTextLine : NSObject <NSCopying, NSCoding>
 
 @property (nonatomic) NSUInteger index;
 @property (nonatomic) NSUInteger row;
 
 @property (nonatomic, readonly) CTLineRef CTLine;
 @property (nonatomic, readonly) NSRange range;
-@property (nonatomic, readonly) BOOL vertical;
 @property (nonatomic) CGPoint position;
 @property (nonatomic, readonly) CGFloat ascent;
 @property (nonatomic, readonly) CGFloat descent;
@@ -34,7 +33,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) CGFloat left;
 @property (nonatomic, readonly) CGFloat right;
 
-+ (instancetype)lineWithCTLine:(CTLineRef)CTLine position:(CGPoint)position vertical:(BOOL)isVertical;
++ (instancetype)lineWithCTLine:(CTLineRef)CTLine position:(CGPoint)position;
 
 @end
 

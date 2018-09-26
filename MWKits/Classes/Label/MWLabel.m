@@ -10,6 +10,7 @@
 #import "MWTextLayout.h"
 #import "MWTextContainer.h"
 #import "MWTextUtil.h"
+#import "MWTextData.h"
 
 static inline CGPoint MWTextCGPointPixelRound(CGPoint point) {
     CGFloat scale = MWTextScreenScale();
@@ -20,9 +21,9 @@ static inline CGPoint MWTextCGPointPixelRound(CGPoint point) {
 @interface MWLabel () <MWTextLayerDelegate> {
     MWTextLayout *_innerLayout;
     MWTextContainer *_innerContainer;
-    NSAttributedString *_innerText;     //text和attrText最终都会转化成_innerText进行绘制
+    NSMutableAttributedString *_innerText;      //text和attrText最终都会转化成_innerText进行绘制
     
-    BOOL _layoutNeedUpdate;             //textLayout是否需要更新，默认YES
+    BOOL _layoutNeedUpdate;                     //textLayout是否需要更新，默认YES
 }
 
 @end
@@ -112,9 +113,9 @@ static inline CGPoint MWTextCGPointPixelRound(CGPoint point) {
     _innerLayout = [MWTextLayout layoutWithContainer:_innerContainer text:_innerText];
 }
 
-- (NSAttributedString *)_convertInnerText {
+- (NSMutableAttributedString *)_convertInnerText {
     if (_text.length == 0) {
-        return [[NSAttributedString alloc] initWithString:@""];
+        return [[NSMutableAttributedString alloc] initWithString:@""];
     }
     
     NSMutableAttributedString *innerText = [[NSMutableAttributedString alloc] initWithString:_text];
@@ -122,6 +123,33 @@ static inline CGPoint MWTextCGPointPixelRound(CGPoint point) {
     [innerText addAttribute:NSFontAttributeName value:_font range:range];
     [innerText addAttribute:NSForegroundColorAttributeName value:_textColor range:range];
     return innerText;
+}
+
+- (void)_updateTextAlignment {
+    [_innerText enumerateAttribute:NSParagraphStyleAttributeName inRange:NSMakeRange(0, _innerText.length) options:kNilOptions usingBlock:^(NSParagraphStyle *value, NSRange subRange, BOOL * _Nonnull stop) {
+        NSMutableParagraphStyle *style = nil;
+        if (value) {
+            if (CFGetTypeID((__bridge CFTypeRef)(value)) == CTParagraphStyleGetTypeID()) {
+                NSMutableParagraphStyle *style = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+                CTTextAlignment alignment;
+                if (CTParagraphStyleGetValueForSpecifier((__bridge CTParagraphStyleRef)(value), kCTParagraphStyleSpecifierAlignment, sizeof(CTTextAlignment), &alignment)) {
+                    style.alignment = NSTextAlignmentFromCTTextAlignment(alignment);
+                }
+                value = style;
+            }
+            if (value.alignment == _textAlignment) return;
+            if ([value isKindOfClass:[NSMutableParagraphStyle class]]) {
+                style = (id)value;
+            } else {
+                style = value.mutableCopy;
+            }
+        } else {
+            if ([NSParagraphStyle defaultParagraphStyle].alignment == _textAlignment) return;
+            style = [NSParagraphStyle defaultParagraphStyle].mutableCopy;
+        }
+        style.alignment = _textAlignment;
+        [_innerText addAttribute:NSParagraphStyleAttributeName value:style range:subRange];
+    }];
 }
 
 #pragma mark - MWTextLayerDelegate
@@ -158,17 +186,9 @@ static inline CGPoint MWTextCGPointPixelRound(CGPoint point) {
         CGSize boundingSize = drawLayout.textBoundingSize;
         CGPoint point = CGPointZero;
         if (_textVerticalAlignment == MWTextVerticalAlignmentCenter) {
-            if (drawLayout.container.isVertical) {
-                point.x = -(size.width - boundingSize.width) * 0.5;
-            } else {
-                point.y = (size.height - boundingSize.height) * 0.5;
-            }
+            point.y = (size.height - boundingSize.height) * 0.5;
         } else if (_textVerticalAlignment == MWTextVerticalAlignmentBottom) {
-            if (drawLayout.container.isVertical) {
-                point.x = -(size.width - boundingSize.width);
-            } else {
-                point.y = (size.height - boundingSize.height);
-            }
+            point.y = (size.height - boundingSize.height);
         }
         point = MWTextCGPointPixelRound(point);
         [drawLayout drawInContext:context size:size point:point view:nil layer:nil cancel:isCancelled];
@@ -190,17 +210,9 @@ static inline CGPoint MWTextCGPointPixelRound(CGPoint point) {
         CGSize boundingSize = drawLayout.textBoundingSize;
         CGPoint point = CGPointZero;
         if (_textVerticalAlignment == MWTextVerticalAlignmentCenter) {
-            if (drawLayout.container.isVertical) {
-                point.x = -(size.width - boundingSize.width) * 0.5;
-            } else {
-                point.y = (size.height - boundingSize.height) * 0.5;
-            }
+            point.y = (size.height - boundingSize.height) * 0.5;
         } else if (_textVerticalAlignment == MWTextVerticalAlignmentBottom) {
-            if (drawLayout.container.isVertical) {
-                point.x = -(size.width - boundingSize.width);
-            } else {
-                point.y = (size.height - boundingSize.height);
-            }
+            point.y = (size.height - boundingSize.height);
         }
         point = MWTextCGPointPixelRound(point);
         [drawLayout drawInContext:nil size:size point:point view:view layer:layer cancel:NULL];
@@ -219,7 +231,7 @@ static inline CGPoint MWTextCGPointPixelRound(CGPoint point) {
 
 - (void)setAttrText:(NSAttributedString *)attrText {
     _attrText = attrText;
-    _innerText = attrText;
+    _innerText = [attrText mutableCopy];
     [self _setLayoutNeedUpdate];
     [self _updateIfNeeded];
 }
@@ -289,8 +301,8 @@ static inline CGPoint MWTextCGPointPixelRound(CGPoint point) {
 - (void)setTextAlignment:(NSTextAlignment)textAlignment {
     if (_textAlignment == textAlignment) return;
     _textAlignment = textAlignment;
-    //TODO:设置innerText样式
     if (_innerText.length) {
+        [self _updateTextAlignment];
         [self _setLayoutNeedUpdate];
         [self _updateIfNeeded];
     }
@@ -305,14 +317,25 @@ static inline CGPoint MWTextCGPointPixelRound(CGPoint point) {
     }
 }
 
-- (void)setIsVertical:(BOOL)isVertical {
-    if (_isVertical == isVertical) return;
-    _isVertical = isVertical;
-    _innerContainer.isVertical = isVertical;
+- (void)setData:(MWTextData *)data {
+    if (_data == data) return;
+    _data = data;
+    _innerText = data.innerText;
+    _innerContainer = data.container;
+    _innerLayout = data.layout;
+    _numberOfLines = data.numberOfLines;
+    _textAlignment = data.textAlignment;
     if (_innerText.length) {
+        [self _updateTextAlignment];
         [self _setLayoutNeedUpdate];
         [self _updateIfNeeded];
     }
+}
+
+#pragma mark - Public
+- (void)updateWithData:(MWTextData *)data {
+    _data = nil;
+    self.data = data;
 }
 
 @end

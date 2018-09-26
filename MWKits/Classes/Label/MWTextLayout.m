@@ -8,6 +8,9 @@
 #import "MWTextLayout.h"
 #import "MWTextUtil.h"
 
+NSString *const MWTextTruncationToken = @"\u2026";
+NSString *const MWTextGlyphTransformAttributeName = @"MWTextGlyphTransform";
+
 typedef struct {
     CGFloat head;
     CGFloat foot;
@@ -29,12 +32,13 @@ static inline BOOL MWTextCTFontContainsColorBitmapGlyphs(CTFontRef font) {
     return  (CTFontGetSymbolicTraits(font) & kCTFontTraitColorGlyphs) != 0;
 }
 
-static void MWTextDrawRun(MWTextLine *line, CTRunRef run, CGContextRef context, CGSize size, BOOL isVertical, CGFloat verticalOffset) {
+static void MWTextDrawRun(MWTextLine *line, CTRunRef run, CGContextRef context, CGSize size) {
     CGAffineTransform runTextMatrix = CTRunGetTextMatrix(run);
     BOOL runTextMatrixIsID = CGAffineTransformIsIdentity(runTextMatrix);
     
     CFDictionaryRef runAttrs = CTRunGetAttributes(run);
-    if (!isVertical) { // draw run
+    NSValue *glyphTransformValue = CFDictionaryGetValue(runAttrs, (__bridge const void *)(MWTextGlyphTransformAttributeName));
+    if (!glyphTransformValue) { // draw run
         if (!runTextMatrixIsID) {
             CGContextSaveGState(context);
             CGAffineTransform trans = CGContextGetTextMatrix(context);
@@ -75,14 +79,36 @@ static void MWTextDrawRun(MWTextLine *line, CTRunRef run, CGContextRef context, 
                 }
             }
             
-            if (isVertical) {
+            if (glyphTransformValue) {
                 CFIndex runStrIdx[glyphCount + 1];
                 CTRunGetStringIndices(run, CFRangeMake(0, 0), runStrIdx);
                 CFRange runStrRange = CTRunGetStringRange(run);
                 runStrIdx[glyphCount] = runStrRange.location + runStrRange.length;
                 CGSize glyphAdvances[glyphCount];
                 CTRunGetAdvances(run, CFRangeMake(0, 0), glyphAdvances);
-            } else { // not vertical
+                CGAffineTransform glyphTransform = glyphTransformValue.CGAffineTransformValue;
+                CGPoint zeroPoint = CGPointZero;
+                
+                for (NSUInteger g = 0; g < glyphCount; g++) {
+                    CGContextSaveGState(context); {
+                        CGContextSetTextMatrix(context, CGAffineTransformIdentity);
+                        CGContextSetTextMatrix(context, glyphTransform);
+                        CGContextSetTextPosition(context,
+                                                 line.position.x + glyphPositions[g].x,
+                                                 size.height - (line.position.y + glyphPositions[g].y));
+                        
+                        if (MWTextCTFontContainsColorBitmapGlyphs(runFont)) {
+                            CTFontDrawGlyphs(runFont, glyphs + g, &zeroPoint, 1, context);
+                        } else {
+                            CGFontRef cgFont = CTFontCopyGraphicsFont(runFont, NULL);
+                            CGContextSetFont(context, cgFont);
+                            CGContextSetFontSize(context, CTFontGetSize(runFont));
+                            CGContextShowGlyphsAtPositions(context, glyphs + g, &zeroPoint, 1);
+                            CGFontRelease(cgFont);
+                        }
+                    } CGContextRestoreGState(context);
+                }
+            } else {
                 if (MWTextCTFontContainsColorBitmapGlyphs(runFont)) {
                     CTFontDrawGlyphs(runFont, glyphs, glyphPositions, glyphCount, context);
                 } else {
@@ -105,21 +131,18 @@ static void MWTextDrawText(MWTextLayout *layout, CGContextRef context, CGSize si
         CGContextTranslateCTM(context, 0, size.height);
         CGContextScaleCTM(context, 1, -1);
         
-        BOOL isVertical = layout.container.isVertical;
-        CGFloat verticalOffset = isVertical ? (size.width - layout.container.size.width) : 0;
-        
         NSArray *lines = layout.lines;
         for (NSUInteger l = 0, lMax = lines.count; l < lMax; l++) {
             MWTextLine *line = lines[l];
             if (layout.truncatedLine && layout.truncatedLine.index == line.index) line = layout.truncatedLine;
-            CGFloat posX = line.position.x + verticalOffset;
+            CGFloat posX = line.position.x;
             CGFloat posY = size.height - line.position.y;
             CFArrayRef runs = CTLineGetGlyphRuns(line.CTLine);
             for (NSUInteger r = 0, rMax = CFArrayGetCount(runs); r < rMax; r++) {
                 CTRunRef run = CFArrayGetValueAtIndex(runs, r);
                 CGContextSetTextMatrix(context, CGAffineTransformIdentity);
                 CGContextSetTextPosition(context, posX, posY);
-                MWTextDrawRun(line, run, context, size, isVertical, verticalOffset);
+                MWTextDrawRun(line, run, context, size);
             }
             if (cancel && cancel()) break;
         }
@@ -129,17 +152,52 @@ static void MWTextDrawText(MWTextLayout *layout, CGContextRef context, CGSize si
 
 @interface MWTextLayout ()
 
-@property (nonatomic, readwrite) MWTextContainer *container;
-@property (nonatomic, strong, readwrite) NSArray<MWTextLine *> *lines;
-@property (nullable, nonatomic, strong, readwrite) MWTextLine *truncatedLine;
-@property (nonatomic, readwrite) NSUInteger rowCount;
-@property (nonatomic, readwrite) CGRect textBoundingRect;
-@property (nonatomic, readwrite) CGSize textBoundingSize;
+@property (nonatomic) MWTextContainer *container;
+@property (nonatomic, strong) NSArray<MWTextLine *> *lines;
+@property (nullable, nonatomic, strong) MWTextLine *truncatedLine;
+@property (nonatomic) NSUInteger rowCount;
+@property (nonatomic) CGRect textBoundingRect;
+@property (nonatomic) CGSize textBoundingSize;
 
 @end
 
 @implementation MWTextLayout
 
+#pragma mark - Copying
+- (instancetype)copyWithZone:(NSZone *)zone {
+    MWTextLayout *layout = [MWTextLayout new];
+    layout.container = [_container copy];
+    layout.lines = [_lines copy];
+    layout.truncatedLine = [_truncatedLine copy];
+    layout.rowCount = _rowCount;
+    layout.textBoundingRect = _textBoundingRect;
+    layout.textBoundingSize = _textBoundingSize;
+    return layout;
+}
+
+#pragma mark - NSCoding
+- (nullable instancetype)initWithCoder:(nonnull NSCoder *)aDecoder {
+    if (self = [super init]) {
+        _container = [aDecoder decodeObjectForKey:@"container"];
+        _lines = [aDecoder decodeObjectForKey:@"lines"];
+        _truncatedLine = [aDecoder decodeObjectForKey:@"truncatedLine"];
+        _rowCount = [aDecoder decodeIntegerForKey:@"rowCount"];
+        _textBoundingRect = [[aDecoder decodeObjectForKey:@"textBoundingRect"] CGRectValue];
+        _textBoundingSize = [[aDecoder decodeObjectForKey:@"textBoundingSize"] CGSizeValue];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(nonnull NSCoder *)aCoder {
+    [aCoder encodeObject:_container forKey:@"container"];
+    [aCoder encodeObject:_lines forKey:@"lines"];
+    [aCoder encodeObject:_truncatedLine forKey:@"truncatedLine"];
+    [aCoder encodeInteger:_rowCount forKey:@"rowCount"];
+    [aCoder encodeObject:@(_textBoundingRect) forKey:@"textBoundingRect"];
+    [aCoder encodeObject:@(_textBoundingSize) forKey:@"textBoundingSize"];
+}
+
+#pragma mark - Init
 + (MWTextLayout *)layoutWithContainerSize:(CGSize)size text:(NSAttributedString *)text {
     MWTextContainer *container = [[MWTextContainer alloc] init];
     container.size = size;
@@ -155,7 +213,6 @@ static void MWTextDrawText(MWTextLayout *layout, CGContextRef context, CGSize si
     
     CGPathRef cgPath = nil;
     CGRect cgPathBox = {0};
-    BOOL isVertical = NO;
     NSMutableDictionary *frameAttrs = nil;
     CTFramesetterRef ctSetter = NULL;
     CTFrameRef ctFrame = NULL;
@@ -180,7 +237,6 @@ static void MWTextDrawText(MWTextLayout *layout, CGContextRef context, CGSize si
     
     layout = [[MWTextLayout alloc] init];
     layout.container = container;
-    isVertical = container.isVertical;
     
     // set cgPath and cgPathBox
     if (container.path == nil) {
@@ -220,9 +276,6 @@ static void MWTextDrawText(MWTextLayout *layout, CGContextRef context, CGSize si
     
     // frame setter config
     frameAttrs = [NSMutableDictionary dictionary];
-    if (container.isVertical == YES) {
-        frameAttrs[(id)kCTFrameProgressionAttributeName] = @(kCTFrameProgressionRightToLeft);
-    }
     
     // create CoreText objects
     ctSetter = CTFramesetterCreateWithAttributedString((CFTypeRef)text);
@@ -244,10 +297,6 @@ static void MWTextDrawText(MWTextLayout *layout, CGContextRef context, CGSize si
     NSUInteger rowCount = 0;
     CGRect lastRect = CGRectMake(0, -FLT_MAX, 0, 0);
     CGPoint lastPosition = CGPointMake(0, -FLT_MAX);
-    if (isVertical) {
-        lastRect = CGRectMake(FLT_MAX, 0, 0, 0);
-        lastPosition = CGPointMake(FLT_MAX, 0);
-    }
     
     // calculate line frame
     NSUInteger lineCurrentIdx = 0;
@@ -264,23 +313,15 @@ static void MWTextDrawText(MWTextLayout *layout, CGContextRef context, CGSize si
         position.x = cgPathBox.origin.x + ctLineOrigin.x;
         position.y = cgPathBox.size.height + cgPathBox.origin.y - ctLineOrigin.y;
         
-        MWTextLine *line = [MWTextLine lineWithCTLine:ctLine position:position vertical:isVertical];
+        MWTextLine *line = [MWTextLine lineWithCTLine:ctLine position:position];
         CGRect rect = line.bounds;
         
         BOOL newRow = YES;
         if (position.x != lastPosition.x) {
-            if (isVertical) {
-                if (rect.size.width > lastRect.size.width) {
-                    if (rect.origin.x > lastPosition.x && lastPosition.x > rect.origin.x - rect.size.width) newRow = NO;
-                } else {
-                    if (lastRect.origin.x > position.x && position.x > lastRect.origin.x - lastRect.size.width) newRow = NO;
-                }
+            if (rect.size.height > lastRect.size.height) {
+                if (rect.origin.y < lastPosition.y && lastPosition.y < rect.origin.y + rect.size.height) newRow = NO;
             } else {
-                if (rect.size.height > lastRect.size.height) {
-                    if (rect.origin.y < lastPosition.y && lastPosition.y < rect.origin.y + rect.size.height) newRow = NO;
-                } else {
-                    if (lastRect.origin.y < position.y && position.y < lastRect.origin.y + lastRect.size.height) newRow = NO;
-                }
+                if (lastRect.origin.y < position.y && position.y < lastRect.origin.y + lastRect.size.height) newRow = NO;
             }
         }
         
@@ -336,21 +377,11 @@ static void MWTextDrawText(MWTextLayout *layout, CGContextRef context, CGSize si
                 }
                 lastRowIdx = line.row;
                 lineRowsIndex[lastRowIdx] = i;
-                if (isVertical) {
-                    lastHead = rect.origin.x + rect.size.width;
-                    lastFoot = lastHead - rect.size.width;
-                } else {
-                    lastHead = rect.origin.y;
-                    lastFoot = lastHead + rect.size.height;
-                }
+                lastHead = rect.origin.y;
+                lastFoot = lastHead + rect.size.height;
             } else {
-                if (isVertical) {
-                    lastHead = MAX(lastHead, rect.origin.x + rect.size.width);
-                    lastFoot = MIN(lastFoot, rect.origin.x);
-                } else {
-                    lastHead = MIN(lastHead, rect.origin.y);
-                    lastFoot = MAX(lastFoot, rect.origin.y + rect.size.height);
-                }
+                lastHead = MIN(lastHead, rect.origin.y);
+                lastFoot = MAX(lastFoot, rect.origin.y + rect.size.height);
             }
         }
         lineRowsEdge[lastRowIdx] = (MWRowEdge) {.head = lastHead, .foot = lastFoot };
@@ -367,11 +398,7 @@ static void MWTextDrawText(MWTextLayout *layout, CGContextRef context, CGSize si
         rect = UIEdgeInsetsInsetRect(rect,MWTextUIEdgeInsetsInvert(container.insets));
         rect = CGRectStandardize(rect);
         CGSize size = rect.size;
-        if (container.isVertical) {
-            size.width += container.size.width - (rect.origin.x + rect.size.width);
-        } else {
-            size.width += rect.origin.x;
-        }
+        size.width += rect.origin.x;
         size.height += rect.origin.y;
         if (size.width < 0) size.width = 0;
         if (size.height < 0) size.height = 0;
@@ -385,57 +412,63 @@ static void MWTextDrawText(MWTextLayout *layout, CGContextRef context, CGSize si
         MWTextLine *lastLine = lines.lastObject;
         NSRange lastRange = lastLine.range;
         visibleRange.length = lastRange.location + lastRange.length - visibleRange.location;
-        
-        //TODO:TruncationLine
-    }
-    
-    if (isVertical) {
-        NSCharacterSet *rotateCharset = MWTextVerticalFormRotateCharacterSet();
-        NSCharacterSet *rotateMoveCharset = MWTextVerticalFormRotateAndMoveCharacterSet();
-        
-        void (^lineBlock)(MWTextLine *) = ^(MWTextLine *line){
-            CFArrayRef runs = CTLineGetGlyphRuns(line.CTLine);
-            if (!runs) return;
+        CTLineRef truncationTokenLine = NULL;
+        if (container.truncationToken) {
+            truncationToken = container.truncationToken;
+            truncationTokenLine = CTLineCreateWithAttributedString((CFAttributedStringRef)truncationToken);
+        } else {
+            CFArrayRef runs = CTLineGetGlyphRuns(lastLine.CTLine);
             NSUInteger runCount = CFArrayGetCount(runs);
-            if (runCount == 0) return;
-            NSMutableArray *lineRunRanges = [NSMutableArray new];
-            for (NSUInteger r = 0; r < runCount; r++) {
-                CTRunRef run = CFArrayGetValueAtIndex(runs, r);
-                NSMutableArray *runRanges = [NSMutableArray new];
-                [lineRunRanges addObject:runRanges];
-                NSUInteger glyphCount = CTRunGetGlyphCount(run);
-                if (glyphCount == 0) continue;
-                
-                CFIndex runStrIdx[glyphCount + 1];
-                CTRunGetStringIndices(run, CFRangeMake(0, 0), runStrIdx);
-                CFRange runStrRange = CTRunGetStringRange(run);
-                runStrIdx[glyphCount] = runStrRange.location + runStrRange.length;
-                CFDictionaryRef runAttrs = CTRunGetAttributes(run);
-                CTFontRef font = CFDictionaryGetValue(runAttrs, kCTFontAttributeName);
-                BOOL isColorGlyph = MWTextCTFontContainsColorBitmapGlyphs(font);
-                
-                NSString *layoutStr = text.string;
-                for (NSUInteger g = 0; g < glyphCount; g++) {
-                    BOOL glyphRotate = 0, glyphRotateMove = NO;
-                    CFIndex runStrLen = runStrIdx[g + 1] - runStrIdx[g];
-                    if (isColorGlyph) {
-                        glyphRotate = YES;
-                    } else if (runStrLen == 1) {
-                        unichar c = [layoutStr characterAtIndex:runStrIdx[g]];
-                        glyphRotate = [rotateCharset characterIsMember:c];
-                        if (glyphRotate) glyphRotateMove = [rotateMoveCharset characterIsMember:c];
-                    } else if (runStrLen > 1){
-                        NSString *glyphStr = [layoutStr substringWithRange:NSMakeRange(runStrIdx[g], runStrLen)];
-                        BOOL glyphRotate = [glyphStr rangeOfCharacterFromSet:rotateCharset].location != NSNotFound;
-                        if (glyphRotate) glyphRotateMove = [glyphStr rangeOfCharacterFromSet:rotateMoveCharset].location != NSNotFound;
-                    }
+            NSMutableDictionary *attrs = nil;
+            if (runCount > 0) {
+                CTRunRef run = CFArrayGetValueAtIndex(runs, runCount - 1);
+                attrs = (id)CTRunGetAttributes(run);
+                attrs = attrs ? attrs.mutableCopy : [NSMutableArray new];
+                CTFontRef font = (__bridge CFTypeRef)attrs[(id)kCTFontAttributeName];
+                CGFloat fontSize = font ? CTFontGetSize(font) : 12.0;
+                UIFont *uiFont = [UIFont systemFontOfSize:fontSize * 0.9];
+                if (uiFont) {
+                    font = CTFontCreateWithName((__bridge CFStringRef)uiFont.fontName, uiFont.pointSize, NULL);
+                } else {
+                    font = NULL;
+                }
+                if (font) {
+                    attrs[(id)kCTFontAttributeName] = (__bridge id)(font);
+                    uiFont = nil;
+                    CFRelease(font);
+                }
+                CGColorRef color = (__bridge CGColorRef)(attrs[(id)kCTForegroundColorAttributeName]);
+                if (color && CFGetTypeID(color) == CGColorGetTypeID() && CGColorGetAlpha(color) == 0) {
+                    // ignore clear color
+                    [attrs removeObjectForKey:(id)kCTForegroundColorAttributeName];
+                }
+                if (!attrs) attrs = [NSMutableDictionary new];
+            }
+            truncationToken = [[NSAttributedString alloc] initWithString:MWTextTruncationToken attributes:attrs];
+            truncationTokenLine = CTLineCreateWithAttributedString((CFAttributedStringRef)truncationToken);
+        }
+        if (truncationTokenLine) {
+            CTLineTruncationType type = kCTLineTruncationEnd;
+            NSMutableAttributedString *lastLineText = [text attributedSubstringFromRange:lastLine.range].mutableCopy;
+            [lastLineText appendAttributedString:truncationToken];
+            CTLineRef ctLastLineExtend = CTLineCreateWithAttributedString((CFAttributedStringRef)lastLineText);
+            if (ctLastLineExtend) {
+                CGFloat truncatedWidth = lastLine.width;
+                CGRect cgPathRect = CGRectZero;
+                if (CGPathIsRect(cgPath, &cgPathRect)) {
+                    truncatedWidth = cgPathRect.size.width;
+                }
+                CTLineRef ctTruncatedLine = CTLineCreateTruncatedLine(ctLastLineExtend, truncatedWidth, type, truncationTokenLine);
+                CFRelease(ctLastLineExtend);
+                if (ctTruncatedLine) {
+                    truncatedLine = [MWTextLine lineWithCTLine:ctTruncatedLine position:lastLine.position];
+                    truncatedLine.index = lastLine.index;
+                    truncatedLine.row = lastLine.row;
+                    CFRelease(ctTruncatedLine);
                 }
             }
-        };
-        for (MWTextLine *line in lines) {
-            lineBlock(line);
+            CFRelease(truncationTokenLine);
         }
-        if (truncatedLine) lineBlock(truncatedLine);
     }
     
     layout.lines = lines;

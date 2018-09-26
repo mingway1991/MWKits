@@ -6,21 +6,17 @@
 //
 
 #import <UIKit/UIKit.h>
-
-typedef NS_ENUM(NSInteger, MWTextVerticalAlignment) {
-    MWTextVerticalAlignmentTop =    0, ///< Top alignment.
-    MWTextVerticalAlignmentCenter = 1, ///< Center alignment.
-    MWTextVerticalAlignmentBottom = 2, ///< Bottom alignment.
-};
+#import "MWTextData.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MWLabel : UIView
 
+#pragma mark - 普通按照属性配置
 /** 普通文本 **/
-@property (nonatomic, strong, setter=setText:) NSString *text;
+@property (nonatomic, strong) NSString *text;
 /** 富文本 **/
-@property (nonatomic, strong, setter=setAttrText:) NSAttributedString *attrText;
+@property (nonatomic, strong) NSAttributedString *attrText;
 /** 普通文本字体 **/
 @property (nonatomic, strong) UIFont *font;
 /** 普通文本颜色 **/
@@ -33,8 +29,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) NSTextAlignment textAlignment;
 /** 竖向对齐方式 **/
 @property (nonatomic) MWTextVerticalAlignment textVerticalAlignment;
-/** 是否竖排 **/
-@property (nonatomic) BOOL isVertical;
+
+#pragma mark - 使用对象配置
+/** Data配置 **/
+@property (nonatomic) MWTextData *data;
+
+- (void)updateWithData:(MWTextData *)data;
 
 @end
 

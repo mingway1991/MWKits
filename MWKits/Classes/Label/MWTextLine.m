@@ -15,11 +15,60 @@
     CGFloat _firstGlyphPos; // first glyph position for baseline, typically 0.
 }
 
-+ (instancetype)lineWithCTLine:(CTLineRef)CTLine position:(CGPoint)position vertical:(BOOL)isVertical {
+#pragma mark - Copying
+- (instancetype)copyWithZone:(NSZone *)zone {
+    MWTextLine *line = [MWTextLine new];
+    line->_index = _index;
+    line->_row = _row;
+    line->_CTLine = _CTLine;
+    line->_range = _range;
+    line->_position = _position;
+    line->_ascent = _ascent;
+    line->_descent = _descent;
+    line->_leading = _leading;
+    line->_lineWidth = _lineWidth;
+    line->_trailingWhitespaceWidth = _trailingWhitespaceWidth;
+    line->_bounds = _bounds;
+    return line;
+}
+
+#pragma mark - NSCoding
+- (nullable instancetype)initWithCoder:(nonnull NSCoder *)aDecoder {
+    if (self = [super init]) {
+        _index = [aDecoder decodeIntegerForKey:@"index"];
+        _row = [aDecoder decodeIntegerForKey:@"row"];
+        _CTLine = (__bridge CTLineRef _Nonnull)([aDecoder decodeObjectForKey:@"CTLine"]);
+        _range = [[aDecoder decodeObjectForKey:@"range"] rangeValue];
+        _position = [[aDecoder decodeObjectForKey:@"position"] CGPointValue];
+        _ascent = [aDecoder decodeDoubleForKey:@"ascent"];
+        _descent = [aDecoder decodeDoubleForKey:@"descent"];
+        _leading = [aDecoder decodeDoubleForKey:@"leading"];
+        _lineWidth = [aDecoder decodeDoubleForKey:@"lineWidth"];
+        _trailingWhitespaceWidth = [aDecoder decodeDoubleForKey:@"trailingWhitespaceWidth"];
+        _bounds = [[aDecoder decodeObjectForKey:@"bounds"] CGRectValue];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(nonnull NSCoder *)aCoder {
+    [aCoder encodeInteger:_index forKey:@"index"];
+    [aCoder encodeInteger:_row forKey:@"row"];
+    [aCoder encodeObject:(__bridge id _Nullable)(_CTLine) forKey:@"CTLine"];
+    [aCoder encodeObject:[NSValue valueWithRange:_range] forKey:@"_range"];
+    [aCoder encodeObject:@(_position) forKey:@"position"];
+    [aCoder encodeDouble:_ascent forKey:@"ascent"];
+    [aCoder encodeDouble:_descent forKey:@"descent"];
+    [aCoder encodeDouble:_leading forKey:@"leading"];
+    [aCoder encodeDouble:_lineWidth forKey:@"lineWidth"];
+    [aCoder encodeDouble:_trailingWhitespaceWidth forKey:@"trailingWhitespaceWidth"];
+    [aCoder encodeObject:@(_bounds) forKey:@"bounds"];
+}
+
+#pragma mark - Init
++ (instancetype)lineWithCTLine:(CTLineRef)CTLine position:(CGPoint)position {
     if (!CTLine) return nil;
     MWTextLine *line = [self new];
     line->_position = position;
-    line->_vertical = isVertical;
     [line setCTLine:CTLine];
     return line;
 }
@@ -61,13 +110,8 @@
 }
 
 - (void)reloadBounds {
-    if (_vertical) {
-        _bounds = CGRectMake(_position.x - _descent, _position.y, _ascent + _descent, _lineWidth);
-        _bounds.origin.y += _firstGlyphPos;
-    } else {
-        _bounds = CGRectMake(_position.x, _position.y - _ascent, _lineWidth, _ascent + _descent);
-        _bounds.origin.x += _firstGlyphPos;
-    }
+    _bounds = CGRectMake(_position.x, _position.y - _ascent, _lineWidth, _ascent + _descent);
+    _bounds.origin.x += _firstGlyphPos;
     
     if (!_CTLine) return;
     CFArrayRef runs = CTLineGetGlyphRuns(_CTLine);
