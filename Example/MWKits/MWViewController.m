@@ -9,8 +9,7 @@
 #import "MWViewController.h"
 #import "MWDemoViewController.h"
 #import "MWCountDownDemoViewController.h"
-#import "MWModelDemoViewController.h"
-#import "MWLabelDemoViewController.h"
+#import "MWPhotoLibraryDemoViewController.h"
 @import MWKits;
 
 @interface MWViewController () <UITableViewDataSource, UITableViewDelegate>
@@ -41,7 +40,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 5;
+    return 4;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -56,9 +55,7 @@
     } else if (indexPath.row == 2) {
         cell.textLabel.text = @"CountDown倒计时";
     } else if (indexPath.row == 3) {
-        cell.textLabel.text = @"Model解析";
-    } else if (indexPath.row == 4) {
-        cell.textLabel.text = @"Label";
+        cell.textLabel.text = @"相册库";
     }
     return cell;
 }
@@ -73,9 +70,7 @@
     } else if (indexPath.row == 2) {
         [self.navigationController pushViewController:[[MWCountDownDemoViewController alloc] init] animated:YES];
     } else if (indexPath.row == 3) {
-        [self.navigationController pushViewController:[[MWModelDemoViewController alloc] init] animated:YES];
-    } else if (indexPath.row == 4) {
-        [self.navigationController pushViewController:[[MWLabelDemoViewController alloc] init] animated:YES];
+        [self.navigationController pushViewController:[[MWPhotoLibraryDemoViewController alloc] init] animated:YES];
     }
 }
 

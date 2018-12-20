@@ -1,8 +1,8 @@
 {
   "name": "MWKits",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "summary": "iOS 常用工具库",
-  "description": "1.倒计时 2.json转model 3.转场动画（push、pop、present、dismiss）4.文本框（开发中）",
+  "description": "1.倒计时 2.转场动画（push、pop、present、dismiss）",
   "homepage": "https://github.com/mingway1991/MWKits",
   "license": {
     "type": "MIT",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/mingway1991/MWKits.git",
-    "tag": "0.3.0"
+    "tag": "0.4.0"
   },
   "platforms": {
     "ios": "8.0"
@@ -24,27 +24,8 @@
       "source_files": "MWKits/Classes/Common/**/*"
     },
     {
-      "name": "Label",
-      "source_files": "MWKits/Classes/Label/**/*",
-      "dependencies": {
-        "MWKits/Common": [
-
-        ]
-      },
-      "frameworks": "CoreText"
-    },
-    {
       "name": "CountDown",
       "source_files": "MWKits/Classes/CountDown/**/*",
-      "dependencies": {
-        "MWKits/Common": [
-
-        ]
-      }
-    },
-    {
-      "name": "Model",
-      "source_files": "MWKits/Classes/Model/**/*",
       "dependencies": {
         "MWKits/Common": [
 
@@ -59,6 +40,19 @@
 
         ]
       }
+    },
+    {
+      "name": "PhotoLibrary",
+      "source_files": "MWKits/Classes/PhotoLibrary/**/*",
+      "dependencies": {
+        "MWKits/Common": [
+
+        ]
+      },
+      "frameworks": [
+        "Photos",
+        "AVFoundation"
+      ]
     }
   ]
 }

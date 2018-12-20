@@ -21,12 +21,9 @@
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
 		71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */; };
-		7A56551C2150CCF100DF3158 /* MWLabelDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A56551B2150CCF100DF3158 /* MWLabelDemoViewController.m */; };
-		7A5B047A2147981300BE0E89 /* MWModelDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A5B04792147981300BE0E89 /* MWModelDemoViewController.m */; };
+		7A09892E21CB6DEF003DCC55 /* MWPhotoLibraryDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A09892D21CB6DEF003DCC55 /* MWPhotoLibraryDemoViewController.m */; };
 		7AD2643421461A55000A132E /* MWDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AD2643321461A55000A132E /* MWDemoViewController.m */; };
 		7AD2643721461B4D000A132E /* MWCountDownDemoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AD2643621461B4D000A132E /* MWCountDownDemoViewController.m */; };
-		7AF58E27214A815A007E428F /* weibo.json in Resources */ = {isa = PBXBuildFile; fileRef = 7AF58E24214A815A007E428F /* weibo.json */; };
-		7AF58E28214A815A007E428F /* MWWeiboModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AF58E25214A815A007E428F /* MWWeiboModel.m */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
 		C122D9E48FB5456AA692EEE6 /* Pods_MWKits_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 766E5425B9121A21BC10868A /* Pods_MWKits_Tests.framework */; };
 		D2F1BB30FFDB163115B9C86C /* Pods_MWKits_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 37894A7EED2F08810BA76333 /* Pods_MWKits_Example.framework */; };
@@ -67,17 +64,12 @@
 		67928A0822040C4A9C05865A /* Pods-MWKits_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MWKits_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MWKits_Example/Pods-MWKits_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		71719F9E1E33DC2100824A3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		766E5425B9121A21BC10868A /* Pods_MWKits_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MWKits_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		7A56551A2150CCF100DF3158 /* MWLabelDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWLabelDemoViewController.h; sourceTree = "<group>"; };
-		7A56551B2150CCF100DF3158 /* MWLabelDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MWLabelDemoViewController.m; sourceTree = "<group>"; };
-		7A5B04782147981300BE0E89 /* MWModelDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWModelDemoViewController.h; sourceTree = "<group>"; };
-		7A5B04792147981300BE0E89 /* MWModelDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MWModelDemoViewController.m; sourceTree = "<group>"; };
+		7A09892C21CB6DEF003DCC55 /* MWPhotoLibraryDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWPhotoLibraryDemoViewController.h; sourceTree = "<group>"; };
+		7A09892D21CB6DEF003DCC55 /* MWPhotoLibraryDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MWPhotoLibraryDemoViewController.m; sourceTree = "<group>"; };
 		7AD2643221461A55000A132E /* MWDemoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWDemoViewController.h; sourceTree = "<group>"; };
 		7AD2643321461A55000A132E /* MWDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MWDemoViewController.m; sourceTree = "<group>"; };
 		7AD2643521461B4D000A132E /* MWCountDownDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWCountDownDemoViewController.h; sourceTree = "<group>"; };
 		7AD2643621461B4D000A132E /* MWCountDownDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MWCountDownDemoViewController.m; sourceTree = "<group>"; };
-		7AF58E24214A815A007E428F /* weibo.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = weibo.json; sourceTree = "<group>"; };
-		7AF58E25214A815A007E428F /* MWWeiboModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MWWeiboModel.m; sourceTree = "<group>"; };
-		7AF58E26214A815A007E428F /* MWWeiboModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWWeiboModel.h; sourceTree = "<group>"; };
 		8449E9D3B06565DCB2E9A460 /* MWKits.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = MWKits.podspec; path = ../MWKits.podspec; sourceTree = "<group>"; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8D2F3895308002E59DF3C0A5 /* Pods-MWKits_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MWKits_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MWKits_Tests/Pods-MWKits_Tests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -169,13 +161,8 @@
 				7AD2643321461A55000A132E /* MWDemoViewController.m */,
 				7AD2643521461B4D000A132E /* MWCountDownDemoViewController.h */,
 				7AD2643621461B4D000A132E /* MWCountDownDemoViewController.m */,
-				7A5B04782147981300BE0E89 /* MWModelDemoViewController.h */,
-				7A5B04792147981300BE0E89 /* MWModelDemoViewController.m */,
-				7A56551A2150CCF100DF3158 /* MWLabelDemoViewController.h */,
-				7A56551B2150CCF100DF3158 /* MWLabelDemoViewController.m */,
-				7AF58E24214A815A007E428F /* weibo.json */,
-				7AF58E26214A815A007E428F /* MWWeiboModel.h */,
-				7AF58E25214A815A007E428F /* MWWeiboModel.m */,
+				7A09892C21CB6DEF003DCC55 /* MWPhotoLibraryDemoViewController.h */,
+				7A09892D21CB6DEF003DCC55 /* MWPhotoLibraryDemoViewController.m */,
 				71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */,
 				6003F5A8195388D20070C39A /* Images.xcassets */,
 				6003F594195388D20070C39A /* Supporting Files */,
@@ -236,7 +223,6 @@
 				6003F587195388D20070C39A /* Frameworks */,
 				6003F588195388D20070C39A /* Resources */,
 				D3A09D5FA8C70CECFEDD4A57 /* [CP] Embed Pods Frameworks */,
-				4FCD709FCC331814A3ABA7C8 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -255,8 +241,6 @@
 				6003F5AA195388D20070C39A /* Sources */,
 				6003F5AB195388D20070C39A /* Frameworks */,
 				6003F5AC195388D20070C39A /* Resources */,
-				818AF384B133953914742361 /* [CP] Embed Pods Frameworks */,
-				AC8A6BD230D7D44CB2DABFBF /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -317,7 +301,6 @@
 				873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */,
 				71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */,
 				6003F5A9195388D20070C39A /* Images.xcassets in Resources */,
-				7AF58E27214A815A007E428F /* weibo.json in Resources */,
 				6003F598195388D20070C39A /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -333,36 +316,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		4FCD709FCC331814A3ABA7C8 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MWKits_Example/Pods-MWKits_Example-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		818AF384B133953914742361 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MWKits_Tests/Pods-MWKits_Tests-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		9E30A524D94AF8246A2087BC /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -379,21 +332,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		AC8A6BD230D7D44CB2DABFBF /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MWKits_Tests/Pods-MWKits_Tests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C02E6152B8D5978704DEDF37 /* [CP] Check Pods Manifest.lock */ = {
@@ -420,7 +358,7 @@
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-MWKits_Example/Pods-MWKits_Example-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-MWKits_Example/Pods-MWKits_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/MWKits/MWKits.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -429,7 +367,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MWKits_Example/Pods-MWKits_Example-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MWKits_Example/Pods-MWKits_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -441,11 +379,9 @@
 			files = (
 				6003F59E195388D20070C39A /* MWAppDelegate.m in Sources */,
 				7AD2643421461A55000A132E /* MWDemoViewController.m in Sources */,
+				7A09892E21CB6DEF003DCC55 /* MWPhotoLibraryDemoViewController.m in Sources */,
 				7AD2643721461B4D000A132E /* MWCountDownDemoViewController.m in Sources */,
-				7A5B047A2147981300BE0E89 /* MWModelDemoViewController.m in Sources */,
 				6003F5A7195388D20070C39A /* MWViewController.m in Sources */,
-				7AF58E28214A815A007E428F /* MWWeiboModel.m in Sources */,
-				7A56551C2150CCF100DF3158 /* MWLabelDemoViewController.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
