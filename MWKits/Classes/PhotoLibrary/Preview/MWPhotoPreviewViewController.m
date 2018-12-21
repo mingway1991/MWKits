@@ -42,8 +42,7 @@ static CGFloat kPreviewPhotoSpacing = 20.f;
 #pragma mark - NavigationBar
 - (void)pvt_setupNavigationBarButtons {
     UIBarButtonItem *backItem = [[UIBarButtonItem alloc] initWithTitle:@"返回" style:UIBarButtonItemStyleDone target:self action:@selector(clickBackButton)];
-    
-    self.navigationController.navigationItem.leftBarButtonItems = @[backItem];
+    self.navigationItem.leftBarButtonItems = @[backItem];
 }
 
 #pragma mark - Actions
@@ -96,7 +95,6 @@ static CGFloat kPreviewPhotoSpacing = 20.f;
         targetContentOffset->x = scrollView.contentOffset.x;
         [scrollView setContentOffset:CGPointMake(pageWidth*self.currentIndex, scrollView.contentOffset.y) animated:YES];
     }
-    NSLog(@"%ld",self.currentIndex);
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {

@@ -12,6 +12,7 @@
 #import "MWPhotoObject.h"
 #import "MWPhotoPreviewViewController.h"
 #import "MWPhotoLibraryNavigationController.h"
+#import "PHCachingImageManager+DefaultManager.h"
 
 @import Photos;
 
@@ -20,7 +21,7 @@ static CGFloat kGalleryTopMargin = 2.f;
 static CGFloat kGalleryBottomMargin = 20.f;
 static CGFloat kGalleryPhotoSpacing = 2.f;
 
-@interface MWGalleryViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout> {
+@interface MWGalleryViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, UICollectionViewDataSourcePrefetching> {
     CGFloat _itemWidth;
 }
 
@@ -36,6 +37,11 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
     [self setupParams];
     [self setupUI];
     [self pvt_checkAuthorization];
+}
+
+- (void)dealloc {
+    PHCachingImageManager *imageManager = [PHCachingImageManager defaultManager];
+    [imageManager stopCachingImagesForAllAssets];
 }
 
 #pragma mark - Setup
@@ -55,13 +61,11 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
     if (![MWPhotoLibrary cls_checkGalleryAuthorization]) {
         __weak typeof(self) weakSelf = self;
         [MWPhotoLibrary cls_requestGalleryAuthorizationWithCompletionHandler:^(BOOL granted) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (granted) {
-                    [weakSelf pvt_fetchAssetCollection];
-                } else {
-                    [weakSelf pvt_dealAuthorizationFailed];
-                }
-            });
+            if (granted) {
+                [weakSelf pvt_fetchAssetCollection];
+            } else {
+                [weakSelf pvt_dealAuthorizationFailed];
+            }
         }];
     } else {
         [self pvt_fetchAssetCollection];
@@ -75,7 +79,7 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
 - (void)pvt_fetchAssetCollection {
     PHFetchOptions *allPhotosOptions = [[PHFetchOptions alloc] init];
     // 按创建时间升序
-    allPhotosOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"creationDate" ascending:YES]];
+    allPhotosOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"modificationDate" ascending:NO]];
     // 获取所有照片（按创建时间升序）
     self.photos = [PHAsset fetchAssetsWithOptions:allPhotosOptions];
     [self.photosCollectionView reloadData];
@@ -123,6 +127,33 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
     [self presentViewController:navVc animated:YES completion:nil];
 }
 
+#pragma mark - UICollectionViewDataSourcePrefetching
+- (void)collectionView:(UICollectionView *)collectionView prefetchItemsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths {
+    NSMutableArray *assets = [NSMutableArray array];
+    for (NSIndexPath *indexPath in indexPaths) {
+        PHAsset *asset = [self.photos objectAtIndex:indexPath.item];
+        if (asset && asset.mediaType == PHAssetMediaTypeImage) {
+            [assets addObject:asset];
+        }
+    }
+    [[PHCachingImageManager defaultManager] startCachingImagesForAssets:assets
+                                                             targetSize:CGSizeMake(100.f, 100.f)
+                                                            contentMode:PHImageContentModeDefault options:nil];
+}
+
+- (void)collectionView:(UICollectionView *)collectionView cancelPrefetchingForItemsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths {
+    NSMutableArray *assets = [NSMutableArray array];
+    for (NSIndexPath *indexPath in indexPaths) {
+        PHAsset *asset = [self.photos objectAtIndex:indexPath.item];
+        if (asset && asset.mediaType == PHAssetMediaTypeImage) {
+            [assets addObject:asset];
+        }
+    }
+    [[PHCachingImageManager defaultManager] stopCachingImagesForAssets:assets
+                                                            targetSize:CGSizeMake(100.f, 100.f)
+                                                           contentMode:PHImageContentModeDefault options:nil];
+}
+
 #pragma mark - LazyLoad
 - (UICollectionView *)photosCollectionView {
     if (!_photosCollectionView) {
@@ -136,6 +167,12 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
         _photosCollectionView.alwaysBounceVertical = YES;
         [_photosCollectionView registerClass:[MWGalleryPhotoCell class] forCellWithReuseIdentifier:@"photoCell"];
         _photosCollectionView.backgroundColor = [UIColor whiteColor];
+        if (@available(iOS 10.0, *)) {
+            _photosCollectionView.prefetchingEnabled = YES;
+            _photosCollectionView.prefetchDataSource = self;
+        } else {
+            // Fallback on earlier versions
+        }
     }
     return _photosCollectionView;
 }

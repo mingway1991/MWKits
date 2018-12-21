@@ -29,6 +29,10 @@
 		71CA601EF0FC793C2C7A9AA56D676416 /* MWPhotoObject.h in Headers */ = {isa = PBXBuildFile; fileRef = 97CFF1F0199D1A323CF40D64A54EB3C1 /* MWPhotoObject.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7A09894721CB8D38003DCC55 /* MWPhotoPreviewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A09894521CB8D38003DCC55 /* MWPhotoPreviewCell.h */; };
 		7A09894821CB8D38003DCC55 /* MWPhotoPreviewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 7A09894621CB8D38003DCC55 /* MWPhotoPreviewCell.m */; };
+		7AD6BE2221CCBE9D004F2381 /* UIImage+FixOrientation.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AD6BE2021CCBE9D004F2381 /* UIImage+FixOrientation.m */; };
+		7AD6BE2321CCBE9D004F2381 /* UIImage+FixOrientation.h in Headers */ = {isa = PBXBuildFile; fileRef = 7AD6BE2121CCBE9D004F2381 /* UIImage+FixOrientation.h */; };
+		7AD6BE2621CCC3D1004F2381 /* PHCachingImageManager+DefaultManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 7AD6BE2421CCC3D1004F2381 /* PHCachingImageManager+DefaultManager.h */; };
+		7AD6BE2721CCC3D1004F2381 /* PHCachingImageManager+DefaultManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AD6BE2521CCC3D1004F2381 /* PHCachingImageManager+DefaultManager.m */; };
 		7D489F7EAF5DD580005BF6135DC91BFD /* MWPresentAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = BB90CC0EBF6E1ADEC4A1E531E0E3C1A9 /* MWPresentAnimation.m */; };
 		82A10B1058952796B4240EF3A8573AD2 /* NSString+MWUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 9B28037A7E6268FCE2A36F8BE7DA9B78 /* NSString+MWUtil.m */; };
 		86BB4FAEF597DEA726DB6B32B1DB61F2 /* MWPopAnimation.h in Headers */ = {isa = PBXBuildFile; fileRef = 602CBDBA3982088B547DA4CC782EC031 /* MWPopAnimation.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -103,6 +107,10 @@
 		74D199DA5362C0B5B0D331D24029F861 /* MWPresentAnimation.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = MWPresentAnimation.h; path = MWKits/Classes/Transition/MWPresentAnimation.h; sourceTree = "<group>"; };
 		7A09894521CB8D38003DCC55 /* MWPhotoPreviewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWPhotoPreviewCell.h; sourceTree = "<group>"; };
 		7A09894621CB8D38003DCC55 /* MWPhotoPreviewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MWPhotoPreviewCell.m; sourceTree = "<group>"; };
+		7AD6BE2021CCBE9D004F2381 /* UIImage+FixOrientation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+FixOrientation.m"; sourceTree = "<group>"; };
+		7AD6BE2121CCBE9D004F2381 /* UIImage+FixOrientation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+FixOrientation.h"; sourceTree = "<group>"; };
+		7AD6BE2421CCC3D1004F2381 /* PHCachingImageManager+DefaultManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "PHCachingImageManager+DefaultManager.h"; sourceTree = "<group>"; };
+		7AD6BE2521CCC3D1004F2381 /* PHCachingImageManager+DefaultManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "PHCachingImageManager+DefaultManager.m"; sourceTree = "<group>"; };
 		7E0711D3943F42A01DDC82C3503E08A0 /* MWKits.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = MWKits.modulemap; sourceTree = "<group>"; };
 		7E2ED53ADED614174D4804B1DFA217B2 /* Pods-MWKits_Example-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-MWKits_Example-frameworks.sh"; sourceTree = "<group>"; };
 		7FCD35FDA241CA1D64F7C9199D664672 /* MWKits.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MWKits.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -329,8 +337,12 @@
 		A9DB963F06F9196246A02D38E1E477D8 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				7AD6BE2121CCBE9D004F2381 /* UIImage+FixOrientation.h */,
+				7AD6BE2021CCBE9D004F2381 /* UIImage+FixOrientation.m */,
 				388315DE0B12879763E2DB9D59C37375 /* MWPhotoLibraryNavigationController.h */,
 				C13F5BF2976F5B004D6FC1DCA5FFC2AE /* MWPhotoLibraryNavigationController.m */,
+				7AD6BE2421CCC3D1004F2381 /* PHCachingImageManager+DefaultManager.h */,
+				7AD6BE2521CCC3D1004F2381 /* PHCachingImageManager+DefaultManager.m */,
 			);
 			name = Common;
 			path = MWKits/Classes/PhotoLibrary/Common;
@@ -457,8 +469,10 @@
 				94932D7B5FAA1CDEF45E9685CE9FEE94 /* MWPresentAnimation.h in Headers */,
 				8CAEB81E4DF7DB097018E124657BA672 /* MWPushAnimation.h in Headers */,
 				B5A1160345966E3A003E36F013956DEF /* MWTransitionDefines.h in Headers */,
+				7AD6BE2621CCC3D1004F2381 /* PHCachingImageManager+DefaultManager.h in Headers */,
 				C5FE03D07F501D3EE4C0BD0123927F5B /* NSString+MWUtil.h in Headers */,
 				955056B89B9C05ECAB68D7E722202124 /* UIColor+MWUtil.h in Headers */,
+				7AD6BE2321CCBE9D004F2381 /* UIImage+FixOrientation.h in Headers */,
 				FF834CF67CC16ABCA4D632E97DC4D1D3 /* UIImage+MWUtil.h in Headers */,
 				51E234E85313D707EBDB887D87332652 /* UIViewController+MWTransition.h in Headers */,
 			);
@@ -589,6 +603,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E1F8594F22DA54E879691B8ADE86A789 /* MWBaseNavigationController.m in Sources */,
+				7AD6BE2221CCBE9D004F2381 /* UIImage+FixOrientation.m in Sources */,
 				9675B26AFC2F4791F09FDEF3B42106E5 /* MWCountdownUtil.m in Sources */,
 				C74BF1DF57365314FB6ABAE4B1162492 /* MWDismissAnimation.m in Sources */,
 				2237CCDC6C40D88A0BAEEB240343466E /* MWGalleryPhotoCell.m in Sources */,
@@ -602,6 +617,7 @@
 				7D489F7EAF5DD580005BF6135DC91BFD /* MWPresentAnimation.m in Sources */,
 				61C0E6466B279A11B262F4DCB6A753AA /* MWPushAnimation.m in Sources */,
 				82A10B1058952796B4240EF3A8573AD2 /* NSString+MWUtil.m in Sources */,
+				7AD6BE2721CCC3D1004F2381 /* PHCachingImageManager+DefaultManager.m in Sources */,
 				DE76C9AA05E34DCD477AEF2D9D20B0C4 /* UIColor+MWUtil.m in Sources */,
 				29FFAFEBBAFE2D758ECC05C65804AC93 /* UIImage+MWUtil.m in Sources */,
 				15DA9914ACD556F3D3B0A8DFB78572D7 /* UIViewController+MWTransition.m in Sources */,

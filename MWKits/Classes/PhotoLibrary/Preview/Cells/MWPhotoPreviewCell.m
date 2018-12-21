@@ -7,6 +7,8 @@
 
 #import "MWPhotoPreviewCell.h"
 #import "MWDefines.h"
+#import "MWPhotoLibrary.h"
+#import "UIImage+FixOrientation.h"
 
 @interface MWPhotoPreviewCell () <UIScrollViewDelegate>
 
@@ -35,20 +37,39 @@
 
 - (void)prepareForReuse {
     [super prepareForReuse];
-    self.bgScrollView.zoomScale = 1.0f;
+    self.previewImageView.image = nil;
 }
 
 #pragma mark - Public
 - (void)updateUIWithPhotoObject:(MWPhotoObject *)photoObject {
+    self.previewImageView.image = nil;
     self.photoObject = photoObject;
     switch (photoObject.type) {
         case MWPhotoObjectTypeAsset: {
-            [[PHImageManager defaultManager] requestImageForAsset:[(MWAssetPhotoObject *)photoObject asset] targetSize:CGSizeMake(MWScreenWidth, MWScreenHeight)
-                                                      contentMode:PHImageContentModeDefault
-                                                          options:nil
-                                                    resultHandler:^(UIImage * _Nullable result, NSDictionary * _Nullable info) {
-                                                        self.previewImageView.image = result;
-                                                    }];
+            PHAsset *asset = [(MWAssetPhotoObject *)photoObject asset];
+            switch (asset.mediaType) {
+                case PHAssetMediaTypeImage: {
+                    //照片处理
+                    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                        __weak typeof(self) weakSelf = self;
+                        [MWPhotoLibrary cls_requestOriginalImageDataForAsset:asset
+                                                                  completion:^(NSData * _Nonnull data, NSDictionary * _Nonnull info) {
+                                                                      UIImage * result = [UIImage imageWithData:data];
+                                                                      result = [result mw_fixOrientation];
+                                                                      dispatch_async(dispatch_get_main_queue(), ^{
+                                                                          weakSelf.previewImageView.image = result;
+                                                                      });
+                                                                  }];
+                    });
+                    break;
+                }
+                case PHAssetMediaTypeVideo: {
+                    //视频处理
+                    break;
+                }
+                default:
+                    break;
+            }
             break;
         }
         case MWPhotoObjectTypeImage: {
@@ -62,14 +83,25 @@
             self.previewImageView.image = nil;
             break;
         }
-        default:
+        default: {
+            self.previewImageView.image = nil;
             break;
+        }
     }
+    [self.bgScrollView setZoomScale:1.0f];
+    self.previewImageView.center = self.bgScrollView.center;
 }
 
 #pragma mark - Gesture
 - (void)handleDoubleTapGesture:(UITapGestureRecognizer *)tapGesture {
-    self.bgScrollView.zoomScale = 1.0f;
+    [UIView animateWithDuration:.2f animations:^{
+        self.previewImageView.center = self.bgScrollView.center;
+        if (self.bgScrollView.zoomScale > 0.9f && self.bgScrollView.zoomScale < 1.1f) {
+            [self.bgScrollView setZoomScale:2.0f];
+        } else {
+            [self.bgScrollView setZoomScale:1.0f];
+        }
+    }];
 }
 
 #pragma mark - UIScrollViewDelegate
@@ -83,6 +115,27 @@
     } else {
         self.previewImageView.center = self.bgScrollView.center;
     }
+}
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    //修正图片位置
+    CGRect imgViewRect = self.previewImageView.frame;
+    CGSize sizeScrollView = scrollView.frame.size;
+    
+    //修正X轴位置
+    if (imgViewRect.size.width < sizeScrollView.width) {
+        imgViewRect.origin.x = (sizeScrollView.width - imgViewRect.size.width) / 2;
+    } else {
+        imgViewRect.origin.x = 0.f;
+    }
+    
+    //修正Y轴位置
+    if (imgViewRect.size.height < sizeScrollView.height) {
+        imgViewRect.origin.y = (sizeScrollView.height - imgViewRect.size.height) / 2;
+    } else {
+        imgViewRect.origin.y = 0.f;
+    }
+    self.previewImageView.frame = imgViewRect;
 }
 
 #pragma mark - LazyLoad
