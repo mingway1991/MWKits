@@ -1,5 +1,5 @@
 //
-//  MWPhotoLibraryNavigationController.h
+//  MWPhotoNavigationController.h
 //  MWKits
 //
 //  Created by 石茗伟 on 2018/12/20.
@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MWPhotoLibraryNavigationController : UINavigationController
+@interface MWPhotoNavigationController : UINavigationController
 
 @end
 

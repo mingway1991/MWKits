@@ -1,8 +1,8 @@
 //
-//  MWPhotoLibrary.h
+//  MWPhotoManager.h
 //  MWKits
 //
-//  Created by 石茗伟 on 2018/12/20.
+//  Created by 石茗伟 on 2018/12/24.
 //
 
 #import <Foundation/Foundation.h>
@@ -12,7 +12,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MWPhotoLibrary : NSObject
+@interface MWPhotoManager : NSObject
 
 /** 判断拍照权限 */
 + (BOOL)cls_checkCameraAuthorization;
@@ -32,6 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Gif
 + (BOOL)cls_isGifWithAsset:(PHAsset *)asset;
 
++ (UIImage *)cls_transformToGifImageWithData:(NSData *)data;
+
 #pragma mark - Video
 /** 获取视频资源截图 */
 + (UIImage *)cls_screenshotPlayerItem:(AVPlayerItem *)playerItem
@@ -48,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - Image
 /**
- 请求图片
+ 按照尺寸请求图片
  
  @param asset 图片资源
  @param size 需要的大小
@@ -61,8 +63,8 @@ NS_ASSUME_NONNULL_BEGIN
                                   completion:(void (^)(UIImage *image, NSDictionary *info))completion;
 
 /**
- 请求图片数据
-
+ 请求原始图片data
+ 
  @param asset 图片资源
  @param completion 完成回调
  */

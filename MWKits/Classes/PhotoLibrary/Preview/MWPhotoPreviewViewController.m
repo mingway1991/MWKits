@@ -11,7 +11,11 @@
 
 static CGFloat kPreviewPhotoSpacing = 20.f;
 
-@interface MWPhotoPreviewViewController () <UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout>
+@interface MWPhotoPreviewViewController () <UICollectionViewDataSource,
+                                            UICollectionViewDelegate,
+                                            UICollectionViewDelegateFlowLayout > {
+    BOOL _isTopBarHide;
+}
 
 @property (nonatomic, strong) UICollectionView *previewCollectionView;
 
@@ -25,17 +29,30 @@ static CGFloat kPreviewPhotoSpacing = 20.f;
     [self setupUI];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self pvt_updateNavigationBarHidden];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+}
+
+- (BOOL)prefersStatusBarHidden {
+    return _isTopBarHide;
+}
+
 #pragma mark - Setup
 - (void)setupParams {
     [self pvt_updateTitle];
+    _isTopBarHide = YES;
 }
 
 - (void)setupUI {
+    self.automaticallyAdjustsScrollViewInsets = NO;
     [self pvt_setupNavigationBarButtons];
-    
     self.view.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.previewCollectionView];
-    
     [self.previewCollectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForRow:self.currentIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionNone animated:NO];
 }
 
@@ -50,9 +67,28 @@ static CGFloat kPreviewPhotoSpacing = 20.f;
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
+#pragma mark - Gestures
+- (void)handleTapGesture:(UITapGestureRecognizer *)tapGesture {
+    NSLog(@"单击");
+    _isTopBarHide = !_isTopBarHide;
+    [self pvt_updateNavigationBarHidden];
+}
+
+- (void)handleDoubleTapGesture:(UITapGestureRecognizer *)tapGesture {
+    NSLog(@"双击");
+}
+
 #pragma mark - Private
 - (void)pvt_updateTitle {
     self.title = [NSString stringWithFormat:@"%@/%@",@(self.currentIndex+1),@(self.photoObjects.count)];
+}
+
+- (void)pvt_updateNavigationBarHidden {
+    if (_isTopBarHide) {
+        [self.navigationController setNavigationBarHidden:YES animated:YES];
+    } else {
+        [self.navigationController setNavigationBarHidden:NO animated:YES];
+    }
 }
 
 #pragma mark - UICollectionViewDataSource && UICollectionViewDelegate
@@ -111,12 +147,22 @@ static CGFloat kPreviewPhotoSpacing = 20.f;
         UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
         layout.scrollDirection = UICollectionViewScrollDirectionHorizontal;
         layout.minimumLineSpacing = kPreviewPhotoSpacing;
-        self.previewCollectionView = [[UICollectionView alloc] initWithFrame:self.view.bounds collectionViewLayout:layout];
+        self.previewCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 0, MWGetWidth(self.view), MWGetHeight(self.view)) collectionViewLayout:layout];
         _previewCollectionView.delegate = self;
         _previewCollectionView.dataSource = self;
         _previewCollectionView.alwaysBounceHorizontal = YES;
         [_previewCollectionView registerClass:[MWPhotoPreviewCell class] forCellWithReuseIdentifier:@"photoCell"];
         _previewCollectionView.backgroundColor = [UIColor blackColor];
+        
+        UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapGesture:)];
+        tapGesture.numberOfTapsRequired = 1;
+        [_previewCollectionView addGestureRecognizer:tapGesture];
+        
+        UITapGestureRecognizer *doubleTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTapGesture:)];
+        doubleTapGesture.numberOfTapsRequired = 2;
+        [_previewCollectionView addGestureRecognizer:doubleTapGesture];
+        
+        [tapGesture requireGestureRecognizerToFail:doubleTapGesture];
     }
     return _previewCollectionView;
 }

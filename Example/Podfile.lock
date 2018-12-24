@@ -9,18 +9,27 @@ PODS:
     - MWKits/Common
   - MWKits/PhotoLibrary (0.4.0):
     - MWKits/Common
+    - SDWebImage
   - MWKits/Transition (0.4.0):
     - MWKits/Common
+  - SDWebImage (4.4.3):
+    - SDWebImage/Core (= 4.4.3)
+  - SDWebImage/Core (4.4.3)
 
 DEPENDENCIES:
   - MWKits (from `../`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - SDWebImage
 
 EXTERNAL SOURCES:
   MWKits:
     :path: "../"
 
 SPEC CHECKSUMS:
-  MWKits: 614457340d4c991d86c40a86e70b2f72e3806860
+  MWKits: 047615e020993aef4c890ed0584f96b56968e9f9
+  SDWebImage: c5594f1a19c48d526d321e548902b56b479cd508
 
 PODFILE CHECKSUM: 976d72c248dcca0746868f48892bd347b0dc9137
 

@@ -38,6 +38,7 @@
 //set
 #define MWSetMinX(view,x) view.frame = CGRectMake(x,MWGetMinY(view),MWGetWidth(view),MWGetHeight(view))
 #define MWSetMinY(view,y) view.frame = CGRectMake(MWGetMinX(view),y,MWGetWidth(view),MWGetHeight(view))
+#define MWSetOrigin(view,origin) view.frame = CGRectMake(origin.x,origin.y,MWGetWidth(view),MWGetHeight(view))
 #define MWSetWidth(view,width) view.frame = CGRectMake(MWGetMinX(view),MWGetMinY(view),width,MWGetHeight(view))
 #define MWSetHeight(view,height) view.frame = CGRectMake(MWGetMinX(view),MWGetMinY(view),MWGetWidth(view),height)
 #define MWSetCenterX(view,x) view.center = CGPointMake(x,MWGetCenterY(view))

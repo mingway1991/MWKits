@@ -28,6 +28,7 @@ Pod::Spec.new do |s|
   s.subspec 'PhotoLibrary' do |a|
     a.source_files = 'MWKits/Classes/PhotoLibrary/**/*'
     a.dependency 'MWKits/Common'
+    a.dependency 'SDWebImage'
     a.frameworks = 'Photos','AVFoundation'
   end
 

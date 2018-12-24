@@ -6,7 +6,7 @@
 //
 
 #import "MWGalleryPhotoCell.h"
-#import "MWPhotoLibrary.h"
+#import "MWPhotoManager.h"
 #import "UIImage+FixOrientation.h"
 #import "MWDefines.h"
 
@@ -14,6 +14,9 @@
 
 @property (nonatomic, strong) UIImageView *photoImageView;
 @property (nonatomic, strong) UILabel *typeLabel;
+@property (nonatomic, strong) UIButton *selectButton;
+
+@property (nonatomic, strong) PHAsset *asset;
 
 @end
 
@@ -24,6 +27,7 @@
     if (self) {
         [self.contentView addSubview:self.photoImageView];
         [self.contentView addSubview:self.typeLabel];
+        [self.contentView addSubview:self.selectButton];
     }
     return self;
 }
@@ -32,6 +36,7 @@
     [super layoutSubviews];
     self.photoImageView.frame = self.bounds;
     MWSetMinY(self.typeLabel, CGRectGetHeight(self.bounds)-CGRectGetHeight(self.typeLabel.bounds));
+    MWSetOrigin(self.selectButton, CGPointMake(MWGetWidth(self)-MWGetWidth(self.selectButton), 0));
 }
 
 - (void)prepareForReuse {
@@ -41,11 +46,13 @@
 
 #pragma mark - Public
 - (void)updateUIWithAsset:(PHAsset *)asset
-               imageWidth:(CGFloat)imageWidth {
+               imageWidth:(CGFloat)imageWidth
+                 isSelect:(BOOL)isSelect {
+    self.asset = asset;
     self.photoImageView.image = nil;
     switch (asset.mediaType) {
         case PHAssetMediaTypeImage: {
-            BOOL isGif = [MWPhotoLibrary cls_isGifWithAsset:asset];
+            BOOL isGif = [MWPhotoManager cls_isGifWithAsset:asset];
             if (isGif) {
                 self.typeLabel.hidden = NO;
                 self.typeLabel.text = @"Gif";
@@ -55,7 +62,7 @@
             }
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 __weak typeof(self) weakSelf = self;
-                [MWPhotoLibrary cls_requestImageForAsset:asset
+                [MWPhotoManager cls_requestImageForAsset:asset
                                                     size:CGSizeMake(100.f, 100.f)
                                               resizeMode:PHImageRequestOptionsResizeModeFast
                                               completion:^(UIImage * _Nonnull image, NSDictionary * _Nonnull info) {
@@ -72,8 +79,8 @@
             MWSetWidth(self.typeLabel, 40.f);
             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
                 __weak typeof(self) weakSelf = self;
-                [MWPhotoLibrary cls_requestVideoForAsset:asset completion:^(AVPlayerItem * _Nonnull item, NSDictionary * _Nonnull info) {
-                    UIImage *screenshot = [MWPhotoLibrary cls_screenshotPlayerItem:item seconds:0];
+                [MWPhotoManager cls_requestVideoForAsset:asset completion:^(AVPlayerItem * _Nonnull item, NSDictionary * _Nonnull info) {
+                    UIImage *screenshot = [MWPhotoManager cls_screenshotPlayerItem:item seconds:0];
                     dispatch_async(dispatch_get_main_queue(), ^{
                         weakSelf.photoImageView.image = screenshot;
                     });
@@ -85,6 +92,18 @@
             self.photoImageView.image = nil;
             break;
         }
+    }
+    if (isSelect) {
+        self.selectButton.backgroundColor = [UIColor greenColor];
+    } else {
+        self.selectButton.backgroundColor = [UIColor yellowColor];
+    }
+}
+
+#pragma mark - Actions
+- (void)clickSelectButton:(UIButton *)sender {
+    if ([self.delegate respondsToSelector:@selector(photoCell:selectAsset:)]) {
+        [self.delegate photoCell:self selectAsset:self.asset];
     }
 }
 
@@ -108,6 +127,16 @@
         _typeLabel.hidden = YES;
     }
     return _typeLabel;
+}
+
+- (UIButton *)selectButton {
+    if (!_selectButton) {
+        self.selectButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        _selectButton.frame = CGRectMake(0, 0, 20.f, 20.f);
+        _selectButton.backgroundColor = [UIColor yellowColor];
+        [_selectButton addTarget:self action:@selector(clickSelectButton:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    return _selectButton;
 }
 
 @end
