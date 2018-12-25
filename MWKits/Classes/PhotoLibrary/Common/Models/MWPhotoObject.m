@@ -9,6 +9,14 @@
 
 @implementation MWPhotoObject
 
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        self.isSelect = NO;
+    }
+    return self;
+}
+
 @end
 
 @implementation MWAssetPhotoObject

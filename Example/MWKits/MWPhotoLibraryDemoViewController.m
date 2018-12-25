@@ -43,6 +43,16 @@
     configuration.allowSelectImage = YES;
     configuration.allowSelectVideo = YES;
     configuration.allowSelectGif = YES;
+    configuration.minSelectCount = 0;
+    configuration.maxSelectCount = 9;
+    configuration.navBarColor = [UIColor colorWithRed:255/255.f green:106/255.f blue:106/255.f alpha:1.0];
+    configuration.navTitleColor = [UIColor whiteColor];
+    configuration.selectCompletionBlock = ^(NSArray<PHAsset *> *assets, NSArray<UIImage *> *images) {
+        
+    };
+    configuration.cancelSelectCompletionBlock = ^{
+        
+    };
     [MWPhotoLibrary showPhotoLibraryWithConfiguration:configuration];
 }
 

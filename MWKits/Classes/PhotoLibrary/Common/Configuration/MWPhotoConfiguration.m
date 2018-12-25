@@ -11,7 +11,7 @@
 
 + (instancetype)defaultPhotoConfiguration {
     MWPhotoConfiguration *configuration = [MWPhotoConfiguration new];
-    configuration.minSelectCount = 1;
+    configuration.minSelectCount = 0;
     configuration.maxSelectCount = 9;
     configuration.allowSelectImage = YES;
     configuration.allowSelectGif = YES;

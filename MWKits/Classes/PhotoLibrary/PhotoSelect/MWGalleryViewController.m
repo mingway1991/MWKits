@@ -11,8 +11,9 @@
 #import "MWDefines.h"
 #import "MWPhotoObject.h"
 #import "MWPhotoPreviewViewController.h"
-#import "MWPhotoNavigationController.h"
 #import "PHCachingImageManager+DefaultManager.h"
+#import "UIImage+FixOrientation.h"
+#import "MWPhotoLibraryHelper.h"
 
 @import Photos;
 
@@ -31,6 +32,7 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
 
 @property (nonatomic, strong) NSArray<MWAssetPhotoObject *> *assetObjects;
 @property (nonatomic, strong) UICollectionView *photosCollectionView;
+@property (nonatomic, strong) UIButton *doneButton;
 
 @end
 
@@ -43,6 +45,12 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
     [self pvt_checkAuthorization];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self.photosCollectionView reloadData];
+    [self pvt_updateDoneNavigationBarButton];
+}
+
 - (void)dealloc {
     PHCachingImageManager *imageManager = [PHCachingImageManager defaultManager];
     [imageManager stopCachingImagesForAllAssets];
@@ -50,6 +58,7 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
 
 #pragma mark - Setup
 - (void)setupParams {
+    self.title = @"所有照片";
     NSInteger numInRow = 4;
     CGFloat galleryWidth = MWScreenWidth - 2*kGalleryLeftAndRightMargin;
     _itemWidth = floorf((galleryWidth - (numInRow-1)*kGalleryPhotoSpacing)/numInRow);
@@ -59,31 +68,48 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
     self.view.backgroundColor = [UIColor whiteColor];
     self.automaticallyAdjustsScrollViewInsets = NO;
     [self pvt_setupNavigationBarButtons];
+    [self pvt_updateDoneNavigationBarButton];
     [self.view addSubview:self.photosCollectionView];
 }
 
 #pragma mark - NavigationBar
 - (void)pvt_setupNavigationBarButtons {
-    UIBarButtonItem *doneItem = [[UIBarButtonItem alloc] initWithTitle:@"完成" style:UIBarButtonItemStyleDone target:self action:@selector(clickDoneButton)];
+    self.doneButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.doneButton.titleLabel.font = [UIFont systemFontOfSize:16.f];
+    [self.doneButton setTitleColor:self.configuration.navTitleColor forState:UIControlStateNormal];
+    self.doneButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentRight;
+    [self.doneButton addTarget:self action:@selector(clickDoneButton) forControlEvents:UIControlEventTouchUpInside];
+    UIBarButtonItem *doneItem = [[UIBarButtonItem alloc] initWithCustomView:self.doneButton];
     self.navigationItem.rightBarButtonItems = @[doneItem];
 }
 
-#pragma mark - Private
-- (NSArray<MWAssetPhotoObject *> *)selectedAssetObjects {
-    NSMutableArray *selectedAssetObjects = [NSMutableArray array];
-    for (MWAssetPhotoObject *assetObject in self.assetObjects) {
-        if (assetObject.isSelect) {
-            [selectedAssetObjects addObject:assetObject];
-        }
-    }
-    return selectedAssetObjects;
+- (void)pvt_updateDoneNavigationBarButton {
+    NSInteger selectedPhotoCount = [MWPhotoLibraryHelper cls_selectedObjectsWithPhotoObjects:self.assetObjects].count;
+    NSString *doneTitleString = [NSString stringWithFormat:@"(%@/%@)完成",@(selectedPhotoCount),@(self.configuration.maxSelectCount)];
+    [self.doneButton setTitle:doneTitleString forState:UIControlStateNormal];
+    
+    CGFloat titleWidth = [doneTitleString boundingRectWithSize:CGSizeMake(100.f, 20.f) options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: self.doneButton.titleLabel.font} context:nil].size.width + 20.f;
+    
+    self.doneButton.frame = CGRectMake(0, 0, MAX(MWNavigationBarHeight,titleWidth), MWNavigationBarHeight);
 }
 
 #pragma mark - Actions
 - (void)clickDoneButton {
-    if (self.selectedAssetObjects.count < self.configuration.minSelectCount) {
+    NSArray *selectedAssetObjects = [MWPhotoLibraryHelper cls_selectedObjectsWithPhotoObjects:self.assetObjects];
+    if (selectedAssetObjects.count < self.configuration.minSelectCount) {
         NSLog(@"低于最小数量限制");
         return;
+    }
+    if (self.configuration.selectCompletionBlock) {
+        NSMutableArray *assets = [NSMutableArray arrayWithCapacity:selectedAssetObjects.count];
+        NSMutableArray *images = [NSMutableArray arrayWithCapacity:selectedAssetObjects.count];
+        for (MWAssetPhotoObject *assetObject in selectedAssetObjects) {
+            [assets addObject:assetObject.asset];
+            [MWPhotoManager cls_requestOriginalImageForAsset:assetObject.asset completion:^(UIImage * _Nonnull image, NSDictionary * _Nonnull info) {
+                [images addObject:image];
+            }];
+        }
+        self.configuration.selectCompletionBlock(assets,images);
     }
     [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
@@ -171,7 +197,7 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     MWGalleryPhotoCell *photoCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"photoCell" forIndexPath:indexPath];
     MWAssetPhotoObject *assetObject = [self.assetObjects objectAtIndex:indexPath.item];
-    [photoCell updateUIWithAssetObject:assetObject imageWidth:_itemWidth isSelect:[self.selectedAssetObjects containsObject:assetObject]];
+    [photoCell updateUIWithAssetObject:assetObject imageWidth:_itemWidth];
     photoCell.delegate = self;
     return photoCell;
 }
@@ -184,9 +210,9 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
     MWPhotoPreviewViewController *previewVc = [[MWPhotoPreviewViewController alloc] init];
     previewVc.currentIndex = indexPath.item;
     previewVc.photoObjects = self.assetObjects;
-    
-    MWPhotoNavigationController *navVc = [[MWPhotoNavigationController alloc] initWithRootViewController:previewVc];
-    [self presentViewController:navVc animated:YES completion:nil];
+    previewVc.configuration = self.configuration;
+    previewVc.isPush = YES;
+    [self.navigationController pushViewController:previewVc animated:YES];
 }
 
 #pragma mark - UICollectionViewDataSourcePrefetching
@@ -219,7 +245,7 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
 #pragma mark - MWGalleryPhotoCellDelegate
 - (void)photoCell:(MWGalleryPhotoCell *)photoCell selectAssetObject:(nonnull MWAssetPhotoObject *)assetObject isSelect:(BOOL)isSelect {
     if (isSelect) {
-        if (self.selectedAssetObjects.count >= self.configuration.maxSelectCount) {
+        if ([MWPhotoLibraryHelper cls_selectedObjectsWithPhotoObjects:self.assetObjects].count >= self.configuration.maxSelectCount) {
             NSLog(@"超出数量限制");
             return;
         }
@@ -228,6 +254,7 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
         assetObject.isSelect = NO;
     }
     [self.photosCollectionView reloadData];
+    [self pvt_updateDoneNavigationBarButton];
 }
 
 #pragma mark - LazyLoad

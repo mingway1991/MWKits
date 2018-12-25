@@ -241,7 +241,7 @@
 
 + (void)cls_requestOriginalImageDataForAsset:(PHAsset *)asset
                                   completion:(void (^)(NSData *data, NSDictionary *info))completion {
-    PHImageRequestOptions *option = [[PHImageRequestOptions alloc]init];
+    PHImageRequestOptions *option = [[PHImageRequestOptions alloc] init];
     option.networkAccessAllowed = YES;
     option.resizeMode = PHImageRequestOptionsResizeModeFast;
     [[PHCachingImageManager defaultManager] requestImageDataForAsset:asset options:option resultHandler:^(NSData * _Nullable imageData, NSString * _Nullable dataUTI, UIImageOrientation orientation, NSDictionary * _Nullable info) {

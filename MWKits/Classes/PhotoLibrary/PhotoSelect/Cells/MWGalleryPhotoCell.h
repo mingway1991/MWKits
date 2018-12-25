@@ -28,11 +28,9 @@ NS_ASSUME_NONNULL_BEGIN
  
  @param assetObject 图片对象
  @param imageWidth 需要显示的图片宽度
- @param isSelect 是否被选中
  */
 - (void)updateUIWithAssetObject:(MWAssetPhotoObject *)assetObject
-                     imageWidth:(CGFloat)imageWidth
-                       isSelect:(BOOL)isSelect;
+                     imageWidth:(CGFloat)imageWidth;
 
 @end
 

@@ -27,6 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MWPhotoObject : NSObject
 
 @property (nonatomic, assign) MWPhotoObjectType type;
+@property (nonatomic, assign) BOOL isSelect;
 
 @end
 
@@ -34,7 +35,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) PHAsset *asset;
 @property (nonatomic, assign) MWAssetType assetType;
-@property (nonatomic, assign) BOOL isSelect;
 
 @end
 

@@ -22,7 +22,6 @@
 #import "MWPhotoManager.h"
 #import "MWPhotoObject.h"
 #import "MWPhotoLibrary.h"
-#import "MWPhotoNavigationController.h"
 #import "MWGalleryPhotoCell.h"
 #import "MWGalleryViewController.h"
 #import "MWPhotoPreviewCell.h"

@@ -8,14 +8,13 @@
 #import "MWPhotoLibrary.h"
 #import "MWGalleryViewController.h"
 #import "MWPhotoPreviewViewController.h"
-#import "MWPhotoNavigationController.h"
 
 @implementation MWPhotoLibrary
 
 + (void)showPhotoLibraryWithConfiguration:(MWPhotoConfiguration *)configuration {
     MWGalleryViewController *galleryViewController = [[MWGalleryViewController alloc] init];
     galleryViewController.configuration = configuration;
-    MWPhotoNavigationController *nav = [[MWPhotoNavigationController alloc] initWithRootViewController:galleryViewController];
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:galleryViewController];
     nav.navigationBar.barTintColor = configuration.navBarColor;
     nav.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName: configuration.navTitleColor};
     
@@ -25,9 +24,13 @@
 }
 
 + (void)showPhotoPreviewWithPhotoObjects:(NSArray<MWPhotoObject *> *)photoObjects {
+    MWPhotoConfiguration *configuration = [MWPhotoConfiguration defaultPhotoConfiguration];
+    
     MWPhotoPreviewViewController *prewviewViewController = [[MWPhotoPreviewViewController alloc] init];
     prewviewViewController.photoObjects = photoObjects;
-    MWPhotoNavigationController *nav = [[MWPhotoNavigationController alloc] initWithRootViewController:prewviewViewController];
+    prewviewViewController.isPush = NO;
+    prewviewViewController.configuration = configuration;
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:prewviewViewController];
     
     [[UIApplication sharedApplication].keyWindow.rootViewController presentViewController:nav animated:YES completion:^{
         

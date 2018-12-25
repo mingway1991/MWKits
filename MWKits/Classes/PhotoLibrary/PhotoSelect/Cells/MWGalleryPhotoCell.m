@@ -51,8 +51,7 @@
 
 #pragma mark - Public
 - (void)updateUIWithAssetObject:(MWAssetPhotoObject *)assetObject
-                     imageWidth:(CGFloat)imageWidth
-                       isSelect:(BOOL)isSelect {
+                     imageWidth:(CGFloat)imageWidth {
     self.assetObject = assetObject;
     switch (assetObject.assetType) {
         case MWAssetTypeNormalImage:

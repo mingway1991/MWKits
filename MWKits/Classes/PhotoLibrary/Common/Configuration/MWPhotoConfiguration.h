@@ -7,11 +7,16 @@
 
 #import <Foundation/Foundation.h>
 
+@import Photos;
+
+typedef void(^MWSelectCompletionBlock)(NSArray<PHAsset *> *assets, NSArray<UIImage *> *images);
+typedef void(^MWCancelSelectCompletionBlock)(void);
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MWPhotoConfiguration : NSObject
 
-/** 最小选择数 默认1张 */
+/** 最小选择数 默认0张 */
 @property (nonatomic, assign) NSInteger minSelectCount;
 
 /** 最大选择数 默认9张 */
@@ -37,6 +42,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 /** 导航标题颜色，默认黑色 */
 @property (nonatomic, strong) UIColor *navTitleColor;
+
+/** 选择完成回调 */
+@property (nonatomic, copy) MWSelectCompletionBlock selectCompletionBlock;
+
+/** 取消选择回调 */
+@property (nonatomic, copy) MWCancelSelectCompletionBlock cancelSelectCompletionBlock;
 
 
 - (instancetype)init NS_UNAVAILABLE;
