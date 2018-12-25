@@ -57,7 +57,7 @@
     __weak typeof(self) weakSelf = self;
     [MWPhotoManager cls_requestImageForAsset:asset
                                         size:size
-                                  resizeMode:PHImageRequestOptionsResizeModeFast
+                                  resizeMode:PHImageRequestOptionsResizeModeNone
                                   completion:^(UIImage *image, NSDictionary *info) {
                                       weakSelf.gifImageView.image = image;
                                       [weakSelf.gifImageView sd_removeActivityIndicator];

@@ -16,6 +16,12 @@ typedef enum : NSUInteger {
     MWPhotoObjectTypeUrl
 } MWPhotoObjectType;
 
+typedef enum : NSUInteger {
+    MWAssetTypeNormalImage = 0,
+    MWAssetTypeGif,
+    MWAssetTypeVideo,
+} MWAssetType;
+
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MWPhotoObject : NSObject
@@ -27,6 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 @interface MWAssetPhotoObject : MWPhotoObject
 
 @property (nonatomic, strong) PHAsset *asset;
+@property (nonatomic, assign) MWAssetType assetType;
+@property (nonatomic, assign) BOOL isSelect;
 
 @end
 

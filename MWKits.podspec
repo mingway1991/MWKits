@@ -30,6 +30,7 @@ Pod::Spec.new do |s|
     a.dependency 'MWKits/Common'
     a.dependency 'SDWebImage'
     a.frameworks = 'Photos','AVFoundation'
+    a.resource = 'MWKits/Assets/PhotoLibrary/**/*'
   end
 
 end

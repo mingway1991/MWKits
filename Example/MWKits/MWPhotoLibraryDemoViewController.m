@@ -41,8 +41,8 @@
     NSLog(@"点击相册按钮");
     MWPhotoConfiguration *configuration = [MWPhotoConfiguration defaultPhotoConfiguration];
     configuration.allowSelectImage = YES;
-    configuration.allowSelectVideo = NO;
-    configuration.allowSelectGif = NO;
+    configuration.allowSelectVideo = YES;
+    configuration.allowSelectGif = YES;
     [MWPhotoLibrary showPhotoLibraryWithConfiguration:configuration];
 }
 

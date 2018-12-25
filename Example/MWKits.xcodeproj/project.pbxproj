@@ -70,7 +70,7 @@
 		7AD2643321461A55000A132E /* MWDemoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MWDemoViewController.m; sourceTree = "<group>"; };
 		7AD2643521461B4D000A132E /* MWCountDownDemoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MWCountDownDemoViewController.h; sourceTree = "<group>"; };
 		7AD2643621461B4D000A132E /* MWCountDownDemoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MWCountDownDemoViewController.m; sourceTree = "<group>"; };
-		8449E9D3B06565DCB2E9A460 /* MWKits.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = MWKits.podspec; path = ../MWKits.podspec; sourceTree = "<group>"; };
+		8449E9D3B06565DCB2E9A460 /* MWKits.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = MWKits.podspec; path = ../MWKits.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8D2F3895308002E59DF3C0A5 /* Pods-MWKits_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MWKits_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MWKits_Tests/Pods-MWKits_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		B5FB88A7BF43BC7BC82D7921 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };

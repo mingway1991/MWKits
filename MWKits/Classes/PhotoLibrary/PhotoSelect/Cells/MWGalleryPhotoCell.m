@@ -9,14 +9,17 @@
 #import "MWPhotoManager.h"
 #import "UIImage+FixOrientation.h"
 #import "MWDefines.h"
+#import "MWImageHelper.h"
 
 @interface MWGalleryPhotoCell ()
 
 @property (nonatomic, strong) UIImageView *photoImageView;
 @property (nonatomic, strong) UILabel *typeLabel;
+@property (nonatomic, strong) UIView *selectedCoverView;
 @property (nonatomic, strong) UIButton *selectButton;
 
-@property (nonatomic, strong) PHAsset *asset;
+@property (nonatomic, strong) MWAssetPhotoObject *assetObject;
+@property (nonatomic, assign) PHImageRequestID imageRequestID;
 
 @end
 
@@ -27,6 +30,7 @@
     if (self) {
         [self.contentView addSubview:self.photoImageView];
         [self.contentView addSubview:self.typeLabel];
+        [self.contentView addSubview:self.selectedCoverView];
         [self.contentView addSubview:self.selectButton];
     }
     return self;
@@ -35,8 +39,9 @@
 - (void)layoutSubviews {
     [super layoutSubviews];
     self.photoImageView.frame = self.bounds;
+    self.selectedCoverView.frame = self.bounds;
     MWSetMinY(self.typeLabel, CGRectGetHeight(self.bounds)-CGRectGetHeight(self.typeLabel.bounds));
-    MWSetOrigin(self.selectButton, CGPointMake(MWGetWidth(self)-MWGetWidth(self.selectButton), 0));
+    MWSetOrigin(self.selectButton, CGPointMake(MWGetWidth(self)-MWGetWidth(self.selectButton), 0.f));
 }
 
 - (void)prepareForReuse {
@@ -45,65 +50,46 @@
 }
 
 #pragma mark - Public
-- (void)updateUIWithAsset:(PHAsset *)asset
-               imageWidth:(CGFloat)imageWidth
-                 isSelect:(BOOL)isSelect {
-    self.asset = asset;
-    self.photoImageView.image = nil;
-    switch (asset.mediaType) {
-        case PHAssetMediaTypeImage: {
-            BOOL isGif = [MWPhotoManager cls_isGifWithAsset:asset];
-            if (isGif) {
+- (void)updateUIWithAssetObject:(MWAssetPhotoObject *)assetObject
+                     imageWidth:(CGFloat)imageWidth
+                       isSelect:(BOOL)isSelect {
+    self.assetObject = assetObject;
+    switch (assetObject.assetType) {
+        case MWAssetTypeNormalImage:
+        case MWAssetTypeGif: {
+            if (assetObject.assetType == MWAssetTypeNormalImage) {
+                self.typeLabel.hidden = YES;
+            } else {
                 self.typeLabel.hidden = NO;
                 self.typeLabel.text = @"Gif";
                 MWSetWidth(self.typeLabel, 24.f);
-            } else {
-                self.typeLabel.hidden = YES;
             }
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                __weak typeof(self) weakSelf = self;
-                [MWPhotoManager cls_requestImageForAsset:asset
-                                                    size:CGSizeMake(100.f, 100.f)
-                                              resizeMode:PHImageRequestOptionsResizeModeFast
-                                              completion:^(UIImage * _Nonnull image, NSDictionary * _Nonnull info) {
-                                                  dispatch_async(dispatch_get_main_queue(), ^{
-                                                      weakSelf.photoImageView.image = image;
-                                                  });
-                                              }];
-            });
+            __weak typeof(self) weakSelf = self;
+            [MWPhotoManager cls_requestImageForAsset:assetObject.asset
+                                                size:CGSizeMake(100.f, 100.f)
+                                          resizeMode:PHImageRequestOptionsResizeModeNone
+                                          completion:^(UIImage * _Nonnull image, NSDictionary * _Nonnull info) {
+                                              weakSelf.photoImageView.image = image;
+                                          }];
             break;
         }
-        case PHAssetMediaTypeVideo: {
+        case MWAssetTypeVideo: {
             self.typeLabel.hidden = NO;
             self.typeLabel.text = @"Video";
             MWSetWidth(self.typeLabel, 40.f);
-            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                __weak typeof(self) weakSelf = self;
-                [MWPhotoManager cls_requestVideoForAsset:asset completion:^(AVPlayerItem * _Nonnull item, NSDictionary * _Nonnull info) {
-                    UIImage *screenshot = [MWPhotoManager cls_screenshotPlayerItem:item seconds:0];
-                    dispatch_async(dispatch_get_main_queue(), ^{
-                        weakSelf.photoImageView.image = screenshot;
-                    });
-                }];
-            });
             break;
         }
-        default: {
-            self.photoImageView.image = nil;
+        default:
             break;
-        }
     }
-    if (isSelect) {
-        self.selectButton.backgroundColor = [UIColor greenColor];
-    } else {
-        self.selectButton.backgroundColor = [UIColor yellowColor];
-    }
+    [self.selectButton setSelected:self.assetObject.isSelect];
+    self.selectedCoverView.hidden = !self.assetObject.isSelect;
 }
 
 #pragma mark - Actions
 - (void)clickSelectButton:(UIButton *)sender {
-    if ([self.delegate respondsToSelector:@selector(photoCell:selectAsset:)]) {
-        [self.delegate photoCell:self selectAsset:self.asset];
+    if ([self.delegate respondsToSelector:@selector(photoCell:selectAssetObject:isSelect:)]) {
+        [self.delegate photoCell:self selectAssetObject:self.assetObject isSelect:!self.assetObject.isSelect];
     }
 }
 
@@ -129,11 +115,22 @@
     return _typeLabel;
 }
 
+- (UIView *)selectedCoverView {
+    if (!_selectedCoverView) {
+        self.selectedCoverView = [[UIView alloc] init];
+        _selectedCoverView.backgroundColor = [UIColor colorWithRed:.3 green:.3 blue:.3 alpha:.5];
+        _selectedCoverView.hidden = YES;
+    }
+    return _selectedCoverView;
+}
+
 - (UIButton *)selectButton {
     if (!_selectButton) {
         self.selectButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        _selectButton.frame = CGRectMake(0, 0, 20.f, 20.f);
-        _selectButton.backgroundColor = [UIColor yellowColor];
+        _selectButton.frame = CGRectMake(0, 0, 40.f, 40.f);
+        _selectButton.imageEdgeInsets = UIEdgeInsetsMake(-10.f, 0.f, 0.f, -10.f);
+        [_selectButton setImage:[MWImageHelper loadImageWithName:@"mw_btn_unselected"] forState:UIControlStateNormal];
+        [_selectButton setImage:[MWImageHelper loadImageWithName:@"mw_btn_selected"] forState:UIControlStateSelected];
         [_selectButton addTarget:self action:@selector(clickSelectButton:) forControlEvents:UIControlEventTouchUpInside];
     }
     return _selectButton;

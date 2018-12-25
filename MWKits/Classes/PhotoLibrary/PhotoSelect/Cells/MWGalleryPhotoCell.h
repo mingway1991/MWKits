@@ -6,6 +6,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MWPhotoObject.h"
+
 @import Photos;
 @class MWGalleryPhotoCell;
 
@@ -13,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol MWGalleryPhotoCellDelegate <NSObject>
 
-- (void)photoCell:(MWGalleryPhotoCell *)photoCell selectAsset:(PHAsset *)asset;
+- (void)photoCell:(MWGalleryPhotoCell *)photoCell selectAssetObject:(MWAssetPhotoObject *)assetObject isSelect:(BOOL)isSelect;
 
 @end
 
@@ -24,13 +26,13 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  更新UI
  
- @param asset 图片对象
+ @param assetObject 图片对象
  @param imageWidth 需要显示的图片宽度
  @param isSelect 是否被选中
  */
-- (void)updateUIWithAsset:(PHAsset *)asset
-               imageWidth:(CGFloat)imageWidth
-                 isSelect:(BOOL)isSelect;
+- (void)updateUIWithAssetObject:(MWAssetPhotoObject *)assetObject
+                     imageWidth:(CGFloat)imageWidth
+                       isSelect:(BOOL)isSelect;
 
 @end
 

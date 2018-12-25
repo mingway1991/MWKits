@@ -29,9 +29,8 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
     CGFloat _itemWidth;
 }
 
-@property (nonatomic, strong) NSArray<PHAsset *> *assets;
+@property (nonatomic, strong) NSArray<MWAssetPhotoObject *> *assetObjects;
 @property (nonatomic, strong) UICollectionView *photosCollectionView;
-@property (nonatomic, strong) NSMutableArray *selectedAssets;
 
 @end
 
@@ -54,7 +53,6 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
     NSInteger numInRow = 4;
     CGFloat galleryWidth = MWScreenWidth - 2*kGalleryLeftAndRightMargin;
     _itemWidth = floorf((galleryWidth - (numInRow-1)*kGalleryPhotoSpacing)/numInRow);
-    self.selectedAssets = [NSMutableArray array];
 }
 
 - (void)setupUI {
@@ -70,9 +68,20 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
     self.navigationItem.rightBarButtonItems = @[doneItem];
 }
 
+#pragma mark - Private
+- (NSArray<MWAssetPhotoObject *> *)selectedAssetObjects {
+    NSMutableArray *selectedAssetObjects = [NSMutableArray array];
+    for (MWAssetPhotoObject *assetObject in self.assetObjects) {
+        if (assetObject.isSelect) {
+            [selectedAssetObjects addObject:assetObject];
+        }
+    }
+    return selectedAssetObjects;
+}
+
 #pragma mark - Actions
 - (void)clickDoneButton {
-    if (self.selectedAssets.count < self.configuration.minSelectCount) {
+    if (self.selectedAssetObjects.count < self.configuration.minSelectCount) {
         NSLog(@"低于最小数量限制");
         return;
     }
@@ -106,27 +115,39 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
         allPhotosOptions.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:@"modificationDate" ascending:NO]];
         // 获取所有照片（按创建时间升序）
         PHFetchResult<PHAsset *> *result = [PHAsset fetchAssetsWithOptions:allPhotosOptions];
-        __block NSMutableArray *assets = [NSMutableArray arrayWithCapacity:result.count];
+        __block NSMutableArray *assetObjects = [NSMutableArray arrayWithCapacity:result.count];
         
         [result enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             if (obj.mediaType == PHAssetMediaTypeImage) {
                 if ([MWPhotoManager cls_isGifWithAsset:obj]) {
                     if (self.configuration.allowSelectGif) {
-                        [assets addObject:obj];
+                        MWAssetPhotoObject *gifObject = [[MWAssetPhotoObject alloc] init];
+                        gifObject.type = MWPhotoObjectTypeAsset;
+                        gifObject.assetType = MWAssetTypeGif;
+                        gifObject.asset = obj;
+                        [assetObjects addObject:gifObject];
                     }
                 } else {
                     if (self.configuration.allowSelectImage) {
-                        [assets addObject:obj];
+                        MWAssetPhotoObject *imageObject = [[MWAssetPhotoObject alloc] init];
+                        imageObject.type = MWPhotoObjectTypeAsset;
+                        imageObject.assetType = MWAssetTypeNormalImage;
+                        imageObject.asset = obj;
+                        [assetObjects addObject:imageObject];
                     }
                 }
             } else if (obj.mediaType == PHAssetMediaTypeVideo) {
                 if (self.configuration.allowSelectVideo) {
-                    [assets addObject:obj];
+                    MWAssetPhotoObject *videoObject = [[MWAssetPhotoObject alloc] init];
+                    videoObject.type = MWPhotoObjectTypeAsset;
+                    videoObject.assetType = MWAssetTypeVideo;
+                    videoObject.asset = obj;
+                    [assetObjects addObject:videoObject];
                 }
             }
         }];
         
-        self.assets = assets;
+        self.assetObjects = assetObjects;
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.photosCollectionView reloadData];
         });
@@ -144,13 +165,13 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
-    return self.assets.count;
+    return self.assetObjects.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     MWGalleryPhotoCell *photoCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"photoCell" forIndexPath:indexPath];
-    PHAsset *asset = [self.assets objectAtIndex:indexPath.item];
-    [photoCell updateUIWithAsset:asset imageWidth:_itemWidth isSelect:[self.selectedAssets containsObject:asset]];
+    MWAssetPhotoObject *assetObject = [self.assetObjects objectAtIndex:indexPath.item];
+    [photoCell updateUIWithAssetObject:assetObject imageWidth:_itemWidth isSelect:[self.selectedAssetObjects containsObject:assetObject]];
     photoCell.delegate = self;
     return photoCell;
 }
@@ -160,19 +181,11 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    NSMutableArray *photoObjects = [NSMutableArray arrayWithCapacity:self.assets.count];
-    [self.assets enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
-        MWAssetPhotoObject *photoObject = [[MWAssetPhotoObject alloc] init];
-        photoObject.type = MWPhotoObjectTypeAsset;
-        photoObject.asset = obj;
-        [photoObjects addObject:photoObject];
-    }];
     MWPhotoPreviewViewController *previewVc = [[MWPhotoPreviewViewController alloc] init];
     previewVc.currentIndex = indexPath.item;
-    previewVc.photoObjects = photoObjects;
+    previewVc.photoObjects = self.assetObjects;
     
     MWPhotoNavigationController *navVc = [[MWPhotoNavigationController alloc] initWithRootViewController:previewVc];
-    
     [self presentViewController:navVc animated:YES completion:nil];
 }
 
@@ -180,9 +193,9 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
 - (void)collectionView:(UICollectionView *)collectionView prefetchItemsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths {
     NSMutableArray *assets = [NSMutableArray array];
     for (NSIndexPath *indexPath in indexPaths) {
-        PHAsset *asset = [self.assets objectAtIndex:indexPath.item];
-        if (asset && asset.mediaType == PHAssetMediaTypeImage) {
-            [assets addObject:asset];
+        MWAssetPhotoObject *assetObject = [self.assetObjects objectAtIndex:indexPath.item];
+        if (assetObject.assetType == MWAssetTypeNormalImage) {
+            [assets addObject:assetObject.asset];
         }
     }
     [[PHCachingImageManager defaultManager] startCachingImagesForAssets:assets
@@ -193,9 +206,9 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
 - (void)collectionView:(UICollectionView *)collectionView cancelPrefetchingForItemsAtIndexPaths:(NSArray<NSIndexPath *> *)indexPaths {
     NSMutableArray *assets = [NSMutableArray array];
     for (NSIndexPath *indexPath in indexPaths) {
-        PHAsset *asset = [self.assets objectAtIndex:indexPath.item];
-        if (asset && asset.mediaType == PHAssetMediaTypeImage) {
-            [assets addObject:asset];
+        MWAssetPhotoObject *assetObject = [self.assetObjects objectAtIndex:indexPath.item];
+        if (assetObject.assetType == MWAssetTypeNormalImage) {
+            [assets addObject:assetObject.asset];
         }
     }
     [[PHCachingImageManager defaultManager] stopCachingImagesForAssets:assets
@@ -204,15 +217,15 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
 }
 
 #pragma mark - MWGalleryPhotoCellDelegate
-- (void)photoCell:(MWGalleryPhotoCell *)photoCell selectAsset:(PHAsset *)asset {
-    if (self.selectedAssets.count >= self.configuration.maxSelectCount) {
-        NSLog(@"超出数量限制");
-        return;
-    }
-    if ([self.selectedAssets containsObject:asset]) {
-        [self.selectedAssets removeObject:asset];
+- (void)photoCell:(MWGalleryPhotoCell *)photoCell selectAssetObject:(nonnull MWAssetPhotoObject *)assetObject isSelect:(BOOL)isSelect {
+    if (isSelect) {
+        if (self.selectedAssetObjects.count >= self.configuration.maxSelectCount) {
+            NSLog(@"超出数量限制");
+            return;
+        }
+        assetObject.isSelect = YES;
     } else {
-        [self.selectedAssets addObject:asset];
+        assetObject.isSelect = NO;
     }
     [self.photosCollectionView reloadData];
 }

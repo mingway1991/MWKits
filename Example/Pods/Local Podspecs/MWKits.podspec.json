@@ -47,12 +47,16 @@
       "dependencies": {
         "MWKits/Common": [
 
+        ],
+        "SDWebImage": [
+
         ]
       },
       "frameworks": [
         "Photos",
         "AVFoundation"
-      ]
+      ],
+      "resources": "MWKits/Assets/PhotoLibrary/**/*"
     }
   ]
 }
