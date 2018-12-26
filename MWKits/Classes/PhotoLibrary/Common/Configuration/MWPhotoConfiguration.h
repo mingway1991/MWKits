@@ -8,8 +8,9 @@
 #import <Foundation/Foundation.h>
 
 @import Photos;
+@class MWPhotoObject;
 
-typedef void(^MWSelectCompletionBlock)(NSArray<PHAsset *> *assets, NSArray<UIImage *> *images);
+typedef void(^MWSelectCompletionBlock)(NSArray<MWPhotoObject *> *photoObjects,NSArray<PHAsset *> *assets, NSArray<UIImage *> *images);
 typedef void(^MWCancelSelectCompletionBlock)(void);
 
 NS_ASSUME_NONNULL_BEGIN

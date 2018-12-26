@@ -6,7 +6,7 @@
 //
 
 #import "MWPhotoPreviewCell.h"
-#import "MWPhotoManager.h"
+#import "MWAssetManager.h"
 #import "MWNormalPhotoPreviewView.h"
 #import "MWGifPhotoPreviewView.h"
 #import "MWVideoPreviewView.h"
@@ -52,7 +52,7 @@
             PHAsset *asset = [(MWAssetPhotoObject *)photoObject asset];
             switch (asset.mediaType) {
                 case PHAssetMediaTypeImage: {
-                   BOOL isGif = [MWPhotoManager cls_isGifWithAsset:asset];
+                   BOOL isGif = [MWAssetManager cls_isGifWithAsset:asset];
                     if (isGif) {
                         //Gif
                         self.gifPhotoPreviewView.hidden = NO;

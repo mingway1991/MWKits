@@ -1,73 +1,16 @@
 //
-//  MWPhotoManager.m
+//  MWAssetManager.m
 //  MWKits
 //
 //  Created by 石茗伟 on 2018/12/24.
 //
 
-#import "MWPhotoManager.h"
+#import "MWAssetManager.h"
 #import "PHCachingImageManager+DefaultManager.h"
 
 @import Photos;
 
-@implementation MWPhotoManager
-
-+ (BOOL)cls_checkCameraAuthorization {
-    NSString *mediaType = AVMediaTypeVideo;
-    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:mediaType];
-    if(authStatus == AVAuthorizationStatusRestricted || authStatus == AVAuthorizationStatusDenied){
-        NSLog(@"相机无访问权限");
-        return NO;
-    }
-    NSLog(@"相机有访问权限");
-    return YES;
-}
-
-+ (BOOL)cls_checkGalleryAuthorization {
-    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
-    if (status == PHAuthorizationStatusRestricted ||
-        status == PHAuthorizationStatusDenied) {
-        NSLog(@"相册无访问权限");
-        return NO;
-    }
-    NSLog(@"相册有访问权限");
-    return YES;
-}
-
-+ (BOOL)cls_checkMicrophoneAuthorization {
-    AVAuthorizationStatus status = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeAudio];
-    if (status == AVAuthorizationStatusRestricted ||
-        status == AVAuthorizationStatusDenied) {
-        NSLog(@"麦克风无访问权限");
-        return NO;
-    }
-    NSLog(@"麦克风有访问权限");
-    return YES;
-}
-
-+ (void)cls_requestCameraAuthorizationWithCompletionHandler:(void(^)(BOOL granted))completionHanlder {
-    NSString *mediaType = AVMediaTypeVideo;
-    [AVCaptureDevice requestAccessForMediaType:mediaType completionHandler:^(BOOL granted) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            completionHanlder(granted);
-        });
-    }];
-}
-
-+ (void)cls_requestGalleryAuthorizationWithCompletionHandler:(void(^)(BOOL granted))completionHanlder {
-    [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
-        if (status == PHAuthorizationStatusRestricted ||
-            status == PHAuthorizationStatusDenied) {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completionHanlder(NO);
-            });
-        } else {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                completionHanlder(YES);
-            });
-        }
-    }];
-}
+@implementation MWAssetManager
 
 + (BOOL)cls_isGifWithAsset:(PHAsset *)asset {
     __block BOOL isGIFImage = NO;

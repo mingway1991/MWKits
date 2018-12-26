@@ -6,14 +6,13 @@
 //
 
 #import "MWGalleryViewController.h"
-#import "MWPhotoManager.h"
+#import "MWAssetManager.h"
 #import "MWGalleryPhotoCell.h"
 #import "MWDefines.h"
 #import "MWPhotoObject.h"
 #import "MWPhotoPreviewViewController.h"
 #import "PHCachingImageManager+DefaultManager.h"
 #import "UIImage+FixOrientation.h"
-#import "MWPhotoLibraryHelper.h"
 
 @import Photos;
 
@@ -42,7 +41,7 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
     [super viewDidLoad];
     [self setupParams];
     [self setupUI];
-    [self pvt_checkAuthorization];
+    [self pvt_fetchAssetCollection];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -84,7 +83,7 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
 }
 
 - (void)pvt_updateDoneNavigationBarButton {
-    NSInteger selectedPhotoCount = [MWPhotoLibraryHelper cls_selectedObjectsWithPhotoObjects:self.assetObjects].count;
+    NSInteger selectedPhotoCount = self.selectedAssetObjects.count;
     NSString *doneTitleString = [NSString stringWithFormat:@"(%@/%@)完成",@(selectedPhotoCount),@(self.configuration.maxSelectCount)];
     [self.doneButton setTitle:doneTitleString forState:UIControlStateNormal];
     
@@ -93,47 +92,7 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
     self.doneButton.frame = CGRectMake(0, 0, MAX(MWNavigationBarHeight,titleWidth), MWNavigationBarHeight);
 }
 
-#pragma mark - Actions
-- (void)clickDoneButton {
-    NSArray *selectedAssetObjects = [MWPhotoLibraryHelper cls_selectedObjectsWithPhotoObjects:self.assetObjects];
-    if (selectedAssetObjects.count < self.configuration.minSelectCount) {
-        NSLog(@"低于最小数量限制");
-        return;
-    }
-    if (self.configuration.selectCompletionBlock) {
-        NSMutableArray *assets = [NSMutableArray arrayWithCapacity:selectedAssetObjects.count];
-        NSMutableArray *images = [NSMutableArray arrayWithCapacity:selectedAssetObjects.count];
-        for (MWAssetPhotoObject *assetObject in selectedAssetObjects) {
-            [assets addObject:assetObject.asset];
-            [MWPhotoManager cls_requestOriginalImageForAsset:assetObject.asset completion:^(UIImage * _Nonnull image, NSDictionary * _Nonnull info) {
-                [images addObject:image];
-            }];
-        }
-        self.configuration.selectCompletionBlock(assets,images);
-    }
-    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
-}
-
 #pragma mark - Request Gallery
-- (void)pvt_checkAuthorization {
-    if (![MWPhotoManager cls_checkGalleryAuthorization]) {
-        __weak typeof(self) weakSelf = self;
-        [MWPhotoManager cls_requestGalleryAuthorizationWithCompletionHandler:^(BOOL granted) {
-            if (granted) {
-                [weakSelf pvt_fetchAssetCollection];
-            } else {
-                [weakSelf pvt_dealAuthorizationFailed];
-            }
-        }];
-    } else {
-        [self pvt_fetchAssetCollection];
-    }
-}
-
-- (void)pvt_dealAuthorizationFailed {
-    
-}
-
 - (void)pvt_fetchAssetCollection {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         PHFetchOptions *allPhotosOptions = [[PHFetchOptions alloc] init];
@@ -145,7 +104,7 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
         
         [result enumerateObjectsUsingBlock:^(PHAsset * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
             if (obj.mediaType == PHAssetMediaTypeImage) {
-                if ([MWPhotoManager cls_isGifWithAsset:obj]) {
+                if ([MWAssetManager cls_isGifWithAsset:obj]) {
                     if (self.configuration.allowSelectGif) {
                         MWAssetPhotoObject *gifObject = [[MWAssetPhotoObject alloc] init];
                         gifObject.type = MWPhotoObjectTypeAsset;
@@ -185,6 +144,38 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
     //_userCollections = [PHCollectionList fetchTopLevelUserCollectionsWithOptions:nil];
 }
 
+#pragma mark - Selected Assets
+- (NSArray<MWPhotoObject *> *)selectedAssetObjects {
+    NSMutableArray *selectedObjects = [NSMutableArray array];
+    for (MWPhotoObject *object in self.assetObjects) {
+        if (object.isSelect) {
+            [selectedObjects addObject:object];
+        }
+    }
+    return selectedObjects;
+}
+
+#pragma mark - Actions
+- (void)clickDoneButton {
+    NSArray *selectedAssetObjects = self.selectedAssetObjects;
+    if (selectedAssetObjects.count < self.configuration.minSelectCount) {
+        NSLog(@"低于最小数量限制");
+        return;
+    }
+    if (self.configuration.selectCompletionBlock) {
+        NSMutableArray *assets = [NSMutableArray arrayWithCapacity:selectedAssetObjects.count];
+        NSMutableArray *images = [NSMutableArray arrayWithCapacity:selectedAssetObjects.count];
+        for (MWAssetPhotoObject *assetObject in selectedAssetObjects) {
+            [assets addObject:assetObject.asset];
+            [MWAssetManager cls_requestOriginalImageForAsset:assetObject.asset completion:^(UIImage * _Nonnull image, NSDictionary * _Nonnull info) {
+                [images addObject:image];
+            }];
+        }
+        self.configuration.selectCompletionBlock(selectedAssetObjects,assets,images);
+    }
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
+}
+
 #pragma mark - UICollectionViewDataSource && UICollectionViewDelegate
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
     return 1;
@@ -212,6 +203,7 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
     previewVc.photoObjects = self.assetObjects;
     previewVc.configuration = self.configuration;
     previewVc.isPush = YES;
+    previewVc.canSelect = YES;
     [self.navigationController pushViewController:previewVc animated:YES];
 }
 
@@ -245,7 +237,7 @@ static CGFloat kGalleryPhotoSpacing = 2.f;
 #pragma mark - MWGalleryPhotoCellDelegate
 - (void)photoCell:(MWGalleryPhotoCell *)photoCell selectAssetObject:(nonnull MWAssetPhotoObject *)assetObject isSelect:(BOOL)isSelect {
     if (isSelect) {
-        if ([MWPhotoLibraryHelper cls_selectedObjectsWithPhotoObjects:self.assetObjects].count >= self.configuration.maxSelectCount) {
+        if (self.selectedAssetObjects.count >= self.configuration.maxSelectCount) {
             NSLog(@"超出数量限制");
             return;
         }

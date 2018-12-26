@@ -6,7 +6,7 @@
 //
 
 #import "MWGalleryPhotoCell.h"
-#import "MWPhotoManager.h"
+#import "MWAssetManager.h"
 #import "UIImage+FixOrientation.h"
 #import "MWDefines.h"
 #import "MWImageHelper.h"
@@ -64,7 +64,7 @@
                 MWSetWidth(self.typeLabel, 24.f);
             }
             __weak typeof(self) weakSelf = self;
-            [MWPhotoManager cls_requestImageForAsset:assetObject.asset
+            [MWAssetManager cls_requestImageForAsset:assetObject.asset
                                                 size:CGSizeMake(100.f, 100.f)
                                           resizeMode:PHImageRequestOptionsResizeModeNone
                                           completion:^(UIImage * _Nonnull image, NSDictionary * _Nonnull info) {

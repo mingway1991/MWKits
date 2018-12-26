@@ -7,7 +7,7 @@
 
 #import "MWGifPhotoPreviewView.h"
 #import "MWDefines.h"
-#import "MWPhotoManager.h"
+#import "MWAssetManager.h"
 
 @import SDWebImage;
 
@@ -55,7 +55,7 @@
     CGSize size = CGSizeMake(width*scale, width*scale*asset.pixelHeight/asset.pixelWidth);
     [self.gifImageView sd_addActivityIndicator];
     __weak typeof(self) weakSelf = self;
-    [MWPhotoManager cls_requestImageForAsset:asset
+    [MWAssetManager cls_requestImageForAsset:asset
                                         size:size
                                   resizeMode:PHImageRequestOptionsResizeModeNone
                                   completion:^(UIImage *image, NSDictionary *info) {
@@ -68,9 +68,9 @@
 - (void)pvt_loadGif {
     [self.gifImageView sd_addActivityIndicator];
     __weak typeof(self) weakSelf = self;
-    [MWPhotoManager cls_requestOriginalImageDataForAsset:self.asset completion:^(NSData * _Nonnull data, NSDictionary * _Nonnull info) {
+    [MWAssetManager cls_requestOriginalImageDataForAsset:self.asset completion:^(NSData * _Nonnull data, NSDictionary * _Nonnull info) {
         if (![[info objectForKey:PHImageResultIsDegradedKey] boolValue]) {
-            UIImage *gifImage = [MWPhotoManager cls_transformToGifImageWithData:data];
+            UIImage *gifImage = [MWAssetManager cls_transformToGifImageWithData:data];
             weakSelf.gifImageView.image = gifImage;
         }
         [weakSelf.gifImageView sd_removeActivityIndicator];

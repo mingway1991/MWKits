@@ -7,7 +7,7 @@
 
 #import "MWNormalPhotoPreviewView.h"
 #import "MWDefines.h"
-#import "MWPhotoManager.h"
+#import "MWAssetManager.h"
 #import "UIImage+FixOrientation.h"
 #import "PHCachingImageManager+DefaultManager.h"
 
@@ -65,7 +65,7 @@
     CGSize size = CGSizeMake(width*scale, width*scale*asset.pixelHeight/asset.pixelWidth);
     [self.previewImageView sd_addActivityIndicator];
     __weak typeof(self) weakSelf = self;
-    self.imageRequestID = [MWPhotoManager cls_requestImageForAsset:asset
+    self.imageRequestID = [MWAssetManager cls_requestImageForAsset:asset
                                                               size:size
                                                         resizeMode:PHImageRequestOptionsResizeModeFast
                                                         completion:^(UIImage *image, NSDictionary *info) {

@@ -1,5 +1,5 @@
 //
-//  MWPhotoManager.h
+//  MWAssetManager.h
 //  MWKits
 //
 //  Created by 石茗伟 on 2018/12/24.
@@ -7,27 +7,11 @@
 
 #import <Foundation/Foundation.h>
 
-@import AVFoundation;
 @import Photos;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MWPhotoManager : NSObject
-
-/** 判断拍照权限 */
-+ (BOOL)cls_checkCameraAuthorization;
-
-/** 判断相册权限 */
-+ (BOOL)cls_checkGalleryAuthorization;
-
-/** 判断麦克风权限 */
-+ (BOOL)cls_checkMicrophoneAuthorization;
-
-/** 请求拍照权限 */
-+ (void)cls_requestCameraAuthorizationWithCompletionHandler:(void(^)(BOOL granted))completionHanlder;
-
-/** 请求相册权限 */
-+ (void)cls_requestGalleryAuthorizationWithCompletionHandler:(void(^)(BOOL granted))completionHanlder;
+@interface MWAssetManager : NSObject
 
 #pragma mark - Gif
 + (BOOL)cls_isGifWithAsset:(PHAsset *)asset;

@@ -10,7 +10,12 @@
 
 @import MWKits;
 
-@interface MWPhotoLibraryDemoViewController ()
+@interface MWPhotoLibraryDemoViewController () <UICollectionViewDataSource,
+                                                UICollectionViewDelegate,
+                                                UICollectionViewDelegateFlowLayout>
+
+@property (nonatomic, strong) UICollectionView *photosCollectionView;
+@property (nonatomic, strong) NSArray<MWPhotoObject *> *photoObjects;
 
 @end
 
@@ -20,6 +25,8 @@
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
     
+    [self.view addSubview:self.photosCollectionView];
+    
     UIButton *photoLibraryButton = [UIButton buttonWithType:UIButtonTypeCustom];
     photoLibraryButton.frame = CGRectMake(10, 80, 100, 60);
     [photoLibraryButton setTitle:@"相册" forState:UIControlStateNormal];
@@ -28,13 +35,13 @@
     [photoLibraryButton addTarget:self action:@selector(clickPhotoLibraryButton) forControlEvents:UIControlEventTouchUpInside];
     [self.view addSubview:photoLibraryButton];
     
-    UIButton *previewButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    previewButton.frame = CGRectMake(10, CGRectGetMaxY(photoLibraryButton.frame)+20.f, 100, 60);
-    [previewButton setTitle:@"预览" forState:UIControlStateNormal];
-    [previewButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    previewButton.titleLabel.font = [UIFont systemFontOfSize:16.f];
-    [previewButton addTarget:self action:@selector(clickPreviewButton) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:previewButton];
+    UIButton *cameraButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    cameraButton.frame = CGRectMake(120, 80, 100, 60);
+    [cameraButton setTitle:@"相机" forState:UIControlStateNormal];
+    [cameraButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
+    cameraButton.titleLabel.font = [UIFont systemFontOfSize:16.f];
+    [cameraButton addTarget:self action:@selector(clickCameraButton) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:cameraButton];
 }
 
 - (void)clickPhotoLibraryButton {
@@ -47,8 +54,10 @@
     configuration.maxSelectCount = 9;
     configuration.navBarColor = [UIColor colorWithRed:255/255.f green:106/255.f blue:106/255.f alpha:1.0];
     configuration.navTitleColor = [UIColor whiteColor];
-    configuration.selectCompletionBlock = ^(NSArray<PHAsset *> *assets, NSArray<UIImage *> *images) {
-        
+    __weak typeof(self) weakSelf = self;
+    configuration.selectCompletionBlock = ^(NSArray<MWPhotoObject *> *photoObjects, NSArray<PHAsset *> *assets, NSArray<UIImage *> *images) {
+        weakSelf.photoObjects = photoObjects;
+        [weakSelf.photosCollectionView reloadData];
     };
     configuration.cancelSelectCompletionBlock = ^{
         
@@ -56,23 +65,76 @@
     [MWPhotoLibrary showPhotoLibraryWithConfiguration:configuration];
 }
 
-- (void)clickPreviewButton {
-    NSLog(@"点击预览按钮");
-    MWUrlPhotoObject *obj1 = [[MWUrlPhotoObject alloc] init];
-    obj1.type = MWPhotoObjectTypeUrl;
-    obj1.url = @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1545650618518&di=58a0048e5a03f3c5a9de97867f3c9747&imgtype=0&src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2F2018-11-03%2F5bdd0f9ec29cc.jpg";
-    
-    MWUrlPhotoObject *obj2 = [[MWUrlPhotoObject alloc] init];
-    obj2.type = MWPhotoObjectTypeUrl;
-    obj2.url = @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1545650618518&di=b75f3dfd73c48e97fd95f50c4dce21d8&imgtype=0&src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2F2018-11-26%2F5bfb63c83c665.jpg";
-    
-    MWUrlPhotoObject *obj3 = [[MWUrlPhotoObject alloc] init];
-    obj3.type = MWPhotoObjectTypeUrl;
-    obj3.url = @"https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1545650618518&di=354263c15f80bd561103567348d81063&imgtype=0&src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2F2018-11-26%2F5bfb63c99f238.jpg";
-    
-    NSArray *photoObjects = @[obj1, obj2, obj3];
-    
-    [MWPhotoLibrary showPhotoPreviewWithPhotoObjects:photoObjects];
+- (void)clickCameraButton {
+    MWPhotoConfiguration *configuration = [MWPhotoConfiguration defaultPhotoConfiguration];
+    configuration.allowSelectImage = YES;
+    configuration.allowSelectVideo = YES;
+    configuration.allowSelectGif = YES;
+    configuration.minSelectCount = 0;
+    configuration.maxSelectCount = 9;
+    configuration.navBarColor = [UIColor colorWithRed:255/255.f green:106/255.f blue:106/255.f alpha:1.0];
+    configuration.navTitleColor = [UIColor whiteColor];
+    __weak typeof(self) weakSelf = self;
+    configuration.selectCompletionBlock = ^(NSArray<MWPhotoObject *> *photoObjects, NSArray<PHAsset *> *assets, NSArray<UIImage *> *images) {
+        weakSelf.photoObjects = photoObjects;
+        [weakSelf.photosCollectionView reloadData];
+    };
+    configuration.cancelSelectCompletionBlock = ^{
+        
+    };
+    [MWPhotoLibrary showCameraWithConfiguration:configuration];
+}
+
+#pragma mark - UICollectionViewDataSource && UICollectionViewDelegate
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {
+    return 1;
+}
+
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
+    return self.photoObjects.count;
+}
+
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
+    UICollectionViewCell *photoCell = [collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
+    photoCell.backgroundColor = [UIColor yellowColor];
+    return photoCell;
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    return CGSizeMake(30, 30);
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    MWPhotoConfiguration *configuration = [MWPhotoConfiguration defaultPhotoConfiguration];
+    configuration.minSelectCount = 0;
+    configuration.maxSelectCount = 9;
+    configuration.navBarColor = [UIColor colorWithRed:255/255.f green:106/255.f blue:106/255.f alpha:1.0];
+    configuration.navTitleColor = [UIColor whiteColor];
+    __weak typeof(self) weakSelf = self;
+    configuration.selectCompletionBlock = ^(NSArray<MWPhotoObject *> *photoObjects, NSArray<PHAsset *> *assets, NSArray<UIImage *> *images) {
+        weakSelf.photoObjects = photoObjects;
+        [weakSelf.photosCollectionView reloadData];
+    };
+    configuration.cancelSelectCompletionBlock = ^{
+        
+    };
+    [MWPhotoLibrary showPhotoPreviewWithConfiguration:configuration photoObjects:self.photoObjects index:indexPath.item];
+//    [MWPhotoLibrary showPhotoPreviewForSelectWithConfiguration:configuration photoObjects:self.photoObjects index:indexPath.item];
+}
+
+#pragma mark - LazyLoad
+- (UICollectionView *)photosCollectionView {
+    if (!_photosCollectionView) {
+        UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
+        layout.minimumLineSpacing = 10.f;
+        layout.minimumInteritemSpacing = 10.f;
+        self.photosCollectionView = [[UICollectionView alloc] initWithFrame:CGRectMake(0, 250, MWScreenWidth, 300) collectionViewLayout:layout];
+        _photosCollectionView.backgroundColor = [UIColor whiteColor];
+        _photosCollectionView.delegate = self;
+        _photosCollectionView.dataSource = self;
+        [_photosCollectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"cell"];
+    }
+    return _photosCollectionView;
 }
 
 @end
